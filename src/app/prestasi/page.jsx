@@ -19,6 +19,9 @@ import {
   List,
   User,
   BookOpen,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
   X
 } from 'lucide-react';
 import { PRODI_LIST } from '@/src/lib/mockData';
@@ -33,9 +36,12 @@ export default function PrestasiPage() {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'table'
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTingkat, setSelectedTingkat] = useState('Semua');
-  const [selectedKategori, setSelectedKategori] = useState('Semua');
+  const [selectedTahun, setSelectedTahun] = useState('Semua');
   const [selectedProdi, setSelectedProdi] = useState('Semua');
-  const [stats, setStats] = useState({ totalPrestasi: 0, countInternasional: 0, countNasional: 0, countWilayah: 0 });
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = viewMode === 'grid' ? 18 : 25;
 
   // Modal CRUD State
   const [modalOpen, setModalOpen] = useState(false);
@@ -55,7 +61,6 @@ export default function PrestasiPage() {
       const data = await res.json();
       if (data.success) {
         setPrestasiList(data.data || []);
-        setStats(data.stats || { totalPrestasi: 0, countInternasional: 0, countNasional: 0, countWilayah: 0 });
       }
     } catch (err) {
       console.error(err);
@@ -141,19 +146,19 @@ export default function PrestasiPage() {
   };
 
   const handleExportCSV = () => {
-    if (prestasiList.length === 0) return;
-    const headers = ['NIM', 'Nama Mahasiswa', 'Program Studi', 'Nama Kompetisi', 'Capaian', 'Tingkat', 'Kategori', 'Tahun', 'Penyelenggara', 'Dosen Pembimbing'];
-    const rows = filteredList.map(item => [
+    if (filteredList.length === 0) return;
+    const headers = ['No', 'NIM', 'Nama Mahasiswa', 'Program Studi', 'Nama Kompetisi', 'Capaian', 'Tingkat', 'Tahun', 'Penyelenggara', 'Dosen Pembimbing'];
+    const rows = filteredList.map((item, idx) => [
+      idx + 1,
       item.nim,
       `"${item.nama}"`,
       `"${item.prodi}"`,
       `"${item.namaKompetisi}"`,
       `"${item.capaian}"`,
       `"${item.tingkat}"`,
-      `"${item.kategori}"`,
       item.tahun,
-      `"${item.penyelenggara}"`,
-      `"${item.dosenPembimbing}"`
+      `"${item.penyelenggara || '-'}"`,
+      `"${item.dosenPembimbing || '-'}"`
     ]);
 
     const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
@@ -165,9 +170,10 @@ export default function PrestasiPage() {
     link.click();
     document.body.removeChild(link);
 
-    setToast({ message: 'Data prestasi berhasil diekspor ke CSV!', type: 'success' });
+    setToast({ message: `Data ${filteredList.length} prestasi berhasil diekspor ke CSV!`, type: 'success' });
   };
 
+  // Filter list
   const filteredList = prestasiList.filter((item) => {
     const matchSearch =
       !searchQuery ||
@@ -175,40 +181,66 @@ export default function PrestasiPage() {
       item.nim?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.namaKompetisi?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.capaian?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.penyelenggara?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.prodi?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchTingkat = selectedTingkat === 'Semua' || item.tingkat === selectedTingkat;
-    const matchKategori = selectedKategori === 'Semua' || item.kategori === selectedKategori;
+    const matchTahun = selectedTahun === 'Semua' || String(item.tahun) === String(selectedTahun);
     const matchProdi = selectedProdi === 'Semua' || item.prodi === selectedProdi;
 
-    return matchSearch && matchTingkat && matchKategori && matchProdi;
+    return matchSearch && matchTingkat && matchTahun && matchProdi;
   });
+
+  // Calculate stats from actual list
+  const countInternasional = prestasiList.filter(p => p.tingkat === 'Internasional').length;
+  const countNasional = prestasiList.filter(p => p.tingkat === 'Nasional').length;
+  const countWilayah = prestasiList.filter(p => p.tingkat === 'Wilayah/Provinsi' || p.tingkat === 'Regional').length;
+  const uniqueTahun = Array.from(new Set(prestasiList.map(p => p.tahun))).filter(Boolean).sort().reverse();
+
+  // Pagination calculation
+  const totalPages = Math.ceil(filteredList.length / pageSize) || 1;
+  const paginatedList = filteredList.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 380, behavior: 'smooth' });
+    }
+  };
 
   return (
     <div style={{ paddingBottom: '5rem' }}>
       <Toast message={toast.message} type={toast.type} onClose={() => setToast({ message: '', type: 'success' })} />
 
       {/* Header Banner */}
-      <section style={{ backgroundColor: 'var(--usu-green-dark)', color: '#ffffff', padding: '3.5rem 0', borderBottom: '4px solid var(--usu-gold)' }}>
+      <section
+        style={{
+          background: 'linear-gradient(135deg, #003620 0%, #005A36 65%, #002213 100%)',
+          color: '#ffffff',
+          padding: '3.5rem 0 4rem',
+          borderBottom: '4px solid var(--usu-gold)',
+          position: 'relative',
+        }}
+      >
         <div className="container">
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1.5rem' }}>
-            <div style={{ maxWidth: '750px' }}>
+            <div style={{ maxWidth: '780px' }}>
               <span className="badge badge-gold" style={{ marginBottom: '0.75rem' }}>
                 Hall of Fame & Prestasi Mahasiswa
               </span>
-              <h1 style={{ fontSize: '2.5rem', color: '#ffffff', marginBottom: '0.75rem' }}>
+              <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.6rem)', color: '#ffffff', fontWeight: 800, fontFamily: 'Outfit, sans-serif', marginBottom: '0.75rem' }}>
                 Data Mahasiswa Berprestasi Fakultas Vokasi USU
               </h1>
               <p style={{ fontSize: '1.05rem', color: 'rgba(255, 255, 255, 0.85)', lineHeight: 1.6 }}>
-                Apresiasi dan rekam jejak torehan prestasi akademik, inovasi terapan, kompetisi kejuruan,
-                serta kejuaraan non-akademik mahasiswa di panggung Wilayah, Nasional, dan Internasional.
+                Rekam jejak 227+ torehan prestasi autentik mahasiswa Fakultas Vokasi Universitas Sumatera Utara
+                dalam ajang kompetisi kejuaraan Wilayah, Nasional, hingga Internasional (Periode 2023 - 2026).
               </p>
             </div>
 
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
               <button onClick={handleExportCSV} className="btn btn-outline-white">
                 <Download size={16} />
-                <span>Ekspor CSV</span>
+                <span>Ekspor CSV ({filteredList.length})</span>
               </button>
               {session && (
                 <button onClick={handleOpenAdd} className="btn btn-gold">
@@ -229,8 +261,8 @@ export default function PrestasiPage() {
               <Award size={24} />
             </div>
             <div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--usu-green-dark)' }}>{prestasiList.length} Prestasi</div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>Total Penghargaan Terdata</div>
+              <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--usu-green-dark)' }}>{prestasiList.length} Prestasi</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>Total Prestasi Terdata</div>
             </div>
           </div>
 
@@ -239,7 +271,7 @@ export default function PrestasiPage() {
               <Globe size={24} />
             </div>
             <div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0369a1' }}>{stats.countInternasional || 1} Ajang</div>
+              <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#0369a1' }}>{countInternasional} Ajang</div>
               <div style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>Tingkat Internasional / ASEAN</div>
             </div>
           </div>
@@ -249,18 +281,18 @@ export default function PrestasiPage() {
               <Flag size={24} />
             </div>
             <div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#065f46' }}>{stats.countNasional || 4} Ajang</div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>Tingkat Nasional (Kemendikbud)</div>
+              <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#065f46' }}>{countNasional} Ajang</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>Tingkat Nasional</div>
             </div>
           </div>
 
           <div className="card" style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1.25rem' }}>
             <div style={{ width: '48px', height: '48px', borderRadius: '12px', backgroundColor: '#fef3c7', color: '#b45309', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Sparkles size={24} />
+              <Calendar size={24} />
             </div>
             <div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#92400e' }}>100%</div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>Tervalidasi Kemahasiswaan</div>
+              <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#92400e' }}>2023 - 2026</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>Arsip 4 Periode Resmi</div>
             </div>
           </div>
         </div>
@@ -269,13 +301,13 @@ export default function PrestasiPage() {
       {/* Filter and View Toggles */}
       <div className="container" style={{ marginTop: '2.5rem' }}>
         <div className="card" style={{ padding: '1.25rem', marginBottom: '1.75rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', alignItems: 'center' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '1rem', alignItems: 'center' }}>
             <div style={{ position: 'relative' }}>
               <input
                 type="text"
-                placeholder="Cari nama, NIM, atau lomba..."
+                placeholder="Cari mahasiswa, lomba, capaian..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                 className="input-text"
                 style={{ paddingLeft: '2.4rem' }}
               />
@@ -285,7 +317,7 @@ export default function PrestasiPage() {
             <div>
               <select
                 value={selectedTingkat}
-                onChange={(e) => setSelectedTingkat(e.target.value)}
+                onChange={(e) => { setSelectedTingkat(e.target.value); setCurrentPage(1); }}
                 className="select-input"
               >
                 <option value="Semua">Semua Tingkat Kejuaraan</option>
@@ -297,16 +329,27 @@ export default function PrestasiPage() {
 
             <div>
               <select
-                value={selectedKategori}
-                onChange={(e) => setSelectedKategori(e.target.value)}
+                value={selectedTahun}
+                onChange={(e) => { setSelectedTahun(e.target.value); setCurrentPage(1); }}
                 className="select-input"
               >
-                <option value="Semua">Semua Bidang / Kategori</option>
-                <option value="Sains & Teknologi Terapan">Sains & Teknologi Terapan</option>
-                <option value="Bisnis & Keuangan">Bisnis & Keuangan</option>
-                <option value="Teknologi Informasi">Teknologi Informasi</option>
-                <option value="Seni, Budaya & Pariwisata">Seni, Budaya & Pariwisata</option>
-                <option value="Olahraga">Olahraga</option>
+                <option value="Semua">Semua Tahun</option>
+                {uniqueTahun.map((t) => (
+                  <option key={t} value={t}>Tahun {t}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <select
+                value={selectedProdi}
+                onChange={(e) => { setSelectedProdi(e.target.value); setCurrentPage(1); }}
+                className="select-input"
+              >
+                <option value="Semua">Semua Program Studi</option>
+                {PRODI_LIST.map((p) => (
+                  <option key={p} value={p}>{p}</option>
+                ))}
               </select>
             </div>
 
@@ -332,6 +375,18 @@ export default function PrestasiPage() {
           </div>
         </div>
 
+        {/* Status Bar */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+          <div>
+            Menemukan <strong>{filteredList.length}</strong> capaian prestasi mahasiswa
+            {selectedTahun !== 'Semua' && ` pada tahun ${selectedTahun}`}
+            {selectedTingkat !== 'Semua' && ` tingkat ${selectedTingkat}`}
+          </div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-light)' }}>
+            Halaman {currentPage} dari {totalPages}
+          </div>
+        </div>
+
         {/* Content Views */}
         {loading ? (
           <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--usu-green)', fontWeight: 600 }}>
@@ -339,100 +394,97 @@ export default function PrestasiPage() {
           </div>
         ) : filteredList.length === 0 ? (
           <div className="card" style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
-            Tidak ada data prestasi yang cocok dengan pencarian Anda.
+            Tidak ada data prestasi yang cocok dengan kriteria pencarian Anda.
           </div>
         ) : viewMode === 'grid' ? (
           /* Grid View Cards */
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.75rem' }}>
-            {filteredList.map((item) => (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
+            {paginatedList.map((item) => (
               <motion.div
                 key={item.id}
                 whileHover={{ y: -4 }}
+                transition={{ duration: 0.2 }}
                 className="card"
-                onClick={() => setSelectedDetail(item)}
                 style={{
+                  padding: 0,
+                  overflow: 'hidden',
+                  cursor: 'pointer',
                   display: 'flex',
                   flexDirection: 'column',
-                  overflow: 'hidden',
-                  padding: 0,
-                  cursor: 'pointer',
-                  position: 'relative',
+                  justifyContent: 'space-between',
+                  borderTop: `4px solid ${
+                    item.tingkat === 'Internasional' ? '#0284c7' :
+                    item.tingkat === 'Nasional' ? 'var(--usu-gold)' : 'var(--usu-green)'
+                  }`
                 }}
+                onClick={() => setSelectedDetail(item)}
               >
-                <div style={{ position: 'relative', height: '200px', width: '100%', overflow: 'hidden' }}>
-                  <img
-                    src={item.fotoUrl}
-                    alt={item.nama}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 60%)' }} />
-
-                  <div style={{ position: 'absolute', top: '12px', left: '12px', display: 'flex', gap: '0.4rem' }}>
-                    <span className="badge badge-green" style={{ backgroundColor: 'rgba(0, 90, 54, 0.95)', color: '#ffffff', border: 'none' }}>
-                      {item.tingkat}
+                <div style={{ padding: '1.5rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                    <span
+                      style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        padding: '0.2rem 0.6rem',
+                        borderRadius: '999px',
+                        backgroundColor:
+                          item.tingkat === 'Internasional' ? '#e0f2fe' :
+                          item.tingkat === 'Nasional' ? '#fef3c7' : '#ecfdf5',
+                        color:
+                          item.tingkat === 'Internasional' ? '#0369a1' :
+                          item.tingkat === 'Nasional' ? '#b45309' : '#059669',
+                      }}
+                    >
+                      {item.tingkat} • Tahun {item.tahun}
                     </span>
-                    <span className="badge badge-gold" style={{ backgroundColor: 'rgba(245, 158, 11, 0.95)', color: '#1a1a1a', border: 'none' }}>
-                      {item.tahun}
+
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-light)', fontFamily: 'monospace' }}>
+                      {item.nim}
                     </span>
                   </div>
 
-                  <div style={{ position: 'absolute', bottom: '12px', left: '12px', right: '12px' }}>
-                    <div style={{ fontSize: '0.785rem', color: '#fde047', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                      {item.kategori}
-                    </div>
-                    <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#ffffff' }}>
-                      {item.capaian}
-                    </div>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--usu-green-dark)', lineHeight: 1.4, marginBottom: '0.5rem' }}>
+                    {item.namaKompetisi}
+                  </h3>
+
+                  <div style={{ display: 'inline-block', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', padding: '0.35rem 0.75rem', borderRadius: '8px', color: 'var(--usu-green)', fontWeight: 800, fontSize: '0.9rem', marginBottom: '1rem' }}>
+                    🏆 {item.capaian}
+                  </div>
+
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.3rem' }}>
+                    <User size={15} style={{ color: 'var(--usu-green)' }} />
+                    <span>{item.nama}</span>
+                  </div>
+
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-light)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <BookOpen size={14} />
+                    <span>{item.prodi}</span>
                   </div>
                 </div>
 
-                <div style={{ padding: '1.4rem', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
-                  <div>
-                    <h3 style={{ fontSize: '1.15rem', color: 'var(--text-main)', marginBottom: '0.25rem' }}>
-                      {item.nama}
-                    </h3>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-light)', marginBottom: '0.75rem' }}>
-                      {item.nim} • {item.prodi}
-                    </div>
+                <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem 1.5rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
+                  <span style={{ color: 'var(--text-muted)' }}>
+                    {item.penyelenggara || 'Kemahasiswaan Vokasi USU'}
+                  </span>
 
-                    <div style={{ fontSize: '0.885rem', fontWeight: 600, color: 'var(--usu-green)', marginBottom: '0.5rem', lineHeight: 1.4 }}>
-                      {item.namaKompetisi}
+                  {session && (
+                    <div style={{ display: 'inline-flex', gap: '0.3rem' }}>
+                      <button
+                        onClick={(e) => handleOpenEdit(item, e)}
+                        style={{ padding: '4px', background: 'none', border: 'none', color: '#0284c7', cursor: 'pointer' }}
+                        title="Edit"
+                      >
+                        <Edit2 size={14} />
+                      </button>
+                      <button
+                        onClick={(e) => handleOpenDelete(item.id, e)}
+                        style={{ padding: '4px', background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer' }}
+                        title="Hapus"
+                      >
+                        <Trash2 size={14} />
+                      </button>
                     </div>
-
-                    <p style={{ fontSize: '0.825rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '1rem' }}>
-                      {item.deskripsi?.length > 120 ? `${item.deskripsi.substring(0, 120)}...` : item.deskripsi}
-                    </p>
-                  </div>
-
-                  <div>
-                    <div style={{ fontSize: '0.785rem', color: 'var(--text-light)', borderTop: '1px solid var(--border-subtle)', paddingTop: '0.75rem', marginBottom: '0.75rem' }}>
-                      Pembimbing: <strong>{item.dosenPembimbing}</strong>
-                    </div>
-
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>
-                        {item.penyelenggara}
-                      </span>
-                      {session && (
-                        <div style={{ display: 'flex', gap: '0.35rem' }}>
-                          <button
-                            onClick={(e) => handleOpenEdit(item, e)}
-                            title="Edit"
-                            style={{ padding: '5px', borderRadius: '4px', border: '1px solid var(--border-subtle)', background: '#ffffff', color: '#0284c7', cursor: 'pointer' }}
-                          >
-                            <Edit2 size={14} />
-                          </button>
-                          <button
-                            onClick={(e) => handleOpenDelete(item.id, e)}
-                            title="Hapus"
-                            style={{ padding: '5px', borderRadius: '4px', border: '1px solid var(--border-subtle)', background: '#ffffff', color: '#dc2626', cursor: 'pointer' }}
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  )}
                 </div>
               </motion.div>
             ))}
@@ -440,60 +492,125 @@ export default function PrestasiPage() {
         ) : (
           /* Table View */
           <div className="table-wrapper">
-            <table className="custom-table">
+            <table className="custom-table" style={{ fontSize: '0.875rem' }}>
               <thead>
                 <tr>
-                  <th>Mahasiswa</th>
+                  <th style={{ width: '55px' }}>No</th>
+                  <th style={{ width: '130px' }}>NIM</th>
+                  <th>Nama Mahasiswa</th>
                   <th>Program Studi</th>
                   <th>Kompetisi / Kejuaraan</th>
-                  <th>Capaian & Tingkat</th>
-                  <th>Tahun</th>
-                  <th>Pembimbing</th>
-                  {session && <th style={{ textAlign: 'right' }}>Aksi (CRUD)</th>}
+                  <th>Capaian Prestasi</th>
+                  <th style={{ width: '110px', textAlign: 'center' }}>Tingkat</th>
+                  <th style={{ width: '75px', textAlign: 'center' }}>Tahun</th>
+                  {session && <th style={{ textAlign: 'right', width: '90px' }}>Aksi</th>}
                 </tr>
               </thead>
               <tbody>
-                {filteredList.map((item) => (
-                  <tr key={item.id} onClick={() => setSelectedDetail(item)} style={{ cursor: 'pointer' }}>
-                    <td>
-                      <div style={{ fontWeight: 700 }}>{item.nama}</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', fontFamily: 'monospace' }}>{item.nim}</div>
-                    </td>
-                    <td>
-                      <div style={{ fontSize: '0.85rem' }}>{item.prodi}</div>
-                    </td>
-                    <td>
-                      <div style={{ fontWeight: 600, color: 'var(--usu-green-dark)' }}>{item.namaKompetisi}</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>{item.penyelenggara}</div>
-                    </td>
-                    <td>
-                      <div style={{ fontWeight: 700, color: '#b45309' }}>{item.capaian}</div>
-                      <span className="badge badge-green" style={{ fontSize: '0.7rem' }}>{item.tingkat}</span>
-                    </td>
-                    <td>{item.tahun}</td>
-                    <td style={{ fontSize: '0.825rem' }}>{item.dosenPembimbing}</td>
-                    {session && (
-                      <td style={{ textAlign: 'right' }}>
-                        <div style={{ display: 'inline-flex', gap: '0.35rem' }}>
-                          <button
-                            onClick={(e) => handleOpenEdit(item, e)}
-                            style={{ padding: '6px', borderRadius: '6px', border: '1px solid var(--border-subtle)', background: '#ffffff', color: '#0284c7', cursor: 'pointer' }}
-                          >
-                            <Edit2 size={15} />
-                          </button>
-                          <button
-                            onClick={(e) => handleOpenDelete(item.id, e)}
-                            style={{ padding: '6px', borderRadius: '6px', border: '1px solid var(--border-subtle)', background: '#ffffff', color: '#dc2626', cursor: 'pointer' }}
-                          >
-                            <Trash2 size={15} />
-                          </button>
-                        </div>
+                {paginatedList.map((item, idx) => {
+                  const absoluteIdx = (currentPage - 1) * pageSize + idx + 1;
+                  return (
+                    <tr
+                      key={item.id}
+                      onClick={() => setSelectedDetail(item)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <td style={{ color: 'var(--text-light)', fontWeight: 600 }}>{absoluteIdx}</td>
+                      <td>
+                        <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--usu-green-dark)' }}>
+                          {item.nim}
+                        </span>
                       </td>
-                    )}
-                  </tr>
-                ))}
+                      <td>
+                        <strong style={{ color: 'var(--text-main)' }}>{item.nama}</strong>
+                      </td>
+                      <td>{item.prodi}</td>
+                      <td>
+                        <div style={{ fontWeight: 600, color: 'var(--usu-green-dark)' }}>{item.namaKompetisi}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>{item.penyelenggara}</div>
+                      </td>
+                      <td>
+                        <span style={{ fontWeight: 700, color: '#b45309' }}>{item.capaian}</span>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <span
+                          className="badge"
+                          style={{
+                            fontSize: '0.75rem',
+                            backgroundColor:
+                              item.tingkat === 'Internasional' ? '#e0f2fe' :
+                              item.tingkat === 'Nasional' ? '#fef3c7' : '#ecfdf5',
+                            color:
+                              item.tingkat === 'Internasional' ? '#0369a1' :
+                              item.tingkat === 'Nasional' ? '#b45309' : '#059669',
+                          }}
+                        >
+                          {item.tingkat}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: 'center', fontWeight: 700 }}>
+                        {item.tahun}
+                      </td>
+                      {session && (
+                        <td style={{ textAlign: 'right' }}>
+                          <div style={{ display: 'inline-flex', gap: '0.35rem' }}>
+                            <button
+                              onClick={(e) => handleOpenEdit(item, e)}
+                              style={{ padding: '5px', borderRadius: '4px', border: '1px solid var(--border-subtle)', background: '#ffffff', color: '#0284c7', cursor: 'pointer' }}
+                              title="Edit"
+                            >
+                              <Edit2 size={14} />
+                            </button>
+                            <button
+                              onClick={(e) => handleOpenDelete(item.id, e)}
+                              style={{ padding: '5px', borderRadius: '4px', border: '1px solid var(--border-subtle)', background: '#ffffff', color: '#dc2626', cursor: 'pointer' }}
+                              title="Hapus"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border-subtle)' }}>
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+              Menampilkan prestasi ke-<strong>{(currentPage - 1) * pageSize + 1}</strong> sampai <strong>{Math.min(currentPage * pageSize, filteredList.length)}</strong> dari total <strong>{filteredList.length}</strong> capaian
+            </div>
+
+            <div style={{ display: 'inline-flex', gap: '0.4rem', alignItems: 'center' }}>
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="btn btn-outline btn-sm"
+                style={{ padding: '0.4rem 0.75rem', opacity: currentPage === 1 ? 0.5 : 1 }}
+              >
+                <ChevronLeft size={16} />
+                <span>Sebelumnya</span>
+              </button>
+
+              <span style={{ fontSize: '0.85rem', fontWeight: 600, padding: '0 0.5rem', color: 'var(--usu-green-dark)' }}>
+                Halaman {currentPage} dari {totalPages}
+              </span>
+
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="btn btn-outline btn-sm"
+                style={{ padding: '0.4rem 0.75rem', opacity: currentPage === totalPages ? 0.5 : 1 }}
+              >
+                <span>Selanjutnya</span>
+                <ChevronRight size={16} />
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -501,72 +618,65 @@ export default function PrestasiPage() {
       {/* Detail Modal */}
       {selectedDetail && (
         <div className="modal-backdrop" onClick={() => setSelectedDetail(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '620px' }}>
-            <div style={{ position: 'relative', height: '220px', width: '100%', overflow: 'hidden', borderTopLeftRadius: 'var(--radius-xl)', borderTopRightRadius: 'var(--radius-xl)' }}>
-              <img
-                src={selectedDetail.fotoUrl}
-                alt={selectedDetail.nama}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%)' }} />
-              <button
-                onClick={() => setSelectedDetail(null)}
-                style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(0,0,0,0.6)', color: '#ffffff', border: 'none', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                aria-label="Tutup Dialog"
-              >
-                <X size={18} />
-              </button>
-              <div style={{ position: 'absolute', bottom: '16px', left: '20px', right: '20px', color: '#ffffff' }}>
-                <span className="badge badge-gold" style={{ marginBottom: '0.35rem' }}>{selectedDetail.capaian}</span>
-                <h2 style={{ fontSize: '1.4rem', color: '#ffffff' }}>{selectedDetail.nama}</h2>
-                <div style={{ fontSize: '0.85rem', color: '#cbd5e1' }}>{selectedDetail.nim} • {selectedDetail.prodi}</div>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+            <div className="modal-header">
+              <div>
+                <h3 style={{ fontSize: '1.25rem', color: 'var(--usu-green-dark)' }}>Detail Mahasiswa Berprestasi</h3>
+                <span style={{ fontSize: '0.775rem', color: 'var(--text-light)' }}>ID: {selectedDetail.id}</span>
               </div>
+              <button onClick={() => setSelectedDetail(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-light)', padding: '4px' }}>
+                <X size={20} />
+              </button>
             </div>
 
-            <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.9rem' }}>
-              <div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>Nama Kejuaraan / Kompetisi</div>
-                <div style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--usu-green-dark)' }}>
-                  {selectedDetail.namaKompetisi}
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>Tingkat & Kategori</div>
-                  <div style={{ fontWeight: 600 }}>{selectedDetail.tingkat} • {selectedDetail.kategori}</div>
-                </div>
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>Tahun Pelaksanaan</div>
-                  <div style={{ fontWeight: 600 }}>Tahun {selectedDetail.tahun}</div>
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>Penyelenggara</div>
-                  <div>{selectedDetail.penyelenggara}</div>
-                </div>
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-light)' }}>Dosen Pembimbing</div>
-                  <div style={{ fontWeight: 600 }}>{selectedDetail.dosenPembimbing}</div>
+            <div className="modal-body" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', fontSize: '0.9rem' }}>
+              <div style={{ gridColumn: 'span 2', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginBottom: '0.2rem' }}>Nama Kompetisi / Kejuaraan</div>
+                <div style={{ fontWeight: 800, fontSize: '1.15rem', color: 'var(--usu-green-dark)', lineHeight: 1.35 }}>{selectedDetail.namaKompetisi}</div>
+                <div style={{ display: 'inline-block', marginTop: '0.5rem', backgroundColor: '#fef3c7', color: '#b45309', fontWeight: 800, padding: '0.25rem 0.75rem', borderRadius: '6px' }}>
+                  🏆 {selectedDetail.capaian}
                 </div>
               </div>
 
               <div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginBottom: '0.25rem' }}>Deskripsi Inovasi / Karya</div>
-                <div style={{ backgroundColor: '#f8fafc', padding: '0.85rem 1rem', borderRadius: '8px', border: '1px solid var(--border-subtle)', lineHeight: 1.6, color: 'var(--text-main)' }}>
-                  {selectedDetail.deskripsi}
-                </div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginBottom: '0.2rem' }}>Nama Mahasiswa</div>
+                <div style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-main)' }}>{selectedDetail.nama}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginBottom: '0.2rem' }}>NIM</div>
+                <div style={{ fontWeight: 700, fontFamily: 'monospace', fontSize: '1rem', color: 'var(--usu-green-dark)' }}>{selectedDetail.nim}</div>
+              </div>
+
+              <div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginBottom: '0.2rem' }}>Program Studi</div>
+                <div style={{ fontWeight: 600 }}>{selectedDetail.prodi}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginBottom: '0.2rem' }}>Tingkat & Tahun</div>
+                <div style={{ fontWeight: 700, color: 'var(--usu-green)' }}>{selectedDetail.tingkat} • {selectedDetail.tahun}</div>
+              </div>
+
+              <div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginBottom: '0.2rem' }}>Penyelenggara</div>
+                <div style={{ fontWeight: 600 }}>{selectedDetail.penyelenggara || '-'}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginBottom: '0.2rem' }}>Dosen Pembimbing</div>
+                <div style={{ fontWeight: 600 }}>{selectedDetail.dosenPembimbing || '-'}</div>
               </div>
             </div>
 
             <div className="modal-footer">
-              <button className="btn btn-outline" onClick={() => setSelectedDetail(null)}>
+              <button
+                type="button"
+                className="btn btn-outline"
+                onClick={() => setSelectedDetail(null)}
+              >
                 Tutup
               </button>
               {session && (
                 <button
+                  type="button"
                   className="btn btn-primary"
                   onClick={() => {
                     const toEdit = selectedDetail;
@@ -575,7 +685,7 @@ export default function PrestasiPage() {
                   }}
                 >
                   <Edit2 size={16} />
-                  <span>Edit Prestasi</span>
+                  <span>Edit Data Ini</span>
                 </button>
               )}
             </div>
@@ -597,7 +707,7 @@ export default function PrestasiPage() {
       <ConfirmModal
         isOpen={deleteConfirmOpen}
         title="Hapus Data Prestasi"
-        message="Apakah Anda yakin ingin menghapus data torehan mahasiswa berprestasi ini dari database?"
+        message="Apakah Anda yakin ingin menghapus data prestasi mahasiswa ini dari database Upstash Redis?"
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeleteConfirmOpen(false)}
         isLoading={isSubmitting}

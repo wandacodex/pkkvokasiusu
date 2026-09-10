@@ -706,4 +706,42 @@ a {
   box-shadow: 0 14px 30px -6px rgba(0, 54, 32, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
 }
 
+/* =========================================================
+   RESPONSIVE NAVBAR SYSTEM (CLEAN & BALANCED)
+   ========================================================= */
+.nav-desktop-container {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.nav-mobile-toggle-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-subtle);
+  background: #ffffff;
+  color: var(--usu-green);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-mobile-toggle-btn:hover {
+  background: var(--usu-green-soft);
+  border-color: var(--usu-green);
+}
+
+@media (max-width: 1080px) {
+  .nav-desktop-container {
+    display: none !important;
+  }
+  .nav-mobile-toggle-btn {
+    display: flex !important;
+  }
+}
+
+
 

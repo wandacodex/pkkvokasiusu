@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/src/lib/auth';
-import { getCollection, addItem, updateItem, deleteItem, setCollection, KEYS } from '@/src/lib/redis';
+import { getCollection, addItem, addItems, updateItem, deleteItem, setCollection, KEYS } from '@/src/lib/redis';
 import { INITIAL_PRESTASI } from '@/src/lib/mockData';
 
 async function ensurePrestasiData() {
@@ -13,29 +13,27 @@ async function ensurePrestasiData() {
   return data;
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request) {
   try {
     const list = await ensurePrestasiData();
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('q')?.toLowerCase();
     const tingkat = searchParams.get('tingkat');
-    const kategori = searchParams.get('kategori');
-    const tahun = searchParams.get('tahun');
     const prodi = searchParams.get('prodi');
+    const tahun = searchParams.get('tahun');
 
     let result = [...list];
 
     if (tingkat && tingkat !== 'Semua') {
       result = result.filter(item => item.tingkat === tingkat);
     }
-    if (kategori && kategori !== 'Semua') {
-      result = result.filter(item => item.kategori === kategori);
+    if (prodi && prodi !== 'Semua') {
+      result = result.filter(item => item.prodi === prodi);
     }
     if (tahun && tahun !== 'Semua') {
       result = result.filter(item => String(item.tahun) === String(tahun));
-    }
-    if (prodi && prodi !== 'Semua') {
-      result = result.filter(item => item.prodi === prodi);
     }
 
     if (search) {
@@ -44,13 +42,12 @@ export async function GET(request) {
         item.nim?.toLowerCase().includes(search) ||
         item.namaKompetisi?.toLowerCase().includes(search) ||
         item.capaian?.toLowerCase().includes(search) ||
-        item.penyelenggara?.toLowerCase().includes(search) ||
         item.prodi?.toLowerCase().includes(search)
       );
     }
 
-    // Stats
-    const totalPrestasi = list.length;
+    // Prestasi Stats
+    const totalPrestasi = result.length;
     const countInternasional = list.filter(p => p.tingkat === 'Internasional').length;
     const countNasional = list.filter(p => p.tingkat === 'Nasional').length;
     const countWilayah = list.filter(p => p.tingkat === 'Wilayah/Provinsi' || p.tingkat === 'Regional').length;
@@ -79,6 +76,40 @@ export async function POST(request) {
     }
 
     const body = await request.json();
+
+    // Support bulk insertion for Excel import
+    const items = Array.isArray(body) ? body : body.items;
+    if (Array.isArray(items)) {
+      const validItems = items
+        .filter(item => item.nama && item.nim && item.namaKompetisi && item.capaian)
+        .map(item => ({
+          id: `MAPRES-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          nim: String(item.nim).trim(),
+          nama: String(item.nama).trim(),
+          prodi: item.prodi || 'D3 Teknik Informatika',
+          namaKompetisi: String(item.namaKompetisi).trim(),
+          capaian: String(item.capaian).trim(),
+          tingkat: item.tingkat || 'Nasional',
+          kategori: item.kategori || 'Sains & Teknologi Terapan',
+          tahun: Number(item.tahun) || new Date().getFullYear(),
+          penyelenggara: item.penyelenggara || 'Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi',
+          dosenPembimbing: item.dosenPembimbing || 'Dosen Pembimbing Vokasi USU',
+          fotoUrl: item.fotoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80',
+          deskripsi: item.deskripsi || 'Prestasi membanggakan mahasiswa Fakultas Vokasi Universitas Sumatera Utara.'
+        }));
+
+      if (validItems.length === 0) {
+        return NextResponse.json({ success: false, error: 'Tidak ada data prestasi valid yang dapat diimpor' }, { status: 400 });
+      }
+
+      const savedList = await addItems(KEYS.PRESTASI, validItems);
+      return NextResponse.json({
+        success: true,
+        count: savedList.length,
+        message: `Berhasil mengimpor ${savedList.length} data prestasi mahasiswa ke Upstash Redis`
+      });
+    }
+
     if (!body.nama || !body.nim || !body.namaKompetisi || !body.capaian) {
       return NextResponse.json(
         { success: false, error: 'Nama, NIM, Kompetisi, dan Capaian wajib diisi' },

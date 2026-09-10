@@ -21,11 +21,14 @@ import {
 } from 'lucide-react';
 import { TEMPLATE_SURAT } from '@/src/lib/mockData';
 import Toast from '@/src/components/Toast';
+import SuratGeneratorModal from '@/src/components/SuratGeneratorModal';
 
 export default function SuratPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Semua');
   const [activeModalTemplate, setActiveModalTemplate] = useState(null);
+  const [generatorModalOpen, setGeneratorModalOpen] = useState(false);
+  const [selectedGeneratorTemplateId, setSelectedGeneratorTemplateId] = useState(null);
   const [toast, setToast] = useState({ message: '', type: 'success' });
 
   const categories = [
@@ -145,6 +148,21 @@ export default function SuratPage() {
             >
               Unduh berkas template format Microsoft Word (<code>.docx</code>) yang telah disesuaikan dengan ketentuan tata kelola administrasi Fakultas Vokasi Universitas Sumatera Utara. Pastikan kelengkapan berkas persyaratan sebelum diajukan.
             </p>
+
+            <div style={{ marginTop: '1.5rem', display: 'flex', gap: '0.85rem', flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedGeneratorTemplateId(null);
+                  setGeneratorModalOpen(true);
+                }}
+                className="btn btn-gold"
+                style={{ padding: '0.75rem 1.4rem', fontSize: '0.92rem', boxShadow: '0 4px 15px rgba(245, 158, 11, 0.4)' }}
+              >
+                <Sparkles size={17} />
+                <span>Buka Generator Surat Instan (Isi & Unduh Word .docx)</span>
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -359,32 +377,49 @@ export default function SuratPage() {
               {/* Action Buttons */}
               <div
                 style={{
-                  padding: '0.9rem 1.5rem 1.25rem',
+                  padding: '1rem 1.25rem 1.25rem',
                   borderTop: '1px solid var(--border-subtle)',
                   backgroundColor: '#ffffff',
                   display: 'flex',
-                  gap: '0.75rem',
+                  flexDirection: 'column',
+                  gap: '0.5rem',
                 }}
               >
                 <button
                   type="button"
-                  onClick={() => setActiveModalTemplate(template)}
-                  className="btn btn-outline btn-sm"
-                  style={{ flex: 1, padding: '0.6rem 0.8rem', fontSize: '0.825rem' }}
+                  onClick={() => {
+                    setSelectedGeneratorTemplateId(template.id);
+                    setGeneratorModalOpen(true);
+                  }}
+                  className="btn btn-primary btn-sm"
+                  style={{ width: '100%', padding: '0.65rem 0.8rem', fontSize: '0.84rem' }}
                 >
-                  <FileCheck size={14} />
-                  <span>Persyaratan</span>
+                  <Sparkles size={14} />
+                  <span>Isi & Generate Surat Ini</span>
                 </button>
 
-                <button
-                  type="button"
-                  onClick={() => handleDownload(template)}
-                  className="btn btn-gold btn-sm"
-                  style={{ flex: 1.25, padding: '0.6rem 0.95rem', fontSize: '0.825rem' }}
-                >
-                  <Download size={14} />
-                  <span>Unduh .DOCX</span>
-                </button>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <button
+                    type="button"
+                    onClick={() => setActiveModalTemplate(template)}
+                    className="btn btn-outline btn-sm"
+                    style={{ flex: 1, padding: '0.5rem 0.6rem', fontSize: '0.78rem' }}
+                  >
+                    <FileCheck size={13} />
+                    <span>Syarat</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleDownload(template)}
+                    className="btn btn-outline btn-sm"
+                    style={{ flex: 1.25, padding: '0.5rem 0.6rem', fontSize: '0.78rem' }}
+                    title="Unduh template blanko mentah (.docx)"
+                  >
+                    <Download size={13} />
+                    <span>Unduh Blanko</span>
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -494,6 +529,13 @@ export default function SuratPage() {
           </div>
         </div>
       )}
+
+      {/* Interactive Surat Generator Modal */}
+      <SuratGeneratorModal
+        isOpen={generatorModalOpen}
+        initialTemplateId={selectedGeneratorTemplateId}
+        onClose={() => setGeneratorModalOpen(false)}
+      />
     </div>
   );
 }

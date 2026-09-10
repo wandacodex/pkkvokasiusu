@@ -4,15 +4,14 @@ import Link from 'next/link';
 import {
   MapPin,
   Mail,
-  Phone,
   ExternalLink,
-  ShieldCheck,
   GraduationCap,
   FileText,
   Award,
   Briefcase,
   BookOpen,
-  Sparkles
+  Sparkles,
+  ShieldCheck
 } from 'lucide-react';
 
 export default function Footer() {
@@ -68,6 +67,10 @@ export default function Footer() {
               <Briefcase size={14} />
               <span>Rekapitulasi Tracer Study</span>
             </Link>
+            <Link href="/security" className="btn btn-outline-white btn-sm">
+              <ShieldCheck size={14} />
+              <span>Security Check</span>
+            </Link>
           </div>
         </div>
       </div>
@@ -115,16 +118,12 @@ export default function Footer() {
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.65rem' }}>
                 <MapPin size={17} style={{ color: 'var(--usu-gold)', flexShrink: 0, marginTop: '2px' }} />
                 <span style={{ lineHeight: 1.5 }}>
-                  Gedung Pelayanan Mahasiswa Fakultas Vokasi, Jl. Dr. T. Mansur No. 9 Kampus USU, Medan, 20155, Sumatera Utara.
+                  Jalan Bioteknologi No.2, Kampus USU Medan, 20155
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
                 <Mail size={16} style={{ color: 'var(--usu-gold)', flexShrink: 0 }} />
-                <span>pkk.vokasi@usu.ac.id</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                <Phone size={16} style={{ color: 'var(--usu-gold)', flexShrink: 0 }} />
-                <span>(061) 8211633 / +62 812-6000-8654</span>
+                <span>vokasi@usu.ac.id</span>
               </div>
             </div>
           </div>
@@ -160,19 +159,9 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
-
-            <div style={{ marginTop: '2rem', padding: '1rem', borderRadius: '12px', backgroundColor: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-              <div style={{ fontSize: '0.8rem', color: '#fef08a', fontWeight: 700, marginBottom: '0.25rem' }}>
-                Jam Operasional Layanan PKK
-              </div>
-              <div style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.75)', lineHeight: 1.5 }}>
-                Senin – Jumat: 08.00 – 16.00 WIB<br />
-                Loket Pelayanan Mahasiswa Lt. 1 Gedung Vokasi
-              </div>
-            </div>
           </div>
 
-          {/* Kolom 3: Ekosistem & Akreditasi USU */}
+          {/* Kolom 3: Ekosistem USU */}
           <div>
             <h4 style={{ color: 'var(--usu-gold)', fontSize: '0.95rem', fontWeight: 800, marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               Portal Ekosistem USU
@@ -203,32 +192,6 @@ export default function Footer() {
                 </a>
               </li>
             </ul>
-
-            <div
-              style={{
-                marginTop: '1.75rem',
-                padding: '1rem',
-                borderRadius: '12px',
-                backgroundColor: 'rgba(255, 255, 255, 0.06)',
-                border: '1px solid rgba(245, 158, 11, 0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-              }}
-            >
-              <ShieldCheck size={32} style={{ color: 'var(--usu-gold)', flexShrink: 0 }} />
-              <div>
-                <div style={{ fontSize: '0.72rem', color: '#cbd5e1', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  Standar Penjaminan Mutu
-                </div>
-                <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#ffffff' }}>
-                  Terakreditasi UNGGUL
-                </div>
-                <div style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.65)' }}>
-                  BAN-PT & LAM-PT Nasional
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -320,14 +283,31 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom Copyright Strip */}
-      <div style={{ backgroundColor: '#002213', padding: '1.25rem 0', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontSize: '0.825rem', color: 'rgba(255, 255, 255, 0.6)' }}>
+      {/* Bottom Copyright Strip by Wanda Codex */}
+      <div style={{ backgroundColor: '#001a0e', padding: '1.35rem 0', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontSize: '0.825rem', color: 'rgba(255, 255, 255, 0.7)' }}>
         <div className="container" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
           <div>
-            © {new Date().getFullYear()} Pendidikan, Kemahasiswaan, dan Kealumnian (PKK) Fakultas Vokasi Universitas Sumatera Utara. All Rights Reserved.
+            © {new Date().getFullYear()} PKK Fakultas Vokasi Universitas Sumatera Utara. All Rights Reserved.
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'rgba(255, 255, 255, 0.7)' }}>
-            <span>Portal Resmi Layanan Kemahasiswaan & Kealumnian Vokasi USU</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+            <span>Portal Resmi Vokasi USU • Crafted & Engineered by</span>
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                color: '#fef08a',
+                border: '1px solid rgba(245, 158, 11, 0.4)',
+                padding: '0.2rem 0.65rem',
+                borderRadius: '6px',
+                fontWeight: 800,
+                letterSpacing: '0.04em',
+              }}
+            >
+              <Sparkles size={12} style={{ color: 'var(--usu-gold)' }} />
+              <span>Wanda Codex</span>
+            </span>
           </div>
         </div>
       </div>

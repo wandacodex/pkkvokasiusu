@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/src/lib/auth';
-import { getCollection, addItem, updateItem, deleteItem, setCollection, KEYS } from '@/src/lib/redis';
+import { getCollection, addItem, addItems, updateItem, deleteItem, setCollection, KEYS } from '@/src/lib/redis';
 import { INITIAL_BEASISWA } from '@/src/lib/mockData';
 
 async function ensureBeasiswaData() {
@@ -12,6 +12,8 @@ async function ensureBeasiswaData() {
   }
   return data;
 }
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request) {
   try {
@@ -69,6 +71,31 @@ export async function POST(request) {
     }
 
     const body = await request.json();
+
+    // Support bulk insertion for Excel import
+    const items = Array.isArray(body) ? body : body.items;
+    if (Array.isArray(items)) {
+      const validItems = items
+        .filter(item => item.namaMahasiswa && item.nim && item.jenisBeasiswa)
+        .map(item => ({
+          nim: String(item.nim).trim(),
+          namaMahasiswa: String(item.namaMahasiswa).trim(),
+          prodi: item.prodi || 'D3 Teknik Informatika',
+          jenisBeasiswa: item.jenisBeasiswa || 'Beasiswa KIP Kuliah',
+        }));
+
+      if (validItems.length === 0) {
+        return NextResponse.json({ success: false, error: 'Tidak ada data beasiswa valid yang dapat diimpor' }, { status: 400 });
+      }
+
+      const savedList = await addItems(KEYS.BEASISWA, validItems);
+      return NextResponse.json({
+        success: true,
+        count: savedList.length,
+        message: `Berhasil mengimpor ${savedList.length} data beasiswa ke Upstash Redis`
+      });
+    }
+
     if (!body.namaMahasiswa || !body.nim || !body.jenisBeasiswa) {
       return NextResponse.json(
         { success: false, error: 'Nama Mahasiswa, NIM, dan Jenis Beasiswa wajib diisi' },

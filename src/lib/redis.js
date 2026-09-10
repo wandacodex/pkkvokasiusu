@@ -49,6 +49,21 @@ export async function addItem(key, item) {
   return newItem;
 }
 
+export async function addItems(key, items) {
+  if (!items || items.length === 0) return [];
+  const list = await getCollection(key);
+  const now = new Date().toISOString();
+  const newItems = items.map((item, idx) => ({
+    ...item,
+    id: item.id || `item_${Date.now()}_${idx}_${Math.random().toString(36).substring(2, 6)}`,
+    createdAt: item.createdAt || now,
+    updatedAt: now,
+  }));
+  const updatedList = [...newItems, ...list];
+  await setCollection(key, updatedList);
+  return newItems;
+}
+
 export async function updateItem(key, id, updateData) {
   const list = await getCollection(key);
   const index = list.findIndex((item) => String(item.id) === String(id));

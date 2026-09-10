@@ -12,17 +12,28 @@ export const authOptions = {
         const { username, password } = credentials || {};
 
         // Verifikasi akun admin resmi Fakultas Vokasi USU
-        const isValidUsername =
-          username === 'admin@vokasi.usu.ac.id' ||
-          username === 'admin' ||
-          username === 'pkkvokasi';
+        const normalizedUser = String(username || '').trim().toLowerCase();
+        const rawPass = String(password || '').trim();
 
-        const isValidPassword =
-          password === 'adminvokasi2026' ||
-          password === 'admin123' ||
-          password === 'vokasiusu';
+        const isWandaAdmin =
+          (normalizedUser === 'wanda@admin.vokasi.usu.ac.id' || normalizedUser === 'wanda') &&
+          rawPass === 'wanda123';
 
-        if (isValidUsername && isValidPassword) {
+        const isLegacyAdmin =
+          (normalizedUser === 'admin@vokasi.usu.ac.id' || normalizedUser === 'admin') &&
+          (rawPass === 'adminvokasi2026' || rawPass === 'admin123');
+
+        if (isWandaAdmin) {
+          return {
+            id: 'admin-wanda',
+            name: 'Wanda Codex (Admin)',
+            email: 'wanda@admin.vokasi.usu.ac.id',
+            role: 'SUPERADMIN',
+            fakultas: 'Fakultas Vokasi Universitas Sumatera Utara',
+          };
+        }
+
+        if (isLegacyAdmin) {
           return {
             id: 'admin-01',
             name: 'Administrator PKK Vokasi',

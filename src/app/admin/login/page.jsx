@@ -7,26 +7,27 @@ import Link from 'next/link';
 import {
   ShieldCheck,
   Lock,
-  User,
+  Mail,
   Eye,
   EyeOff,
   LogIn,
   AlertCircle,
   ArrowLeft,
-  Sparkles,
-  KeyRound
+  KeyRound,
+  CheckCircle2
 } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [username, setUsername] = useState('admin@vokasi.usu.ac.id');
-  const [password, setPassword] = useState('adminvokasi2026');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Jika sudah login, langsung alihkan ke /kelola
+  // Jika sudah terautentikasi, langsung arahkan ke /kelola
   useEffect(() => {
     if (status === 'authenticated') {
       router.push('/kelola');
@@ -46,79 +47,115 @@ export default function AdminLoginPage() {
       });
 
       if (res?.error) {
-        setErrorMsg('Username atau password yang Anda masukkan salah. Silakan periksa kembali kredensial Anda.');
+        setErrorMsg('Email/Username atau kata sandi tidak cocok. Silakan periksa kembali akun admin Anda.');
       } else {
-        // Berhasil login, arahkan ke panel kelola CRUD
         router.push('/kelola');
         router.refresh();
       }
     } catch (err) {
       console.error(err);
-      setErrorMsg('Terjadi gangguan koneksi pada server otentikasi.');
+      setErrorMsg('Terjadi kendala koneksi ke server otentikasi. Silakan coba sesaat lagi.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div style={{ minHeight: '85vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '3rem 1.25rem', backgroundColor: '#f1f5f9' }}>
-      <div style={{ maxWidth: '460px', width: '100%' }}>
+    <div
+      style={{
+        minHeight: '88vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '3rem 1.25rem',
+        background: 'radial-gradient(circle at 50% 15%, rgba(0, 90, 54, 0.08) 0%, rgba(248, 250, 252, 1) 70%)',
+      }}
+    >
+      <div style={{ maxWidth: '440px', width: '100%' }}>
         {/* Back Link */}
         <Link
           href="/"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '0.4rem',
+            gap: '0.45rem',
             fontSize: '0.85rem',
-            fontWeight: 600,
+            fontWeight: 700,
             color: 'var(--usu-green)',
             marginBottom: '1.25rem',
+            textDecoration: 'none',
+            transition: 'all 0.2s ease',
           }}
         >
           <ArrowLeft size={16} />
-          <span>Kembali ke Beranda</span>
+          <span>Kembali ke Beranda Utama</span>
         </Link>
 
-        {/* Login Card */}
+        {/* Clean Login Card */}
         <div
           style={{
             backgroundColor: '#ffffff',
             borderRadius: '24px',
-            padding: '2.5rem 2rem',
-            boxShadow: '0 20px 35px -10px rgba(0, 90, 54, 0.15)',
-            border: '1px solid var(--border-subtle)',
+            padding: '2.5rem 2.25rem',
+            boxShadow: '0 20px 45px -12px rgba(0, 54, 32, 0.12)',
+            border: '1.5px solid rgba(0, 90, 54, 0.12)',
           }}
         >
           {/* Brand Header */}
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <div
               style={{
-                width: '74px',
-                height: '74px',
-                borderRadius: '20px',
+                width: '68px',
+                height: '68px',
+                borderRadius: '18px',
                 background: '#ffffff',
-                border: '2px solid rgba(0, 90, 54, 0.18)',
+                border: '2px solid rgba(245, 158, 11, 0.4)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                margin: '0 auto 1.25rem',
-                boxShadow: '0 8px 24px rgba(0, 90, 54, 0.15)',
+                margin: '0 auto 1rem',
+                boxShadow: '0 6px 20px rgba(0, 54, 32, 0.1)',
                 padding: '6px',
               }}
             >
               <img
                 src="/assets/mainlogo.webp"
-                alt="Logo Resmi USU"
-                style={{ height: '56px', width: 'auto', objectFit: 'contain' }}
+                alt="Logo USU"
+                style={{ height: '48px', width: 'auto', objectFit: 'contain' }}
               />
             </div>
 
-            <h1 style={{ fontSize: '1.6rem', color: 'var(--usu-green-dark)', marginTop: '0.2rem', marginBottom: '0.35rem', fontWeight: 800 }}>
-              Portal Pengelola Data
+            <span
+              style={{
+                display: 'inline-block',
+                fontSize: '0.75rem',
+                fontWeight: 800,
+                color: 'var(--usu-green)',
+                backgroundColor: 'var(--usu-green-soft)',
+                padding: '0.2rem 0.65rem',
+                borderRadius: '999px',
+                border: '1px solid rgba(0, 90, 54, 0.2)',
+                marginBottom: '0.4rem',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+              }}
+            >
+              Portal Administrator
+            </span>
+
+            <h1
+              style={{
+                fontSize: '1.65rem',
+                color: 'var(--usu-green-dark)',
+                fontWeight: 800,
+                fontFamily: 'Outfit, sans-serif',
+                margin: '0 0 0.35rem',
+              }}
+            >
+              Masuk Akun Pengelola
             </h1>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
-              Akses khusus staf dan pengelola kemahasiswaan Fakultas Vokasi USU.
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
+              Pendidikan, Kemahasiswaan, dan Kealumnian (PKK) • Fakultas Vokasi USU
             </p>
           </div>
 
@@ -128,14 +165,15 @@ export default function AdminLoginPage() {
               style={{
                 backgroundColor: '#fef2f2',
                 border: '1px solid #fecaca',
-                borderRadius: '10px',
+                borderRadius: '12px',
                 padding: '0.85rem 1rem',
                 marginBottom: '1.5rem',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.65rem',
                 color: '#991b1b',
-                fontSize: '0.85rem',
+                fontSize: '0.825rem',
+                lineHeight: 1.45,
               }}
             >
               <AlertCircle size={18} style={{ flexShrink: 0 }} />
@@ -143,26 +181,54 @@ export default function AdminLoginPage() {
             </div>
           )}
 
-          {/* Form */}
+          {/* Clean Login Form */}
           <form onSubmit={handleLogin}>
-            <div className="input-group">
-              <label className="input-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <User size={15} style={{ color: 'var(--usu-green)' }} />
-                <span>Username atau Email Admin</span>
+            <div className="input-group" style={{ marginBottom: '1.25rem' }}>
+              <label
+                className="input-label"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  color: '#334155',
+                  marginBottom: '0.45rem',
+                }}
+              >
+                <Mail size={15} style={{ color: 'var(--usu-green)' }} />
+                <span>Email atau Username Admin</span>
               </label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                placeholder="admin@vokasi.usu.ac.id"
+                autoComplete="username"
+                placeholder="nama@admin.vokasi.usu.ac.id"
                 className="input-text"
-                style={{ padding: '0.8rem 1rem' }}
+                style={{
+                  padding: '0.8rem 1rem',
+                  fontSize: '0.9rem',
+                  borderRadius: '10px',
+                  border: '1.5px solid var(--border-subtle)',
+                }}
               />
             </div>
 
-            <div className="input-group">
-              <label className="input-label" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <div className="input-group" style={{ marginBottom: '1.25rem' }}>
+              <label
+                className="input-label"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  color: '#334155',
+                  marginBottom: '0.45rem',
+                }}
+              >
                 <Lock size={15} style={{ color: 'var(--usu-green)' }} />
                 <span>Kata Sandi (Password)</span>
               </label>
@@ -172,9 +238,15 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  placeholder="••••••••••••"
+                  autoComplete="current-password"
+                  placeholder="Masukkan kata sandi..."
                   className="input-text"
-                  style={{ padding: '0.8rem 2.8rem 0.8rem 1rem' }}
+                  style={{
+                    padding: '0.8rem 2.8rem 0.8rem 1rem',
+                    fontSize: '0.9rem',
+                    borderRadius: '10px',
+                    border: '1.5px solid var(--border-subtle)',
+                  }}
                 />
                 <button
                   type="button"
@@ -190,48 +262,76 @@ export default function AdminLoginPage() {
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
+                    padding: '4px',
                   }}
-                  aria-label="Toggle password visibility"
+                  aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
 
+            {/* Remember Me & Help Option */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', fontSize: '0.825rem' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', cursor: 'pointer', color: 'var(--text-muted)' }}>
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  style={{ accentColor: 'var(--usu-green)', width: '15px', height: '15px' }}
+                />
+                <span>Ingat saya di perangkat ini</span>
+              </label>
+
+              <Link
+                href="/security"
+                style={{ color: 'var(--usu-green)', fontWeight: 600, textDecoration: 'none', fontSize: '0.8rem' }}
+                title="Pemeriksaan Keamanan"
+              >
+                Security Check
+              </Link>
+            </div>
+
             <button
               type="submit"
               className="btn btn-primary"
               disabled={isLoading}
-              style={{ width: '100%', padding: '0.85rem', fontSize: '1rem', marginTop: '0.5rem' }}
+              style={{
+                width: '100%',
+                padding: '0.85rem',
+                fontSize: '0.95rem',
+                fontWeight: 700,
+                borderRadius: '12px',
+                boxShadow: '0 6px 18px rgba(0, 90, 54, 0.25)',
+              }}
             >
-              {isLoading ? 'Memverifikasi Sesi...' : (
+              {isLoading ? (
+                <span>Memverifikasi Akun...</span>
+              ) : (
                 <>
                   <LogIn size={18} />
-                  <span>Masuk ke Panel CRUD</span>
+                  <span>Masuk ke Panel Kelola</span>
                 </>
               )}
             </button>
           </form>
 
-          {/* Demo Info Box */}
+          {/* Trust & Security Verification Footnote */}
           <div
             style={{
               marginTop: '1.75rem',
-              padding: '1rem',
-              borderRadius: '12px',
-              backgroundColor: 'var(--usu-green-soft)',
-              border: '1px solid rgba(0, 90, 54, 0.2)',
-              fontSize: '0.8rem',
+              paddingTop: '1.25rem',
+              borderTop: '1px solid #f1f5f9',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.45rem',
+              fontSize: '0.78rem',
+              color: 'var(--text-light)',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 700, color: 'var(--usu-green-dark)', marginBottom: '0.35rem' }}>
-              <KeyRound size={15} />
-              <span>Kredensial Akses Pengelola:</span>
-            </div>
-            <div style={{ color: 'var(--text-main)', lineHeight: 1.6 }}>
-              <div>• <strong>Username:</strong> <code>admin@vokasi.usu.ac.id</code> atau <code>admin</code></div>
-              <div>• <strong>Password:</strong> <code>adminvokasi2026</code></div>
-            </div>
+            <ShieldCheck size={14} style={{ color: '#059669' }} />
+            <span>Koneksi Terenkripsi TLS 1.3 • Dilindungi Kebijakan Keamanan USU</span>
           </div>
         </div>
       </div>
