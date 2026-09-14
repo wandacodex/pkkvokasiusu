@@ -22,7 +22,9 @@ import {
   Calendar,
   ChevronLeft,
   ChevronRight,
-  X
+  X,
+  Trophy,
+  Medal
 } from 'lucide-react';
 import { PRODI_LIST } from '@/src/lib/mockData';
 import ModalForm from '@/src/components/ModalForm';
@@ -215,19 +217,28 @@ export default function PrestasiPage() {
       {/* Header Banner */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #003620 0%, #005A36 65%, #002213 100%)',
+          background: 'linear-gradient(135deg, #034825 0%, #067f42 65%, #022b16 100%)',
           color: '#ffffff',
-          padding: '3.5rem 0 4rem',
+          padding: '3.75rem 0 4.25rem',
           borderBottom: '4px solid var(--usu-gold)',
           position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        <div className="container">
+        {/* Static Official Corner Watermark */}
+        <div style={{ position: 'absolute', right: '-40px', bottom: '-40px', width: '280px', height: '280px', opacity: 0.08, pointerEvents: 'none' }}>
+          <img src="/ornament/circular-tra.svg" alt="" style={{ width: '100%', height: '100%' }} />
+        </div>
+
+        <div className="container" style={{ position: 'relative', zIndex: 10 }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1.5rem' }}>
             <div style={{ maxWidth: '780px' }}>
-              <span className="badge badge-gold" style={{ marginBottom: '0.75rem' }}>
-                Hall of Fame & Prestasi Mahasiswa
-              </span>
+              <div className="title-fill title-fill--dark" style={{ marginBottom: '0.75rem' }}>
+                <div className="title-fill__icon">
+                  <img src="/ornament/flower-sec2.svg" alt="" />
+                </div>
+                <span className="title-fill__text" style={{ color: '#fef08a' }}>Hall of Fame & Prestasi Mahasiswa</span>
+              </div>
               <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.6rem)', color: '#ffffff', fontWeight: 800, fontFamily: 'Outfit, sans-serif', marginBottom: '0.75rem' }}>
                 Data Mahasiswa Berprestasi Fakultas Vokasi USU
               </h1>
@@ -390,7 +401,7 @@ export default function PrestasiPage() {
         {/* Content Views */}
         {loading ? (
           <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--usu-green)', fontWeight: 600 }}>
-            Memuat data mahasiswa berprestasi dari Upstash Redis...
+            Memuat data mahasiswa berprestasi...
           </div>
         ) : filteredList.length === 0 ? (
           <div className="card" style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
@@ -447,8 +458,9 @@ export default function PrestasiPage() {
                     {item.namaKompetisi}
                   </h3>
 
-                  <div style={{ display: 'inline-block', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', padding: '0.35rem 0.75rem', borderRadius: '8px', color: 'var(--usu-green)', fontWeight: 800, fontSize: '0.9rem', marginBottom: '1rem' }}>
-                    🏆 {item.capaian}
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', backgroundColor: '#ecfdf5', border: '1px solid #a7f3d0', padding: '0.35rem 0.75rem', borderRadius: '8px', color: 'var(--usu-green)', fontWeight: 800, fontSize: '0.875rem', marginBottom: '1rem' }}>
+                    <Trophy size={15} style={{ color: 'var(--usu-green)', flexShrink: 0 }} />
+                    <span>{item.capaian}</span>
                   </div>
 
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-main)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.3rem' }}>
@@ -633,8 +645,9 @@ export default function PrestasiPage() {
               <div style={{ gridColumn: 'span 2', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.75rem' }}>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginBottom: '0.2rem' }}>Nama Kompetisi / Kejuaraan</div>
                 <div style={{ fontWeight: 800, fontSize: '1.15rem', color: 'var(--usu-green-dark)', lineHeight: 1.35 }}>{selectedDetail.namaKompetisi}</div>
-                <div style={{ display: 'inline-block', marginTop: '0.5rem', backgroundColor: '#fef3c7', color: '#b45309', fontWeight: 800, padding: '0.25rem 0.75rem', borderRadius: '6px' }}>
-                  🏆 {selectedDetail.capaian}
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', marginTop: '0.5rem', backgroundColor: '#fef3c7', color: '#b45309', fontWeight: 800, padding: '0.3rem 0.75rem', borderRadius: '6px', border: '1px solid rgba(245, 158, 11, 0.4)' }}>
+                  <Trophy size={16} style={{ color: '#b45309', flexShrink: 0 }} />
+                  <span>{selectedDetail.capaian}</span>
                 </div>
               </div>
 
@@ -707,7 +720,7 @@ export default function PrestasiPage() {
       <ConfirmModal
         isOpen={deleteConfirmOpen}
         title="Hapus Data Prestasi"
-        message="Apakah Anda yakin ingin menghapus data prestasi mahasiswa ini dari database Upstash Redis?"
+        message="Apakah Anda yakin ingin menghapus data prestasi mahasiswa ini dari sistem basis data?"
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeleteConfirmOpen(false)}
         isLoading={isSubmitting}

@@ -42,8 +42,8 @@ export default function Navbar() {
           background: 'rgba(255, 255, 255, 0.98)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1.5px solid rgba(0, 90, 54, 0.1)',
-          boxShadow: '0 4px 20px rgba(0, 54, 32, 0.04)',
+          borderBottom: '1.5px solid rgba(6, 127, 66, 0.12)',
+          boxShadow: '0 4px 20px rgba(6, 127, 66, 0.04)',
         }}
       >
         <div
@@ -139,7 +139,7 @@ export default function Navbar() {
                     fontWeight: isActive ? 700 : 600,
                     color: isActive ? 'var(--usu-green)' : '#334155',
                     backgroundColor: isActive ? 'var(--usu-green-soft)' : 'transparent',
-                    border: isActive ? '1px solid rgba(0, 90, 54, 0.18)' : '1px solid transparent',
+                    border: isActive ? '1px solid rgba(6, 127, 66, 0.22)' : '1px solid transparent',
                     transition: 'all 0.18s ease',
                     textDecoration: 'none',
                     whiteSpace: 'nowrap',
@@ -153,34 +153,10 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Right Action Bar */}
+          {/* Right Action Bar (Sleek, Clean, No Security Check or Admin Login Buttons) */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', flexShrink: 0 }}>
-            {/* Security Check Badge Button */}
-            <Link
-              href="/security"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.35rem',
-                padding: '0.4rem 0.75rem',
-                borderRadius: '999px',
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                color: pathname === '/security' ? '#065f46' : '#047857',
-                backgroundColor: pathname === '/security' ? '#d1fae5' : '#ecfdf5',
-                border: '1px solid #a7f3d0',
-                textDecoration: 'none',
-                transition: 'all 0.2s ease',
-                whiteSpace: 'nowrap',
-              }}
-              title="Audit & Status Keamanan Sistem (Grade A+)"
-            >
-              <ShieldCheck size={13} style={{ color: '#059669' }} />
-              <span>Security A+</span>
-            </Link>
-
-            {/* Admin Session Controls */}
-            {session ? (
+            {/* If authenticated session exists, show sleek user management */}
+            {session && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
                 <Link
                   href="/kelola"
@@ -192,16 +168,16 @@ export default function Navbar() {
                     borderRadius: '8px',
                     fontSize: '0.78rem',
                     fontWeight: 700,
-                    color: '#6b21a8',
-                    backgroundColor: pathname === '/kelola' ? '#f3e8ff' : '#faf5ff',
-                    border: '1px solid rgba(147, 51, 234, 0.25)',
+                    color: 'var(--usu-green-dark)',
+                    backgroundColor: 'var(--usu-green-soft)',
+                    border: '1px solid rgba(6, 127, 66, 0.25)',
                     textDecoration: 'none',
                     whiteSpace: 'nowrap',
                   }}
-                  title="Panel Kelola Data (CRUD)"
+                  title="Panel Pengelolaan Data"
                 >
                   <Database size={13} />
-                  <span>Kelola Data</span>
+                  <span>Panel Data</span>
                 </Link>
 
                 <div
@@ -246,29 +222,6 @@ export default function Navbar() {
                   <LogOut size={14} />
                 </button>
               </div>
-            ) : (
-              <Link
-                href="/admin/login"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                  padding: '0.4rem 0.75rem',
-                  borderRadius: '8px',
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  color: 'var(--usu-green)',
-                  backgroundColor: '#ffffff',
-                  border: '1px solid rgba(0, 90, 54, 0.2)',
-                  textDecoration: 'none',
-                  transition: 'all 0.2s ease',
-                  whiteSpace: 'nowrap',
-                }}
-                title="Masuk ke Portal Admin"
-              >
-                <Lock size={12} />
-                <span>Admin</span>
-              </Link>
             )}
 
             {/* Mobile Hamburger Toggle Button */}
@@ -314,7 +267,7 @@ export default function Navbar() {
                     fontWeight: isActive ? 700 : 600,
                     color: isActive ? 'var(--usu-green)' : '#334155',
                     backgroundColor: isActive ? 'var(--usu-green-soft)' : '#f8fafc',
-                    border: isActive ? '1px solid rgba(0, 90, 54, 0.2)' : '1px solid transparent',
+                    border: isActive ? '1px solid rgba(6, 127, 66, 0.22)' : '1px solid transparent',
                     textDecoration: 'none',
                     transition: 'all 0.15s ease',
                   }}
@@ -328,32 +281,7 @@ export default function Navbar() {
               );
             })}
 
-            <Link
-              href="/security"
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '0.75rem 1rem',
-                borderRadius: '10px',
-                fontSize: '0.9rem',
-                fontWeight: 700,
-                color: '#065f46',
-                backgroundColor: '#ecfdf5',
-                border: '1px solid #a7f3d0',
-                textDecoration: 'none',
-                marginTop: '0.25rem',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <ShieldCheck size={16} style={{ color: '#059669' }} />
-                <span>Security Check (Audit Keamanan A+)</span>
-              </div>
-              <ChevronRight size={15} style={{ color: '#059669' }} />
-            </Link>
-
-            {session ? (
+            {session && (
               <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--border-subtle)' }}>
                 <Link
                   href="/kelola"
@@ -366,15 +294,15 @@ export default function Navbar() {
                     borderRadius: '10px',
                     fontSize: '0.9rem',
                     fontWeight: 700,
-                    color: '#7e22ce',
-                    backgroundColor: '#faf5ff',
-                    border: '1px solid #e9d5ff',
+                    color: 'var(--usu-green-dark)',
+                    backgroundColor: 'var(--usu-green-soft)',
+                    border: '1px solid rgba(6, 127, 66, 0.25)',
                     textDecoration: 'none',
                     marginBottom: '0.5rem',
                   }}
                 >
                   <Database size={16} />
-                  <span>Panel Kelola Data (CRUD)</span>
+                  <span>Panel Pengelolaan Data</span>
                 </Link>
                 <button
                   type="button"
@@ -401,30 +329,6 @@ export default function Navbar() {
                   <LogOut size={15} />
                   <span>Keluar dari Akun Admin</span>
                 </button>
-              </div>
-            ) : (
-              <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--border-subtle)' }}>
-                <Link
-                  href="/admin/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.5rem',
-                    padding: '0.75rem 1rem',
-                    borderRadius: '10px',
-                    fontSize: '0.9rem',
-                    fontWeight: 700,
-                    color: 'var(--usu-green)',
-                    backgroundColor: '#f8fafc',
-                    border: '1px solid var(--border-subtle)',
-                    textDecoration: 'none',
-                  }}
-                >
-                  <Lock size={15} />
-                  <span>Masuk ke Portal Admin</span>
-                </Link>
               </div>
             )}
           </div>

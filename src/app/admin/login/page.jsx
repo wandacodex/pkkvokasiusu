@@ -68,10 +68,17 @@ export default function AdminLoginPage() {
         alignItems: 'center',
         justifyContent: 'center',
         padding: '3rem 1.25rem',
-        background: 'radial-gradient(circle at 50% 15%, rgba(0, 90, 54, 0.08) 0%, rgba(248, 250, 252, 1) 70%)',
+        background: 'radial-gradient(circle at 50% 15%, rgba(6, 127, 66, 0.08) 0%, rgba(248, 250, 252, 1) 70%)',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <div style={{ maxWidth: '440px', width: '100%' }}>
+      {/* Static Background Watermark */}
+      <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '300px', height: '300px', opacity: 0.05, pointerEvents: 'none' }}>
+        <img src="/ornament/circular-tra.svg" alt="" style={{ width: '100%', height: '100%' }} />
+      </div>
+
+      <div style={{ maxWidth: '440px', width: '100%', position: 'relative', zIndex: 10 }}>
         {/* Back Link */}
         <Link
           href="/"
@@ -97,8 +104,8 @@ export default function AdminLoginPage() {
             backgroundColor: '#ffffff',
             borderRadius: '24px',
             padding: '2.5rem 2.25rem',
-            boxShadow: '0 20px 45px -12px rgba(0, 54, 32, 0.12)',
-            border: '1.5px solid rgba(0, 90, 54, 0.12)',
+            boxShadow: '0 20px 45px -12px rgba(6, 127, 66, 0.1)',
+            border: '1.5px solid rgba(6, 127, 66, 0.16)',
           }}
         >
           {/* Brand Header */}
@@ -114,7 +121,7 @@ export default function AdminLoginPage() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto 1rem',
-                boxShadow: '0 6px 20px rgba(0, 54, 32, 0.1)',
+                boxShadow: '0 6px 20px rgba(6, 127, 66, 0.1)',
                 padding: '6px',
               }}
             >
@@ -125,23 +132,12 @@ export default function AdminLoginPage() {
               />
             </div>
 
-            <span
-              style={{
-                display: 'inline-block',
-                fontSize: '0.75rem',
-                fontWeight: 800,
-                color: 'var(--usu-green)',
-                backgroundColor: 'var(--usu-green-soft)',
-                padding: '0.2rem 0.65rem',
-                borderRadius: '999px',
-                border: '1px solid rgba(0, 90, 54, 0.2)',
-                marginBottom: '0.4rem',
-                letterSpacing: '0.04em',
-                textTransform: 'uppercase',
-              }}
-            >
-              Portal Administrator
-            </span>
+            <div className="title-fill" style={{ marginBottom: '0.4rem' }}>
+              <div className="title-fill__icon">
+                <img src="/ornament/flower-ora.svg" alt="" />
+              </div>
+              <span className="title-fill__text">Portal Administrator</span>
+            </div>
 
             <h1
               style={{

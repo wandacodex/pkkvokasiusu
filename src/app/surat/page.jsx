@@ -21,7 +21,11 @@ import {
 } from 'lucide-react';
 import { TEMPLATE_SURAT } from '@/src/lib/mockData';
 import Toast from '@/src/components/Toast';
-import SuratGeneratorModal from '@/src/components/SuratGeneratorModal';
+import dynamic from 'next/dynamic';
+
+const SuratGeneratorModal = dynamic(() => import('@/src/components/SuratGeneratorModal'), {
+  ssr: false,
+});
 
 export default function SuratPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -79,10 +83,10 @@ export default function SuratPage() {
     <div style={{ paddingBottom: '6rem' }}>
       <Toast message={toast.message} type={toast.type} onClose={() => setToast({ message: '', type: 'success' })} />
 
-      {/* Header Banner: Bersih, Elegan, Tanpa Kata-Kata Berlebihan */}
+      {/* Header Banner */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #003620 0%, #005A36 65%, #002b18 100%)',
+          background: 'linear-gradient(135deg, #034825 0%, #067f42 65%, #022b16 100%)',
           color: '#ffffff',
           padding: '4rem 0 4.5rem',
           borderBottom: '3px solid var(--usu-gold)',
@@ -103,25 +107,20 @@ export default function SuratPage() {
           }}
         />
 
+        {/* Static Official Corner Watermark */}
+        <div style={{ position: 'absolute', right: '-40px', bottom: '-40px', width: '280px', height: '280px', opacity: 0.08, pointerEvents: 'none' }}>
+          <img src="/ornament/circular-tra.svg" alt="" style={{ width: '100%', height: '100%' }} />
+        </div>
+
         <div className="container" style={{ position: 'relative', zIndex: 10 }}>
           <div style={{ maxWidth: '820px' }}>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.45rem',
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                padding: '0.35rem 0.85rem',
-                borderRadius: '9999px',
-                marginBottom: '1rem',
-                color: '#fef08a',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-              }}
-            >
-              <FileText size={15} style={{ color: 'var(--usu-gold)' }} />
-              <span>Layanan Administrasi Mahasiswa • Fakultas Vokasi USU</span>
+            <div className="title-fill title-fill--dark" style={{ marginBottom: '1rem' }}>
+              <div className="title-fill__icon">
+                <img src="/ornament/flower-ora.svg" alt="" />
+              </div>
+              <span className="title-fill__text" style={{ color: '#fef08a' }}>
+                Layanan Administrasi Mahasiswa • Fakultas Vokasi USU
+              </span>
             </div>
 
             <h1
@@ -258,7 +257,7 @@ export default function SuratPage() {
               }}
             >
               {/* Top Accent Strip */}
-              <div style={{ height: '4px', background: 'linear-gradient(90deg, #005A36 0%, #10b981 100%)' }} />
+              <div style={{ height: '4px', background: 'linear-gradient(90deg, #067f42 0%, #08a355 100%)' }} />
 
               <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
                 {/* Header: Icon Word, Kode & Kategori */}
@@ -288,7 +287,7 @@ export default function SuratPage() {
                           display: 'inline-block',
                           fontSize: '0.7rem',
                           fontWeight: 700,
-                          color: '#005A36',
+                          color: 'var(--usu-green)',
                           backgroundColor: 'var(--usu-green-soft)',
                           padding: '0.12rem 0.5rem',
                           borderRadius: '4px',
@@ -361,7 +360,7 @@ export default function SuratPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                     {template.syarat.slice(0, 2).map((s, idx) => (
                       <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.45rem', fontSize: '0.785rem', color: '#475569' }}>
-                        <CheckCircle2 size={13} style={{ color: '#005A36', flexShrink: 0, marginTop: '2px' }} />
+                        <CheckCircle2 size={13} style={{ color: 'var(--usu-green)', flexShrink: 0, marginTop: '2px' }} />
                         <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s}</span>
                       </div>
                     ))}
@@ -496,7 +495,7 @@ export default function SuratPage() {
                         border: '1px solid var(--border-subtle)',
                       }}
                     >
-                      <CheckCircle2 size={15} style={{ color: '#005A36', flexShrink: 0, marginTop: '2px' }} />
+                      <CheckCircle2 size={15} style={{ color: 'var(--usu-green)', flexShrink: 0, marginTop: '2px' }} />
                       <span style={{ fontSize: '0.84rem', color: 'var(--text-main)', lineHeight: 1.5 }}>
                         {req}
                       </span>

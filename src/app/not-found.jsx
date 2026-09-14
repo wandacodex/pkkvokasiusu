@@ -95,7 +95,11 @@ export default function NotFound() {
         overflow: 'hidden',
       }}
     >
-      {/* Floating Animated Background Particles */}
+      {/* Static Background Watermark */}
+      <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '300px', height: '300px', opacity: 0.05, pointerEvents: 'none' }}>
+        <img src="/ornament/circular-tra.svg" alt="" style={{ width: '100%', height: '100%' }} />
+      </div>
+
       <motion.div
         animate={{
           y: [-15, 15, -15],
@@ -181,10 +185,10 @@ export default function NotFound() {
               fontWeight: 900,
               lineHeight: 0.9,
               letterSpacing: '-0.04em',
-              background: 'linear-gradient(135deg, #003620 0%, #005A36 40%, #D97706 80%, #F59E0B 100%)',
+              background: 'linear-gradient(135deg, #034825 0%, #067f42 40%, #D97706 80%, #F59E0B 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              textShadow: '0 10px 30px rgba(0, 54, 32, 0.12)',
+              textShadow: '0 10px 30px rgba(6, 127, 66, 0.12)',
               userSelect: 'none',
             }}
           >
@@ -209,7 +213,7 @@ export default function NotFound() {
               backgroundColor: '#ffffff',
               padding: '12px',
               borderRadius: '16px',
-              boxShadow: '0 10px 25px rgba(0, 54, 32, 0.15)',
+              boxShadow: '0 10px 25px rgba(6, 127, 66, 0.15)',
               border: '2px solid var(--usu-gold)',
               color: 'var(--usu-green)',
             }}

@@ -208,19 +208,28 @@ export default function BeasiswaPage() {
       {/* Header Banner */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #003620 0%, #005A36 65%, #002213 100%)',
+          background: 'linear-gradient(135deg, #034825 0%, #067f42 65%, #022b16 100%)',
           color: '#ffffff',
-          padding: '3.5rem 0 4rem',
+          padding: '3.75rem 0 4.25rem',
           borderBottom: '4px solid var(--usu-gold)',
           position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        <div className="container">
+        {/* Static Official Corner Watermark */}
+        <div style={{ position: 'absolute', right: '-40px', bottom: '-40px', width: '280px', height: '280px', opacity: 0.08, pointerEvents: 'none' }}>
+          <img src="/ornament/circular-tra.svg" alt="" style={{ width: '100%', height: '100%' }} />
+        </div>
+
+        <div className="container" style={{ position: 'relative', zIndex: 10 }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1.5rem' }}>
             <div style={{ maxWidth: '750px' }}>
-              <span className="badge badge-gold" style={{ marginBottom: '0.75rem' }}>
-                Kesejahteraan & Finansial Mahasiswa
-              </span>
+              <div className="title-fill title-fill--dark" style={{ marginBottom: '0.75rem' }}>
+                <div className="title-fill__icon">
+                  <img src="/ornament/flower-ora.svg" alt="" />
+                </div>
+                <span className="title-fill__text" style={{ color: '#fef08a' }}>Kesejahteraan & Finansial Mahasiswa</span>
+              </div>
               <h1 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.6rem)', color: '#ffffff', fontWeight: 800, fontFamily: 'Outfit, sans-serif', marginBottom: '0.75rem' }}>
                 Data Penerima Beasiswa Fakultas Vokasi USU
               </h1>
@@ -379,7 +388,7 @@ export default function BeasiswaPage() {
               {loading ? (
                 <tr>
                   <td colSpan={session ? 8 : 7} style={{ textAlign: 'center', padding: '3rem' }}>
-                    <div style={{ color: 'var(--usu-green)', fontWeight: 600 }}>Memuat data dari Upstash Redis...</div>
+                    <div style={{ color: 'var(--usu-green)', fontWeight: 600 }}>Memuat data direktori beasiswa...</div>
                   </td>
                 </tr>
               ) : filteredList.length === 0 ? (
@@ -601,7 +610,7 @@ export default function BeasiswaPage() {
       <ConfirmModal
         isOpen={deleteConfirmOpen}
         title="Hapus Data Beasiswa"
-        message="Apakah Anda yakin ingin menghapus data penerima beasiswa ini dari database Upstash Redis?"
+        message="Apakah Anda yakin ingin menghapus data penerima beasiswa ini dari sistem basis data?"
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeleteConfirmOpen(false)}
         isLoading={isSubmitting}

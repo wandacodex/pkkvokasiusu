@@ -43,10 +43,15 @@ export default function Footer() {
   ];
 
   return (
-    <footer style={{ backgroundColor: 'var(--usu-green-deep)', color: '#ffffff', borderTop: '3px solid var(--usu-gold)' }}>
+    <footer style={{ backgroundColor: 'var(--usu-green-deep)', color: '#ffffff', borderTop: '3px solid var(--usu-gold)', position: 'relative', overflow: 'hidden' }}>
       {/* Top Banner Quick Bar */}
-      <div style={{ backgroundColor: 'var(--usu-green-dark)', padding: '1.75rem 0', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
-        <div className="container" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1.25rem' }}>
+      <div style={{ backgroundColor: 'var(--usu-green-dark)', padding: '1.75rem 0', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', position: 'relative', overflow: 'hidden' }}>
+        {/* Subtle Static Watermark */}
+        <div style={{ position: 'absolute', right: '-20px', top: '-25px', pointerEvents: 'none', opacity: 0.08, zIndex: 1 }}>
+          <img src="/ornament/flower-ora.svg" alt="" style={{ width: '120px', height: '120px' }} />
+        </div>
+
+        <div className="container" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1.25rem', position: 'relative', zIndex: 10 }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
               <Sparkles size={16} style={{ color: 'var(--usu-gold)' }} />
@@ -63,21 +68,25 @@ export default function Footer() {
               <FileText size={14} />
               <span>Surat Permohonan Mahasiswa</span>
             </Link>
+            <Link href="/beasiswa" className="btn btn-outline-white btn-sm">
+              <GraduationCap size={14} />
+              <span>Data Penerima Beasiswa</span>
+            </Link>
             <Link href="/tracer-study" className="btn btn-outline-white btn-sm">
               <Briefcase size={14} />
               <span>Rekapitulasi Tracer Study</span>
-            </Link>
-            <Link href="/security" className="btn btn-outline-white btn-sm">
-              <ShieldCheck size={14} />
-              <span>Security Check</span>
             </Link>
           </div>
         </div>
       </div>
 
       {/* Main Footer Content: 3 Primary Balanced Columns */}
-      <div className="container" style={{ padding: '3.5rem 1.25rem 2.5rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem', alignItems: 'start' }}>
+      <div className="container" style={{ padding: '3.5rem 1.25rem 2.5rem', position: 'relative' }}>
+        {/* Subtle Static Watermark in background of footer */}
+        <div style={{ position: 'absolute', right: '-20px', bottom: '20px', pointerEvents: 'none', opacity: 0.04, zIndex: 1 }}>
+          <img src="/ornament/circular-tra.svg" alt="" style={{ width: '260px', height: '260px' }} />
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2.5rem', alignItems: 'start', position: 'relative', zIndex: 2 }}>
           
           {/* Kolom 1: Profil & Informasi Kontak */}
           <div>
@@ -284,7 +293,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom Copyright Strip by Wanda Codex */}
-      <div style={{ backgroundColor: '#001a0e', padding: '1.35rem 0', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontSize: '0.825rem', color: 'rgba(255, 255, 255, 0.7)' }}>
+      <div style={{ backgroundColor: '#022212', padding: '1.35rem 0', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontSize: '0.825rem', color: 'rgba(255, 255, 255, 0.7)' }}>
         <div className="container" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
           <div>
             © {new Date().getFullYear()} PKK Fakultas Vokasi Universitas Sumatera Utara. All Rights Reserved.

@@ -32,8 +32,11 @@ import { PRODI_LIST } from '@/src/lib/mockData';
 import ModalForm from '@/src/components/ModalForm';
 import ConfirmModal from '@/src/components/ConfirmModal';
 import Toast from '@/src/components/Toast';
+import dynamic from 'next/dynamic';
 import ExcelImportModal from '@/src/components/ExcelImportModal';
-import SuratGeneratorModal from '@/src/components/SuratGeneratorModal';
+const SuratGeneratorModal = dynamic(() => import('@/src/components/SuratGeneratorModal'), {
+  ssr: false,
+});
 import { downloadSampleTemplate, exportDataToExcel } from '@/src/lib/excelHelper';
 
 export default function KelolaDataPage() {
@@ -92,7 +95,7 @@ export default function KelolaDataPage() {
       if (resTrc.success) setTracerList(resTrc.data || []);
     } catch (err) {
       console.error(err);
-      setToast({ message: 'Gagal memuat data dari Upstash Redis', type: 'error' });
+      setToast({ message: 'Gagal memuat data sistem', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -184,17 +187,17 @@ export default function KelolaDataPage() {
       const data = await res.json();
       if (data.success) {
         setToast({
-          message: 'Database Upstash Redis berhasil di-reset & diisi ulang dengan data autentik Vokasi USU!',
+          message: 'Sistem basis data berhasil disinkronkan dengan data resmi Vokasi USU!',
           type: 'success',
         });
         setResetConfirmOpen(false);
         fetchAllData();
       } else {
-        setToast({ message: data.error || 'Gagal mereset database', type: 'error' });
+        setToast({ message: data.error || 'Gagal menyinkronkan data', type: 'error' });
       }
     } catch (err) {
       console.error(err);
-      setToast({ message: 'Gagal terhubung ke Upstash Redis', type: 'error' });
+      setToast({ message: 'Gagal terhubung ke sistem basis data', type: 'error' });
     } finally {
       setIsSubmitting(false);
     }
@@ -251,7 +254,7 @@ export default function KelolaDataPage() {
             Otentikasi Pengelola Diperlukan
           </h2>
           <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '1.75rem' }}>
-            Halaman Panel Kelola Data (CRUD) hanya dapat diakses oleh operator dan pimpinan resmi Fakultas Vokasi USU.
+            Halaman Panel Manajemen Data hanya dapat diakses oleh operator dan pimpinan resmi Fakultas Vokasi USU.
             Silakan masuk terlebih dahulu melalui halaman login admin.
           </p>
 
@@ -347,46 +350,33 @@ export default function KelolaDataPage() {
       <Toast message={toast.message} type={toast.type} onClose={() => setToast({ message: '', type: 'success' })} />
 
       {/* Header Banner */}
-      <section style={{ backgroundColor: 'var(--usu-green-dark)', color: '#ffffff', padding: '3rem 0', borderBottom: '4px solid var(--usu-gold)' }}>
-        <div className="container">
+      <section style={{ background: 'linear-gradient(135deg, #034825 0%, #067f42 65%, #022b16 100%)', color: '#ffffff', padding: '3.5rem 0 3.75rem', borderBottom: '4px solid var(--usu-gold)', position: 'relative', overflow: 'hidden' }}>
+        {/* Static Official Corner Watermark */}
+        <div style={{ position: 'absolute', right: '-40px', bottom: '-40px', width: '280px', height: '280px', opacity: 0.08, pointerEvents: 'none' }}>
+          <img src="/ornament/circular-tra.svg" alt="" style={{ width: '100%', height: '100%' }} />
+        </div>
+
+        <div className="container" style={{ position: 'relative', zIndex: 10 }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1.5rem' }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.5rem' }}>
-                <span className="badge badge-gold">Operator Console</span>
-                <span style={{ fontSize: '0.75rem', backgroundColor: 'rgba(255,255,255,0.15)', color: '#ffffff', padding: '0.2rem 0.6rem', borderRadius: '4px' }}>
-                  Upstash Redis Live
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.6rem', flexWrap: 'wrap' }}>
+                <div className="title-fill title-fill--gold" style={{ marginBottom: 0 }}>
+                  <div className="title-fill__icon">
+                    <img src="/ornament/flower-ora.svg" alt="" />
+                  </div>
+                  <span className="title-fill__text">Konsol Pengelola Terpadu</span>
+                </div>
+                <span style={{ fontSize: '0.78rem', backgroundColor: 'rgba(255,255,255,0.15)', color: '#ffffff', padding: '0.25rem 0.75rem', borderRadius: '6px', display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                  <UserCheck size={13} style={{ color: '#86efac' }} />
+                  <span>{session?.user?.name || 'Administrator Vokasi'}</span>
                 </span>
-                <span style={{ fontSize: '0.75rem', backgroundColor: 'rgba(74, 222, 128, 0.2)', color: '#86efac', padding: '0.2rem 0.6rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <UserCheck size={12} />
-                  <span>{session?.user?.name || 'Administrator'}</span>
-                </span>
-                <Link
-                  href="/security"
-                  style={{
-                    fontSize: '0.75rem',
-                    backgroundColor: 'rgba(16, 185, 129, 0.25)',
-                    color: '#6ee7b7',
-                    border: '1px solid rgba(16, 185, 129, 0.4)',
-                    padding: '0.2rem 0.6rem',
-                    borderRadius: '4px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    textDecoration: 'none',
-                    fontWeight: 700,
-                  }}
-                  title="Lihat Audit & Security Check Sistem"
-                >
-                  <ShieldCheck size={12} />
-                  <span>Security Check (A+)</span>
-                </Link>
               </div>
 
-              <h1 style={{ fontSize: '2.4rem', color: '#ffffff', marginBottom: '0.5rem' }}>
-                Pusat Kelola Data Terpadu (CRUD)
+              <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.35rem)', color: '#ffffff', fontWeight: 800, marginBottom: '0.45rem', letterSpacing: '-0.02em' }}>
+                Panel Manajemen Data Kemahasiswaan
               </h1>
-              <p style={{ fontSize: '1rem', color: 'rgba(255, 255, 255, 0.85)' }}>
-                Manajemen data penerima beasiswa, rekapitulasi mahasiswa berprestasi, dan bank data tracer study alumni.
+              <p style={{ fontSize: '0.95rem', color: 'rgba(255, 255, 255, 0.88)', maxWidth: '680px', lineHeight: 1.6 }}>
+                Sistem pengelolaan data penerima beasiswa, rekapitulasi prestasi mahasiswa, dan bank data penelusuran lulusan (tracer study) Fakultas Vokasi USU.
               </p>
             </div>
 
@@ -403,10 +393,10 @@ export default function KelolaDataPage() {
               <button
                 onClick={() => setResetConfirmOpen(true)}
                 className="btn btn-outline-white btn-sm"
-                title="Reset dan isi ulang data bawaan"
+                title="Sinkronkan ulang basis data ke dataset bawaan"
               >
                 <RotateCcw size={15} />
-                <span>Reset & Seed Data</span>
+                <span>Sinkronisasi Data</span>
               </button>
 
               <button
@@ -739,7 +729,7 @@ export default function KelolaDataPage() {
         {/* Loading Indicator */}
         {loading ? (
           <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--usu-green)', fontWeight: 600 }}>
-            Memuat dan menyinkronkan data dengan database Upstash Redis...
+            Memuat dan menyinkronkan data dengan sistem basis data...
           </div>
         ) : (
           <div>
@@ -1015,7 +1005,7 @@ export default function KelolaDataPage() {
       <ConfirmModal
         isOpen={deleteConfirmOpen}
         title="Hapus Data"
-        message="Apakah Anda yakin ingin menghapus data ini dari database Upstash Redis? Tindakan ini tidak dapat dibatalkan."
+        message="Apakah Anda yakin ingin menghapus data ini dari sistem basis data? Tindakan ini tidak dapat dibatalkan."
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeleteConfirmOpen(false)}
         isLoading={isSubmitting}
@@ -1024,9 +1014,9 @@ export default function KelolaDataPage() {
       {/* Reset & Reseed Database Confirmation */}
       <ConfirmModal
         isOpen={resetConfirmOpen}
-        title="Reset & Seed Data Upstash Redis"
-        message="Tindakan ini akan mengembalikan data ke dataset autentik Fakultas Vokasi USU (contoh beasiswa, prestasi mapres, dan tracer study). Lanjutkan?"
-        confirmText="Reset Database Sekarang"
+        title="Sinkronisasi Ulang Basis Data"
+        message="Tindakan ini akan menyinkronkan ulang data dengan dataset resmi Fakultas Vokasi USU (penerima beasiswa, capaian prestasi, dan tracer study). Lanjutkan?"
+        confirmText="Sinkronkan Data Sekarang"
         onConfirm={handleResetDatabase}
         onCancel={() => setResetConfirmOpen(false)}
         isLoading={isSubmitting}

@@ -114,7 +114,7 @@ export default function SecurityCheckPage() {
       detail: 'Proteksi batas frekuensi permintaan dan isolasi rute login admin mencegah serangan credential stuffing dan distributed abuse.',
       badge: 'Active Shield',
       icon: Server,
-      color: '#005a36',
+      color: '#067f42',
     },
   ];
 
@@ -156,7 +156,7 @@ export default function SecurityCheckPage() {
       {/* Header Banner */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #002213 0%, #003620 50%, #005A36 100%)',
+          background: 'linear-gradient(135deg, #022b16 0%, #034825 50%, #067f42 100%)',
           color: '#ffffff',
           padding: '4rem 0 4.5rem',
           borderBottom: '3px solid var(--usu-gold)',

@@ -106,10 +106,10 @@ export default function TracerStudyPage() {
     {
       id: 'totalRespons',
       label: 'Total Responden (Akumulasi)',
-      color: '#003620',
+      color: '#067f42',
       strokeWidth: 2.5,
-      dotColor: '#003620',
-      bgColor: '#e6f4ea',
+      dotColor: '#067f42',
+      bgColor: '#e6f7ee',
       isDashed: true,
       icon: Users,
     },
@@ -282,7 +282,7 @@ export default function TracerStudyPage() {
       {/* Header Banner */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #003620 0%, #005A36 65%, #002213 100%)',
+          background: 'linear-gradient(135deg, #034825 0%, #067f42 65%, #022b16 100%)',
           color: '#ffffff',
           padding: '4rem 0 4.5rem',
           borderBottom: '3px solid var(--usu-gold)',
@@ -290,25 +290,20 @@ export default function TracerStudyPage() {
           overflow: 'hidden',
         }}
       >
+        {/* Static Official Corner Watermark */}
+        <div style={{ position: 'absolute', right: '-40px', bottom: '-40px', width: '280px', height: '280px', opacity: 0.08, pointerEvents: 'none' }}>
+          <img src="/ornament/circular-tra.svg" alt="" style={{ width: '100%', height: '100%' }} />
+        </div>
+
         <div className="container" style={{ position: 'relative', zIndex: 10 }}>
           <div style={{ maxWidth: '880px' }}>
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.45rem',
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                padding: '0.35rem 0.85rem',
-                borderRadius: '9999px',
-                marginBottom: '1rem',
-                color: '#fef08a',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-              }}
-            >
-              <LineChartIcon size={15} style={{ color: 'var(--usu-gold)' }} />
-              <span>Rekapitulasi Resmi Berkas Excel • Fakultas Vokasi Universitas Sumatera Utara</span>
+            <div className="title-fill title-fill--dark" style={{ marginBottom: '1rem' }}>
+              <div className="title-fill__icon">
+                <img src="/ornament/flower-ora.svg" alt="" />
+              </div>
+              <span className="title-fill__text" style={{ color: '#fef08a' }}>
+                Rekapitulasi Tracer Study • Lulusan 2025
+              </span>
             </div>
 
             <h1
@@ -349,6 +344,8 @@ export default function TracerStudyPage() {
             justifyContent: 'space-between',
             gap: '1.5rem',
             background: 'linear-gradient(135deg, #ffffff 0%, #fffdf5 100%)',
+            position: 'relative',
+            overflow: 'hidden',
           }}
         >
           <div style={{ maxWidth: '680px' }}>
