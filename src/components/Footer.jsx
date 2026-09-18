@@ -167,6 +167,12 @@ export default function Footer() {
                   <span>Rekapitulasi Tracer Study</span>
                 </Link>
               </li>
+              <li>
+                <Link href="/akreditasi" style={{ color: 'rgba(255, 255, 255, 0.82)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'color 0.2s' }} className="footer-link">
+                  <ShieldCheck size={15} style={{ color: 'var(--usu-gold)', flexShrink: 0 }} />
+                  <span>Sertifikat Akreditasi 21 Prodi</span>
+                </Link>
+              </li>
             </ul>
           </div>
 

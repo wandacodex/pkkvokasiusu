@@ -355,6 +355,238 @@ export const TEMPLATES_CONFIG = [
       namaBeasiswa: 'Beasiswa Bank Indonesia (GenBI) Tahun 2026',
       tanggalSurat: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
     }
+  },
+  {
+    id: 'surat-keterangan-lulus',
+    title: 'Permohonan Surat Keterangan Lulus (SKL)',
+    filename: 'Permohonan Surat Keterangan Lulus.docx',
+    category: 'Kelulusan & Alumni',
+    fileUrl: '/assets/templatesurat/Permohonan Surat Keterangan Lulus.docx',
+    description: 'Surat permohonan penerbitan SKL dari Dekan Fakultas Vokasi USU bagi lulusan yudisium.',
+    fields: [
+      { name: 'nama', label: 'Nama Lengkap Mahasiswa', type: 'text', placeholder: 'Contoh: Wanda Annisa Lubis', required: true },
+      { name: 'nim', label: 'NIM Mahasiswa', type: 'text', placeholder: 'Contoh: 220501001', required: true },
+      { name: 'prodi', label: 'Program Studi', type: 'select', options: PRODI_OPTIONS, defaultValue: 'D3 Teknik Informatika', required: true },
+      { name: 'ttl', label: 'Tempat, Tanggal Lahir', type: 'text', placeholder: 'Contoh: Medan, 10 Januari 2004' },
+      { name: 'alamat', label: 'Alamat Tempat Tinggal', type: 'text', placeholder: 'Contoh: Jl. Dr. Mansur No. 45 Medan' },
+      { name: 'tanggalLulus', label: 'Hari / Tanggal Lulus Sidang', type: 'text', placeholder: 'Contoh: Senin, 15 Juli 2026' },
+      { name: 'judulTA', label: 'Judul Tugas Akhir', type: 'textarea', placeholder: 'Contoh: Rancang Bangun Sistem Informasi...' },
+      { name: 'ipk', label: 'Indeks Prestasi Kumulatif (IPK)', type: 'text', placeholder: 'Contoh: 3.85', defaultValue: '3.85' },
+      { name: 'noHp', label: 'Nomor Handphone / WA', type: 'text', placeholder: '0812-xxxx-xxxx' },
+      { name: 'tanggalSurat', label: 'Tanggal Surat', type: 'text', defaultValue: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) }
+    ],
+    sampleDemo: {
+      nama: 'Aulia Rahma',
+      nim: '210504012',
+      prodi: 'D4 Manajemen Bisnis Pariwisata',
+      ttl: 'Medan, 12 Agustus 2003',
+      alamat: 'Jl. Padang Bulan No. 88 Medan',
+      tanggalLulus: 'Jumat, 10 Juli 2026',
+      judulTA: 'Strategi Promosi Ekowisata Berkelanjutan di Kawasan Geopark Kaldera Toba',
+      ipk: '3.88',
+      noHp: '0812-6543-2109',
+      tanggalSurat: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+    }
+  },
+  {
+    id: 'surat-penyerahan-tugas-akhir',
+    title: 'Surat Penyerahan Tugas Akhir',
+    filename: 'Surat Penyerahan Tugas Akhir.docx',
+    category: 'Penelitian & Tugas Akhir',
+    fileUrl: '/assets/templatesurat/Surat Penyerahan Tugas Akhir.docx',
+    description: 'Bukti penyerahan berkas Tugas Akhir sebagai syarat bebas administrasi wisuda.',
+    fields: [
+      { name: 'nama', label: 'Nama Mahasiswa', type: 'text', placeholder: 'Contoh: Rizky Pratama', required: true },
+      { name: 'nim', label: 'NIM Mahasiswa', type: 'text', placeholder: 'Contoh: 210501044', required: true },
+      { name: 'prodi', label: 'Program Studi', type: 'select', options: PRODI_OPTIONS, defaultValue: 'D3 Teknik Informatika', required: true },
+      { name: 'judulTA', label: 'Judul Tugas Akhir', type: 'textarea', placeholder: 'Contoh: Implementasi Artificial Intelligence...', required: true },
+      { name: 'dosenPembimbing', label: 'Nama Dosen Pembimbing', type: 'text', placeholder: 'Contoh: Dr. Ir. Solahuddin Nasution' },
+      { name: 'dosenPenguji', label: 'Nama Dosen Penguji', type: 'text', placeholder: 'Contoh: Prof. Dr. Budiman Sinaga' },
+      { name: 'kaprodi', label: 'Nama Ketua Program Studi', type: 'text', placeholder: 'Nama Kaprodi' },
+      { name: 'tanggalSurat', label: 'Tanggal Penyerahan', type: 'text', defaultValue: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) }
+    ],
+    sampleDemo: {
+      nama: 'Rizky Pratama',
+      nim: '210501044',
+      prodi: 'D3 Teknik Informatika',
+      judulTA: 'Pengembangan Portal Penjaminan Mutu dan Kemahasiswaan Fakultas Vokasi Universitas Sumatera Utara',
+      dosenPembimbing: 'Dr. Solahuddin Nasution, S.E., M.SP.',
+      dosenPenguji: 'Prof. Dr. Budiman Sinaga, M.M.',
+      kaprodi: 'Ketua Program Studi D3 Teknik Informatika',
+      tanggalSurat: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+    }
+  },
+  {
+    id: 'surat-keterlambatan-spp',
+    title: 'Surat Permohonan Keterlambatan Pembayaran SPP (Pembukaan VA)',
+    filename: 'Surat Permohonan Keterlambatan Pembayaran SPP.docx',
+    category: 'Administrasi & Keuangan',
+    fileUrl: '/assets/templatesurat/Surat Permohonan Keterlambatan Pembayaran SPP.docx',
+    description: 'Permohonan pembukaan kembali Virtual Account pembayaran SPP/UKT.',
+    fields: [
+      { name: 'nama', label: 'Nama Lengkap Mahasiswa', type: 'text', placeholder: 'Nama Mahasiswa', required: true },
+      { name: 'nim', label: 'NIM Mahasiswa', type: 'text', placeholder: 'NIM Mahasiswa', required: true },
+      { name: 'prodi', label: 'Program Studi', type: 'select', options: PRODI_OPTIONS, defaultValue: 'D3 Akuntansi', required: true },
+      { name: 'semester', label: 'Semester', type: 'text', defaultValue: 'V (Lima)' },
+      { name: 'tahunAkademik', label: 'Tahun Akademik', type: 'text', defaultValue: '2026/2027' },
+      { name: 'alasan', label: 'Alasan Keterlambatan Pembayaran SPP', type: 'textarea', placeholder: 'Jelaskan kendala keterlambatan pembayaran SPP/UKT...', required: true },
+      { name: 'tanggalSurat', label: 'Tanggal Surat', type: 'text', defaultValue: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) }
+    ],
+    sampleDemo: {
+      nama: 'Nurul Hidayah',
+      nim: '220502015',
+      prodi: 'D3 Akuntansi',
+      semester: 'V (Lima)',
+      tahunAkademik: '2026/2027',
+      alasan: 'kendala teknis sistem perbankan saat transfer serta menunggu pencairan dana talangan keluarga',
+      tanggalSurat: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+    }
+  },
+  {
+    id: 'surat-pengunduran-diri',
+    title: 'Surat Permohonan Pengunduran Diri',
+    filename: 'Surat Permohonan Pengunduran Diri.docx',
+    category: 'Administrasi Akademik',
+    fileUrl: '/assets/templatesurat/Surat Permohonan Pengunduran Diri.docx',
+    description: 'Permohonan pengunduran diri resmi sebagai mahasiswa Program Studi Fakultas Vokasi USU.',
+    fields: [
+      { name: 'prodiTujuan', label: 'Program Studi Anda', type: 'select', options: PRODI_OPTIONS, defaultValue: 'D3 Keuangan' },
+      { name: 'nama', label: 'Nama Lengkap Mahasiswa', type: 'text', placeholder: 'Nama Mahasiswa', required: true },
+      { name: 'nim', label: 'NIM Mahasiswa', type: 'text', placeholder: 'NIM Mahasiswa', required: true },
+      { name: 'prodi', label: 'Program Studi', type: 'select', options: PRODI_OPTIONS, defaultValue: 'D3 Keuangan' },
+      { name: 'alasan', label: 'Alasan Pengunduran Diri', type: 'textarea', placeholder: 'Jelaskan secara singkat alasan Anda (pribadi / kesehatan / pekerjaan)...', required: true },
+      { name: 'namaOrangTua', label: 'Nama Orang Tua / Wali', type: 'text', placeholder: 'Nama Orang Tua', required: true },
+      { name: 'tanggalSurat', label: 'Tanggal Surat', type: 'text', defaultValue: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) }
+    ],
+    sampleDemo: {
+      prodiTujuan: 'D3 Keuangan',
+      nama: 'Bagus Setiawan',
+      nim: '220503022',
+      prodi: 'D3 Keuangan',
+      alasan: 'diterima bekerja purnawaktu sebagai staf operasional perbankan di luar kota',
+      namaOrangTua: 'H. Sudirman, S.E.',
+      tanggalSurat: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+    }
+  },
+  {
+    id: 'surat-undangan-ujian-ta',
+    title: 'Surat Permohonan Undangan Ujian Tugas Akhir',
+    filename: 'Surat Permohonan Undangan Ujian Tugas Akhir.docx',
+    category: 'Penelitian & Tugas Akhir',
+    fileUrl: '/assets/templatesurat/Surat Permohonan Undangan Ujian Tugas Akhir.docx',
+    description: 'Permohonan kepada Ketua Program Studi untuk penerbitan Undangan Ujian Tugas Akhir.',
+    fields: [
+      { name: 'prodiTujuan', label: 'Program Studi Anda', type: 'select', options: PRODI_OPTIONS, defaultValue: 'D4 Akuntansi Sektor Publik' },
+      { name: 'nama', label: 'Nama Lengkap Mahasiswa', type: 'text', placeholder: 'Nama Mahasiswa', required: true },
+      { name: 'nim', label: 'NIM Mahasiswa', type: 'text', placeholder: 'NIM Mahasiswa', required: true },
+      { name: 'prodi', label: 'Program Studi', type: 'select', options: PRODI_OPTIONS, defaultValue: 'D4 Akuntansi Sektor Publik' },
+      { name: 'hariTanggal', label: 'Hari, Tanggal Ujian', type: 'text', placeholder: 'Contoh: Rabu, 20 Oktober 2026' },
+      { name: 'pukul', label: 'Pukul / Jam Ujian', type: 'text', placeholder: 'Contoh: 09.00 - 11.00 WIB' },
+      { name: 'tempat', label: 'Tempat / Ruang Ujian', type: 'text', placeholder: 'Contoh: Ruang Sidang Vokasi Gd. B Lt. 2' },
+      { name: 'dosenPembimbing', label: 'Dosen Pembimbing', type: 'text', placeholder: 'Nama Dosen Pembimbing' },
+      { name: 'dosenPenguji', label: 'Dosen Penguji', type: 'text', placeholder: 'Nama Dosen Penguji' },
+      { name: 'judulTA', label: 'Judul Tugas Akhir (Bahasa Indonesia)', type: 'textarea', placeholder: 'Judul Tugas Akhir Bahasa Indonesia', required: true },
+      { name: 'judulTAEn', label: 'Judul Tugas Akhir (Bahasa Inggris)', type: 'textarea', placeholder: 'Judul Tugas Akhir Bahasa Inggris' },
+      { name: 'tanggalSurat', label: 'Tanggal Surat', type: 'text', defaultValue: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) }
+    ],
+    sampleDemo: {
+      prodiTujuan: 'D4 Akuntansi Sektor Publik',
+      nama: 'Indah Permatasari',
+      nim: '210502088',
+      prodi: 'D4 Akuntansi Sektor Publik',
+      hariTanggal: 'Kamis, 15 Oktober 2026',
+      pukul: '09.30 - 11.30 WIB',
+      tempat: 'Ruang Sidang Utama Fakultas Vokasi Lt. 2',
+      dosenPembimbing: 'Dr. Solahuddin Nasution, S.E., M.SP.',
+      dosenPenguji: 'Dra. Hj. Nurminah Lubis, M.Si., Ak.',
+      judulTA: 'Analisis Akuntabilitas Pengelolaan Alokasi Dana Desa pada Pemerintah Kabupaten Deli Serdang',
+      judulTAEn: 'Accountability Analysis of Village Fund Allocation Management in Deli Serdang Regency Government',
+      tanggalSurat: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+    }
+  },
+  {
+    id: 'surat-bebas-administrasi',
+    title: 'Surat Pernyataan Bebas Administrasi (Ijazah dan Transkrip)',
+    filename: 'Surat Pernyataan Bebas Administrasi (Ijazah dan Transkrip).docx',
+    category: 'Kelulusan & Alumni',
+    fileUrl: '/assets/templatesurat/Surat Pernyataan Bebas Administrasi (Ijazah dan Transkrip).docx',
+    description: 'Pernyataan bebas administrasi akademik, keuangan, perpustakaan, dan toga untuk ijazah.',
+    fields: [
+      { name: 'nama', label: 'Nama Lengkap Mahasiswa', type: 'text', placeholder: 'Nama Mahasiswa', required: true },
+      { name: 'nim', label: 'NIM Mahasiswa', type: 'text', placeholder: 'NIM Mahasiswa', required: true },
+      { name: 'prodi', label: 'Program Studi', type: 'select', options: PRODI_OPTIONS, defaultValue: 'D3 Teknik Informatika', required: true },
+      { name: 'periodeWisuda', label: 'Periode Wisuda', type: 'text', placeholder: 'Contoh: Periode I TA 2026/2027 (November 2026)' },
+      { name: 'noHp', label: 'Nomor Telepon / HP', type: 'text', placeholder: '0812-xxxx-xxxx' },
+      { name: 'kaprodi', label: 'Nama Ketua Program Studi', type: 'text', placeholder: 'Nama Kaprodi' },
+      { name: 'tanggalSurat', label: 'Tanggal Pernyataan', type: 'text', defaultValue: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) }
+    ],
+    sampleDemo: {
+      nama: 'Wanda Annisa Lubis',
+      nim: '220501001',
+      prodi: 'D3 Teknik Informatika',
+      periodeWisuda: 'Periode I TA 2026/2027 (November 2026)',
+      noHp: '0812-6000-8654',
+      kaprodi: 'Ketua Program Studi D3 Teknik Informatika',
+      tanggalSurat: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+    }
+  },
+  {
+    id: 'surat-rekomendasi-akk',
+    title: 'Surat Rekomendasi dan Permohonan Aktif Kuliah Kembali (AKK)',
+    filename: 'Surat Rekomendasi dan Permohonan AKK.docx',
+    category: 'Administrasi Akademik',
+    fileUrl: '/assets/templatesurat/Surat Rekomendasi dan Permohonan AKK.docx',
+    description: 'Permohonan aktif kuliah kembali setelah cuti akademik/PKA kepada Dekan Fakultas Vokasi.',
+    fields: [
+      { name: 'nama', label: 'Nama Lengkap Mahasiswa', type: 'text', placeholder: 'Nama Mahasiswa', required: true },
+      { name: 'nim', label: 'NIM Mahasiswa', type: 'text', placeholder: 'NIM Mahasiswa', required: true },
+      { name: 'prodi', label: 'Program Studi', type: 'select', options: PRODI_OPTIONS, defaultValue: 'D3 Analis Farmasi dan Makanan', required: true },
+      { name: 'semester', label: 'Semester Akan Aktif', type: 'text', defaultValue: 'V (Ganjil)' },
+      { name: 'tahunAkademik', label: 'Tahun Akademik', type: 'text', defaultValue: '2026/2027' },
+      { name: 'alasan', label: 'Alasan Tidak Aktif Sebelumnya', type: 'text', placeholder: 'Contoh: Cuti Akademik karena kondisi kesehatan' },
+      { name: 'noHp', label: 'Nomor HP / WhatsApp', type: 'text', placeholder: '0812-xxxx-xxxx' },
+      { name: 'alamat', label: 'Alamat Tinggal Mahasiswa', type: 'text', placeholder: 'Alamat Lengkap Mahasiswa' },
+      { name: 'tanggalSurat', label: 'Tanggal Surat', type: 'text', defaultValue: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) }
+    ],
+    sampleDemo: {
+      nama: 'Faisal Akbar',
+      nim: '220504018',
+      prodi: 'D3 Analis Farmasi dan Makanan',
+      semester: 'V (Ganjil)',
+      tahunAkademik: '2026/2027',
+      alasan: 'Cuti Akademik karena pemulihan pasca operasi kesehatan',
+      noHp: '0813-7788-9900',
+      alamat: 'Jl. Jamin Ginting Km 8 Medan',
+      tanggalSurat: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+    }
+  },
+  {
+    id: 'surat-rekomendasi-pka',
+    title: 'Surat Rekomendasi dan Permohonan Penundaan Kegiatan Akademik (PKA)',
+    filename: 'Surat Rekomendasi dan Permohonan PKA.docx',
+    category: 'Administrasi Akademik',
+    fileUrl: '/assets/templatesurat/Surat Rekomendasi dan Permohonan PKA.docx',
+    description: 'Permohonan penundaan kegiatan akademik / cuti perkuliahan resmi mahasiswa vokasi.',
+    fields: [
+      { name: 'nama', label: 'Nama Lengkap Mahasiswa', type: 'text', placeholder: 'Nama Mahasiswa', required: true },
+      { name: 'nim', label: 'NIM Mahasiswa', type: 'text', placeholder: 'NIM Mahasiswa', required: true },
+      { name: 'prodi', label: 'Program Studi', type: 'select', options: PRODI_OPTIONS, defaultValue: 'D3 Teknik Informatika', required: true },
+      { name: 'semester', label: 'Semester yang Diajukan PKA', type: 'text', defaultValue: 'III (Ganjil)' },
+      { name: 'tahunAkademik', label: 'Tahun Akademik PKA', type: 'text', defaultValue: '2026/2027' },
+      { name: 'alasan', label: 'Alasan Penundaan Kegiatan Akademik', type: 'textarea', placeholder: 'Jelaskan alasan pengajuan cuti/PKA...', required: true },
+      { name: 'namaOrangTua', label: 'Nama Orang Tua / Wali', type: 'text', placeholder: 'Nama Orang Tua / Wali', required: true },
+      { name: 'tanggalSurat', label: 'Tanggal Surat', type: 'text', defaultValue: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) }
+    ],
+    sampleDemo: {
+      nama: 'Dimas Anggara',
+      nim: '230501055',
+      prodi: 'D3 Teknik Informatika',
+      semester: 'III (Ganjil)',
+      tahunAkademik: '2026/2027',
+      alasan: 'fokus menjalani perawatan medis dan pendampingan keluarga',
+      namaOrangTua: 'Bambang Kusumo',
+      tanggalSurat: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+    }
   }
 ];
 
@@ -517,18 +749,79 @@ export async function generateWordDocument(templateConfig, formData, membersList
       }
 
       // Signature Medan, [Tanggal]
-      if (plainText.trim() === 'Medan,' || plainText.trim() === 'Medan ,') {
+      if (plainText.trim() === 'Medan,' || plainText.trim() === 'Medan ,' || plainText.trim() === 'Medan,') {
         const tgl = formData.tanggalSurat || new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
         docXml = docXml.replace(pXml, setParagraphText(pXml, `Medan, ${tgl}`));
       }
 
       // Name & NIM at signature
-      if (plainText.trim() === 'Nama') {
+      if (plainText.trim() === 'Nama' || plainText.trim() === 'Nama Mahasiswa') {
         docXml = docXml.replace(pXml, setParagraphText(pXml, formData.nama || 'Nama Mahasiswa', true));
       }
-      if (plainText.startsWith('NIM.')) {
+      if (plainText.startsWith('NIM.') || plainText.startsWith('NIM :') && plainText.length < 15) {
         docXml = docXml.replace(pXml, setParagraphText(pXml, `NIM. ${formData.nim || ''}`));
       }
+
+      // New template placeholders
+      if (plainText.includes('[Nama Program Studi Anda]')) {
+        const prd = formData.prodi || 'Fakultas Vokasi';
+        docXml = docXml.replace(pXml, pXml.replace(/\[Nama Program Studi Anda\]/g, escapeXml(prd)));
+      }
+      if (plainText.includes('[tulis alasan keterlambatan pembayaran]')) {
+        const als = formData.alasan || 'kendala teknis dan administrasi keuangan keluarga';
+        docXml = docXml.replace(pXml, pXml.replace(/\[tulis alasan keterlambatan pembayaran\]/g, escapeXml(als)));
+      }
+      if (plainText.includes('[tanggal efektif pengunduran diri]')) {
+        const tglEf = formData.tanggalEfektif || formData.tanggalSurat || new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        docXml = docXml.replace(pXml, pXml.replace(/\[tanggal efektif pengunduran diri\]/g, escapeXml(tglEf)));
+      }
+      if (plainText.includes('[jelaskan secara singkat alasan Anda, misalnya: alasan pribadi, kesehatan, atau kondisi ekonomi]')) {
+        const als = formData.alasan || 'alasan pribadi dan kondisi keluarga';
+        docXml = docXml.replace(pXml, pXml.replace(/\[jelaskan secara singkat alasan Anda, misalnya: alasan pribadi, kesehatan, atau kondisi ekonomi\]/g, escapeXml(als)));
+      }
+      if (plainText.startsWith('Hari, Tanggal Ujian:')) {
+        docXml = docXml.replace(pXml, buildLabelLine('Hari, Tanggal Ujian', formData.hariTanggalUjian || ''));
+      }
+      if (plainText.startsWith('Pukul:') || plainText.startsWith('Pukul :')) {
+        docXml = docXml.replace(pXml, buildLabelLine('Pukul', formData.pukul || '09.00 WIB s/d Selesai'));
+      }
+      if (plainText.startsWith('Tempat:') || plainText.startsWith('Tempat :')) {
+        docXml = docXml.replace(pXml, buildLabelLine('Tempat', formData.tempat || 'Ruang Sidang Fakultas Vokasi USU'));
+      }
+      if (plainText.startsWith('Judul Tugas Akhir:') || plainText.startsWith('Judul Tugas Akhir :') || plainText.startsWith('Judul Skripsi/Tugas Akhir:')) {
+        docXml = docXml.replace(pXml, buildLabelLine('Judul Tugas Akhir', formData.judulTA || formData.judulProposal || ''));
+      }
+    });
+
+    // 4b. Handle 3-column table rows (e.g. Permohonan SKL, Ujian Tugas Akhir)
+    docXml = docXml.replace(/<w:tr[\s\S]*?<\/w:tr>/g, (rowXml) => {
+      const cells = rowXml.match(/<w:tc[\s\S]*?<\/w:tc>/g) || [];
+      if (cells.length >= 3) {
+        const labelText = (cells[0].match(/<w:t[\s\S]*?>([\s\S]*?)<\/w:t>/g) || []).map(t => t.replace(/<[^>]+>/g, '')).join('').trim();
+        let val = null;
+        if (/^nama/i.test(labelText)) val = formData.nama;
+        else if (/^nim/i.test(labelText)) val = formData.nim;
+        else if (/^program studi/i.test(labelText)) val = formData.prodi;
+        else if (/^tempat.*lahir/i.test(labelText)) val = formData.ttl;
+        else if (/^alamat/i.test(labelText)) val = formData.alamat;
+        else if (/^hari.*lulus/i.test(labelText)) val = formData.tanggalLulus || formData.hariTanggalUjian;
+        else if (/^judul.*tugas akhir/i.test(labelText)) val = formData.judulTA || formData.judulProposal;
+        else if (/^ipk/i.test(labelText)) val = formData.ipk;
+        else if (/^nomor.*handphone/i.test(labelText) || /^no.*hp/i.test(labelText)) val = formData.noHp;
+        else if (/^bahasa indonesia/i.test(labelText)) val = formData.judulTA || formData.judulProposal;
+        else if (/^bahasa inggris/i.test(labelText)) val = formData.judulTAEng || formData.judulProposal;
+
+        if (val) {
+          const lastCell = cells[2];
+          const esc = escapeXml(val);
+          const existingText = (lastCell.match(/<w:t[\s\S]*?>([\s\S]*?)<\/w:t>/g) || []).map(t => t.replace(/<[^>]+>/g, '')).join('').trim();
+          if (!existingText) {
+            const injected = lastCell.replace('</w:p>', `<w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/><w:b/><w:sz w:val="24"/></w:rPr><w:t xml:space="preserve">${esc}</w:t></w:r></w:p>`);
+            return rowXml.replace(lastCell, injected);
+          }
+        }
+      }
+      return rowXml;
     });
 
     // 5. Handle Table rows for Kelompok (Magang Kelompok / PKL Kelompok)

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   FileText,
   Download,
@@ -38,6 +38,25 @@ export default function SuratGeneratorModal({ isOpen, onClose, initialTemplateId
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [notification, setNotification] = useState(null);
+
+  // Sync template if initialTemplateId changes when modal opens
+  useEffect(() => {
+    if (initialTemplateId && isOpen) {
+      handleTemplateChange(initialTemplateId);
+    }
+  }, [initialTemplateId, isOpen]);
+
+  // Keyboard navigation: close modal on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -120,6 +139,12 @@ export default function SuratGeneratorModal({ isOpen, onClose, initialTemplateId
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="generator-modal-title"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
       style={{
         position: 'fixed',
         inset: 0,
@@ -174,7 +199,10 @@ export default function SuratGeneratorModal({ isOpen, onClose, initialTemplateId
               <FileText size={24} />
             </div>
             <div>
-              <h2 style={{ margin: 0, fontSize: '1.3rem', fontWeight: 800, color: '#ffffff', fontFamily: 'Outfit, sans-serif' }}>
+              <h2
+                id="generator-modal-title"
+                style={{ margin: 0, fontSize: '1.3rem', fontWeight: 800, color: '#ffffff', fontFamily: 'Outfit, sans-serif' }}
+              >
                 Generator Surat Permohonan Mahasiswa
               </h2>
               <p style={{ margin: 0, fontSize: '0.825rem', color: 'rgba(255, 255, 255, 0.8)' }}>
@@ -196,6 +224,7 @@ export default function SuratGeneratorModal({ isOpen, onClose, initialTemplateId
 
             <button
               onClick={onClose}
+              aria-label="Tutup jendela generator surat"
               style={{
                 background: 'transparent',
                 border: 'none',
@@ -229,7 +258,7 @@ export default function SuratGeneratorModal({ isOpen, onClose, initialTemplateId
             {/* Template Selector Dropdown */}
             <div>
               <label style={{ display: 'block', fontSize: '0.825rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.4rem' }}>
-                Pilih Jenis Surat (10 Template Resmi)
+                Pilih Jenis Surat ({TEMPLATES_CONFIG.length} Template Resmi)
               </label>
               <select
                 value={selectedTemplateId}
@@ -252,9 +281,6 @@ export default function SuratGeneratorModal({ isOpen, onClose, initialTemplateId
                   </option>
                 ))}
               </select>
-              <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.35rem', lineHeight: 1.4 }}>
-                {activeTemplate.description}
-              </div>
             </div>
 
             {/* Notification alert */}

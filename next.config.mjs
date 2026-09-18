@@ -5,10 +5,27 @@ const nextConfig = {
     domains: ['images.unsplash.com', 'vokasi.usu.ac.id', 'usu.ac.id'],
   },
   async headers() {
+    const cspHeader = `
+      default-src 'self';
+      script-src 'self' 'unsafe-eval' 'unsafe-inline';
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      img-src 'self' data: blob: https://images.unsplash.com https://vokasi.usu.ac.id https://usu.ac.id https://*.usu.ac.id;
+      font-src 'self' data: https://fonts.gstatic.com;
+      connect-src 'self' https://*.upstash.io;
+      frame-ancestors 'self';
+      form-action 'self';
+      base-uri 'self';
+      object-src 'none';
+    `.replace(/\s{2,}/g, ' ').trim();
+
     return [
       {
         source: '/(.*)',
         headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: cspHeader,
+          },
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on',
@@ -24,6 +41,10 @@ const nextConfig = {
           {
             key: 'X-Frame-Options',
             value: 'SAMEORIGIN',
+          },
+          {
+            key: 'X-Type-Options',
+            value: 'nosniff',
           },
           {
             key: 'X-Content-Type-Options',

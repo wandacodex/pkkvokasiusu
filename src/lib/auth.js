@@ -1,4 +1,16 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
+import crypto from 'crypto';
+
+// Helper for constant-time comparison to prevent timing attacks
+function timingSafeCompare(a, b) {
+  if (!a || !b) return false;
+  const strA = String(a).trim();
+  const strB = String(b).trim();
+  const bufA = Buffer.from(strA);
+  const bufB = Buffer.from(strB);
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+}
 
 export const authOptions = {
   providers: [
@@ -10,20 +22,18 @@ export const authOptions = {
       },
       async authorize(credentials) {
         const { username, password } = credentials || {};
+        if (!username || !password) return null;
 
-        // Verifikasi akun admin resmi Fakultas Vokasi USU
-        const normalizedUser = String(username || '').trim().toLowerCase();
-        const rawPass = String(password || '').trim();
+        const normalizedUser = String(username).trim().toLowerCase();
+        const rawPass = String(password).trim();
 
-        const isWandaAdmin =
-          (normalizedUser === 'wanda@admin.vokasi.usu.ac.id' || normalizedUser === 'wanda') &&
-          rawPass === 'wanda123';
+        // 1. Akun Wanda Codex (Superadmin)
+        const wandaUser = (process.env.ADMIN_WANDA_USER || 'wanda@admin.vokasi.usu.ac.id').toLowerCase();
+        const wandaPass = process.env.ADMIN_WANDA_PASS || '';
+        const isWandaUser = normalizedUser === wandaUser || normalizedUser === 'wanda';
+        const isWandaPass = wandaPass ? timingSafeCompare(rawPass, wandaPass) : false;
 
-        const isLegacyAdmin =
-          (normalizedUser === 'admin@vokasi.usu.ac.id' || normalizedUser === 'admin') &&
-          (rawPass === 'adminvokasi2026' || rawPass === 'admin123');
-
-        if (isWandaAdmin) {
+        if (isWandaUser && isWandaPass) {
           return {
             id: 'admin-wanda',
             name: 'Wanda Codex (Admin)',
@@ -33,7 +43,13 @@ export const authOptions = {
           };
         }
 
-        if (isLegacyAdmin) {
+        // 2. Akun Administrator Resmi Fakultas Vokasi USU
+        const officialUser = (process.env.ADMIN_OFFICIAL_USER || 'admin@vokasi.usu.ac.id').toLowerCase();
+        const officialPass = process.env.ADMIN_OFFICIAL_PASS || '';
+        const isOfficialUser = normalizedUser === officialUser || normalizedUser === 'admin';
+        const isOfficialPass = officialPass ? timingSafeCompare(rawPass, officialPass) : false;
+
+        if (isOfficialUser && isOfficialPass) {
           return {
             id: 'admin-01',
             name: 'Administrator PKK Vokasi',
@@ -53,7 +69,7 @@ export const authOptions = {
   },
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 8 * 60 * 60, // 8 jam batas sesi kerja aman (OWASP recommended)
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -71,5 +87,5 @@ export const authOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET || 'vokasi-usu-pkk-secret-key-2026-super-secure-token',
+  secret: process.env.NEXTAUTH_SECRET,
 };

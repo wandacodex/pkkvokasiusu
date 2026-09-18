@@ -39,7 +39,7 @@ export default function HeroBanner() {
   }, []);
 
   const institutionalHighlights = [
-    { label: '10 Template Resmi', desc: 'Format Word .docx', icon: FileText },
+    { label: '18 Template Resmi', desc: 'Format Word .docx', icon: FileText },
     { label: '3.645+ Penerima', desc: 'Basis Data Beasiswa', icon: GraduationCap },
     { label: '227+ Prestasi', desc: 'Wilayah s.d. Internasional', icon: Award },
     { label: '21 Program Studi', desc: '14 D3 & 7 D4 Terapan', icon: BookOpen },

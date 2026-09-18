@@ -180,6 +180,153 @@ export const TEMPLATE_SURAT = [
       "Scan identitas pendukung (KTP / KK)",
       "Surat pengantar kehilangan dari Bagian Akademik Program Studi"
     ]
+  },
+  {
+    id: "surat-keterangan-lulus",
+    kode: "SKL",
+    nama: "Permohonan Surat Keterangan Lulus (SKL)",
+    kategori: "Kelulusan & Alumni",
+    fileName: "Permohonan Surat Keterangan Lulus.docx",
+    fileUrl: "/assets/templatesurat/Permohonan Surat Keterangan Lulus.docx",
+    fileSize: "17.2 KB",
+    formatDokumen: "DOCX (Word)",
+    estimasiWaktu: "1 - 2 Hari Kerja",
+    deskripsi: "Surat permohonan penerbitan Surat Keterangan Lulus (SKL) resmi dari Dekan Fakultas Vokasi USU bagi mahasiswa yang telah diyudisium/lulus namun belum terbit PIN Ijazah.",
+    syarat: [
+      "Scan Berita Acara Sidang Tugas Akhir yang telah disahkan penguji",
+      "Scan Kartu Kemajuan Mahasiswa (KKM) / Transkrip Sementara",
+      "Surat Keterangan Bebas Pustaka Universitas dan Fakultas",
+      "Scan Kartu Tanda Mahasiswa (KTM) dan Bukti Pembayaran SPP Terakhir"
+    ]
+  },
+  {
+    id: "surat-penyerahan-tugas-akhir",
+    kode: "SPTA",
+    nama: "Surat Penyerahan Tugas Akhir",
+    kategori: "Penelitian & Tugas Akhir",
+    fileName: "Surat Penyerahan Tugas Akhir.docx",
+    fileUrl: "/assets/templatesurat/Surat Penyerahan Tugas Akhir.docx",
+    fileSize: "60.3 KB",
+    formatDokumen: "DOCX (Word)",
+    estimasiWaktu: "1 Hari Kerja",
+    deskripsi: "Bukti penyerahan berkas Tugas Akhir (Hard Copy/Soft Copy) kepada Dosen Pembimbing, Dosen Penguji, Ketua Program Studi, dan Manajer PKK sebagai syarat bebas administrasi wisuda.",
+    syarat: [
+      "Naskah Tugas Akhir final yang telah dijilid rapi / berkas digital lengkap",
+      "Lembar pengesahan Tugas Akhir bertandatangan lengkap",
+      "Tanda tangan bukti penerimaan dari Dosen Pembimbing dan Penguji",
+      "Pengesahan Ketua Program Studi"
+    ]
+  },
+  {
+    id: "surat-keterlambatan-spp",
+    kode: "SPVA",
+    nama: "Surat Permohonan Keterlambatan Pembayaran SPP (Pembukaan VA)",
+    kategori: "Administrasi & Keuangan",
+    fileName: "Surat Permohonan Keterlambatan Pembayaran SPP.docx",
+    fileUrl: "/assets/templatesurat/Surat Permohonan Keterlambatan Pembayaran SPP.docx",
+    fileSize: "17.2 KB",
+    formatDokumen: "DOCX (Word)",
+    estimasiWaktu: "1 - 2 Hari Kerja",
+    deskripsi: "Surat permohonan pembukaan kembali Virtual Account (VA) pembayaran SPP/UKT kepada Dekan Fakultas Vokasi USU akibat kendala keterlambatan pembayaran.",
+    syarat: [
+      "Scan Kartu Tanda Mahasiswa (KTM) aktif",
+      "KRS Semester Terakhir",
+      "Bukti Pembayaran SPP/UKT Terakhir",
+      "Surat pernyataan alasan keterlambatan pembayaran ditandatangani orang tua/wali"
+    ]
+  },
+  {
+    id: "surat-pengunduran-diri",
+    kode: "SPPD",
+    nama: "Surat Permohonan Pengunduran Diri",
+    kategori: "Administrasi Akademik",
+    fileName: "Surat Permohonan Pengunduran Diri.docx",
+    fileUrl: "/assets/templatesurat/Surat Permohonan Pengunduran Diri.docx",
+    fileSize: "20.6 KB",
+    formatDokumen: "DOCX (Word)",
+    estimasiWaktu: "2 - 3 Hari Kerja",
+    deskripsi: "Surat permohonan pengunduran diri resmi sebagai mahasiswa Program Studi Fakultas Vokasi USU bermaterai Rp10.000 dengan persetujuan orang tua/wali.",
+    syarat: [
+      "Surat permohonan pengunduran diri bermaterai Rp10.000 ditandatangani pemohon dan orang tua/wali",
+      "Fotokopi KTP dan Kartu Tanda Mahasiswa (KTM) asli",
+      "Fotokopi Slip Bukti Pembayaran SPP/UKT Terakhir",
+      "Fotokopi KRS Semester Terakhir",
+      "Surat keterangan bebas pinjaman perpustakaan dan laboratorium"
+    ]
+  },
+  {
+    id: "surat-undangan-ujian-ta",
+    kode: "SUUTA",
+    nama: "Surat Permohonan Undangan Ujian Tugas Akhir",
+    kategori: "Penelitian & Tugas Akhir",
+    fileName: "Surat Permohonan Undangan Ujian Tugas Akhir.docx",
+    fileUrl: "/assets/templatesurat/Surat Permohonan Undangan Ujian Tugas Akhir.docx",
+    fileSize: "18.8 KB",
+    formatDokumen: "DOCX (Word)",
+    estimasiWaktu: "1 - 2 Hari Kerja",
+    deskripsi: "Surat permohonan kepada Ketua Program Studi untuk penerbitan Undangan Ujian Tugas Akhir / Sidang Komprehensif mahasiswa vokasi.",
+    syarat: [
+      "Scan cover proposal Tugas Akhir yang telah ditandatangani oleh Dosen Pembimbing",
+      "Scan cover halaman persetujuan ujian bertandatangan Dosen Pembimbing dan Ketua Program Studi",
+      "KRS semester berjalan yang memprogramkan Tugas Akhir",
+      "Transkrip nilai sementara dengan jumlah SKS lulus sesuai kurikulum"
+    ]
+  },
+  {
+    id: "surat-bebas-administrasi",
+    kode: "SPBA",
+    nama: "Surat Pernyataan Bebas Administrasi (Ijazah dan Transkrip)",
+    kategori: "Kelulusan & Alumni",
+    fileName: "Surat Pernyataan Bebas Administrasi (Ijazah dan Transkrip).docx",
+    fileUrl: "/assets/templatesurat/Surat Pernyataan Bebas Administrasi (Ijazah dan Transkrip).docx",
+    fileSize: "59.1 KB",
+    formatDokumen: "DOCX (Word)",
+    estimasiWaktu: "1 Hari Kerja",
+    deskripsi: "Surat pernyataan resmi mahasiswa bermaterai Rp10.000 bahwa seluruh kewajiban akademik, keuangan, perpustakaan, dan toga telah selesai untuk pengambilan Ijazah & Transkrip.",
+    syarat: [
+      "Surat pernyataan bermaterai Rp10.000 dan ditandatangani Ketua Program Studi",
+      "Bukti bebas administrasi perpustakaan universitas & fakultas",
+      "Bukti pengembalian toga wisuda",
+      "Scan berita acara kelulusan / SKL"
+    ]
+  },
+  {
+    id: "surat-rekomendasi-akk",
+    kode: "AKK",
+    nama: "Surat Rekomendasi dan Permohonan Aktif Kuliah Kembali (AKK)",
+    kategori: "Administrasi Akademik",
+    fileName: "Surat Rekomendasi dan Permohonan AKK.docx",
+    fileUrl: "/assets/templatesurat/Surat Rekomendasi dan Permohonan AKK.docx",
+    fileSize: "25.7 KB",
+    formatDokumen: "DOCX (Word)",
+    estimasiWaktu: "2 - 3 Hari Kerja",
+    deskripsi: "Berkas formulir rekomendasi dan surat permohonan resmi kepada Dekan Fakultas Vokasi USU untuk aktif kuliah kembali setelah cuti akademik atau penundaan kegiatan akademik.",
+    syarat: [
+      "Surat Izin PKA (Penundaan Kegiatan Akademik) dari Universitas",
+      "Rekomendasi Aktif Kuliah Kembali yang telah ditandatangani Ketua Program Studi dan Wakil Dekan I",
+      "Bukti pembayaran SPP/UKT terakhir",
+      "Fotokopi KTM dan KHS semester sebelumnya"
+    ]
+  },
+  {
+    id: "surat-rekomendasi-pka",
+    kode: "PKA",
+    nama: "Surat Rekomendasi dan Permohonan Penundaan Kegiatan Akademik (PKA)",
+    kategori: "Administrasi Akademik",
+    fileName: "Surat Rekomendasi dan Permohonan PKA.docx",
+    fileUrl: "/assets/templatesurat/Surat Rekomendasi dan Permohonan PKA.docx",
+    fileSize: "29.5 KB",
+    formatDokumen: "DOCX (Word)",
+    estimasiWaktu: "2 - 3 Hari Kerja",
+    deskripsi: "Berkas formulir rekomendasi dan surat permohonan cuti / Penundaan Kegiatan Akademik (PKA) resmi bermaterai Rp10.000 bagi mahasiswa yang berhalangan mengikuti perkuliahan.",
+    syarat: [
+      "Surat permohonan PKA bermaterai Rp10.000 yang disetujui Orang Tua/Wali",
+      "Rekomendasi PKA dari Ketua Program Studi dan Wakil Dekan I",
+      "Fotokopi Kartu Tanda Mahasiswa (KTM) aktif",
+      "Bukti pembayaran SPP/UKT terakhir",
+      "KRS dan KHS dari awal studi sampai semester terakhir",
+      "Surat Izin PKA sebelumnya (jika melakukan perpanjangan PKA)"
+    ]
   }
 ];
 

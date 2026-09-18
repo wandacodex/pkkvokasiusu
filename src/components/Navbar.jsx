@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
@@ -26,12 +26,25 @@ export default function Navbar() {
   const { data: session } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Close mobile drawer on Escape key
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileMenuOpen]);
+
   const navLinks = [
     { name: 'Beranda', href: '/', icon: Home },
     { name: 'Surat Permohonan', href: '/surat', icon: FileText },
     { name: 'Beasiswa', href: '/beasiswa', icon: GraduationCap },
     { name: 'Prestasi', href: '/prestasi', icon: Award },
     { name: 'Tracer Study', href: '/tracer-study', icon: Briefcase },
+    { name: 'Sertifikat Akreditasi', href: '/akreditasi', icon: ShieldCheck },
   ];
 
   return (
@@ -230,6 +243,8 @@ export default function Navbar() {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="nav-mobile-toggle-btn"
               aria-label="Buka Menu Navigasi"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-nav-drawer"
             >
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -239,6 +254,9 @@ export default function Navbar() {
         {/* Mobile Slide-Down Drawer Menu */}
         {mobileMenuOpen && (
           <div
+            id="mobile-nav-drawer"
+            role="region"
+            aria-label="Menu Navigasi Mobile"
             style={{
               backgroundColor: '#ffffff',
               borderTop: '1px solid var(--border-subtle)',

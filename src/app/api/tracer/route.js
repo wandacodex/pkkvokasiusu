@@ -101,24 +101,28 @@ export async function POST(request) {
     // Support bulk insertion for Excel import
     const items = Array.isArray(body) ? body : body.items;
     if (Array.isArray(items)) {
+      if (items.length > 1000) {
+        return NextResponse.json({ success: false, error: 'Jumlah data impor melebihi batas maksimal (1.000 baris per unggahan)' }, { status: 400 });
+      }
+
       const validItems = items
         .filter(item => item.namaAlumni && item.nim && item.tahunLulus)
         .map(item => ({
           id: `TRC-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          nim: String(item.nim).trim(),
-          namaAlumni: String(item.namaAlumni).trim(),
+          nim: String(item.nim).trim().slice(0, 30),
+          namaAlumni: String(item.namaAlumni).trim().slice(0, 150),
           tahunLulus: Number(item.tahunLulus) || new Date().getFullYear(),
-          prodi: item.prodi || 'D3 Manajemen Informatika',
-          statusPekerjaan: item.statusPekerjaan || 'Bekerja',
-          namaInstansi: item.namaInstansi || '-',
-          posisiJabatan: item.posisiJabatan || '-',
-          bidangUsaha: item.bidangUsaha || '-',
-          lokasiKerja: item.lokasiKerja || 'Indonesia',
+          prodi: String(item.prodi || 'D3 Manajemen Informatika').slice(0, 100),
+          statusPekerjaan: String(item.statusPekerjaan || 'Bekerja').slice(0, 50),
+          namaInstansi: String(item.namaInstansi || '-').slice(0, 150),
+          posisiJabatan: String(item.posisiJabatan || '-').slice(0, 100),
+          bidangUsaha: String(item.bidangUsaha || '-').slice(0, 100),
+          lokasiKerja: String(item.lokasiKerja || 'Indonesia').slice(0, 100),
           waktuTungguBulan: Number(item.waktuTungguBulan) || 2,
-          keselarasanBidang: item.keselarasanBidang || 'Sangat Selaras',
-          tingkatGaji: item.tingkatGaji || 'Rp 5.000.000 - Rp 8.000.000',
-          email: item.email || '',
-          noHp: item.noHp || '',
+          keselarasanBidang: String(item.keselarasanBidang || 'Sangat Selaras').slice(0, 50),
+          tingkatGaji: String(item.tingkatGaji || 'Rp 5.000.000 - Rp 8.000.000').slice(0, 50),
+          email: String(item.email || '').slice(0, 100),
+          noHp: String(item.noHp || '').slice(0, 30),
           tanggalSubmit: item.tanggalSubmit || new Date().toISOString().slice(0, 10)
         }));
 
@@ -143,27 +147,28 @@ export async function POST(request) {
 
     const newItem = {
       id: `TRC-${Date.now()}`,
-      nim: body.nim,
-      namaAlumni: body.namaAlumni,
+      nim: String(body.nim).trim().slice(0, 30),
+      namaAlumni: String(body.namaAlumni).trim().slice(0, 150),
       tahunLulus: Number(body.tahunLulus),
-      prodi: body.prodi || 'D3 Manajemen Informatika',
-      statusPekerjaan: body.statusPekerjaan || 'Bekerja',
-      namaInstansi: body.namaInstansi || '-',
-      posisiJabatan: body.posisiJabatan || '-',
-      bidangUsaha: body.bidangUsaha || '-',
-      lokasiKerja: body.lokasiKerja || 'Indonesia',
+      prodi: String(body.prodi || 'D3 Manajemen Informatika').slice(0, 100),
+      statusPekerjaan: String(body.statusPekerjaan || 'Bekerja').slice(0, 50),
+      namaInstansi: String(body.namaInstansi || '-').slice(0, 150),
+      posisiJabatan: String(body.posisiJabatan || '-').slice(0, 100),
+      bidangUsaha: String(body.bidangUsaha || '-').slice(0, 100),
+      lokasiKerja: String(body.lokasiKerja || 'Indonesia').slice(0, 100),
       waktuTungguBulan: Number(body.waktuTungguBulan) || 2,
-      keselarasanBidang: body.keselarasanBidang || 'Sangat Selaras',
-      tingkatGaji: body.tingkatGaji || 'Rp 5.000.000 - Rp 8.000.000',
-      email: body.email || '',
-      noHp: body.noHp || '',
+      keselarasanBidang: String(body.keselarasanBidang || 'Sangat Selaras').slice(0, 50),
+      tingkatGaji: String(body.tingkatGaji || 'Rp 5.000.000 - Rp 8.000.000').slice(0, 50),
+      email: String(body.email || '').slice(0, 100),
+      noHp: String(body.noHp || '').slice(0, 30),
       tanggalSubmit: new Date().toISOString().slice(0, 10)
     };
 
     const saved = await addItem(KEYS.TRACER, newItem);
     return NextResponse.json({ success: true, data: saved, message: 'Data Tracer Study berhasil disimpan.' });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error('[API_TRACER_POST_ERROR]', error);
+    return NextResponse.json({ success: false, error: 'Terjadi kesalahan sistem saat menyimpan data tracer study.' }, { status: 500 });
   }
 }
 
@@ -179,10 +184,28 @@ export async function PUT(request) {
       return NextResponse.json({ success: false, error: 'ID Tracer diperlukan' }, { status: 400 });
     }
 
-    const updated = await updateItem(KEYS.TRACER, body.id, body);
+    // Whitelist field yang diizinkan untuk diubah
+    const allowedUpdates = {};
+    if (body.nim !== undefined) allowedUpdates.nim = String(body.nim).trim().slice(0, 30);
+    if (body.namaAlumni !== undefined) allowedUpdates.namaAlumni = String(body.namaAlumni).trim().slice(0, 150);
+    if (body.tahunLulus !== undefined) allowedUpdates.tahunLulus = Number(body.tahunLulus) || new Date().getFullYear();
+    if (body.prodi !== undefined) allowedUpdates.prodi = String(body.prodi).slice(0, 100);
+    if (body.statusPekerjaan !== undefined) allowedUpdates.statusPekerjaan = String(body.statusPekerjaan).slice(0, 50);
+    if (body.namaInstansi !== undefined) allowedUpdates.namaInstansi = String(body.namaInstansi).slice(0, 150);
+    if (body.posisiJabatan !== undefined) allowedUpdates.posisiJabatan = String(body.posisiJabatan).slice(0, 100);
+    if (body.bidangUsaha !== undefined) allowedUpdates.bidangUsaha = String(body.bidangUsaha).slice(0, 100);
+    if (body.lokasiKerja !== undefined) allowedUpdates.lokasiKerja = String(body.lokasiKerja).slice(0, 100);
+    if (body.waktuTungguBulan !== undefined) allowedUpdates.waktuTungguBulan = Number(body.waktuTungguBulan) || 0;
+    if (body.keselarasanBidang !== undefined) allowedUpdates.keselarasanBidang = String(body.keselarasanBidang).slice(0, 50);
+    if (body.tingkatGaji !== undefined) allowedUpdates.tingkatGaji = String(body.tingkatGaji).slice(0, 50);
+    if (body.email !== undefined) allowedUpdates.email = String(body.email).slice(0, 100);
+    if (body.noHp !== undefined) allowedUpdates.noHp = String(body.noHp).slice(0, 30);
+
+    const updated = await updateItem(KEYS.TRACER, body.id, allowedUpdates);
     return NextResponse.json({ success: true, data: updated, message: 'Data tracer study berhasil diperbarui' });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error('[API_TRACER_PUT_ERROR]', error);
+    return NextResponse.json({ success: false, error: 'Terjadi kesalahan sistem saat memperbarui data tracer study.' }, { status: 500 });
   }
 }
 
@@ -202,6 +225,7 @@ export async function DELETE(request) {
     await deleteItem(KEYS.TRACER, id);
     return NextResponse.json({ success: true, message: 'Data alumni tracer study berhasil dihapus' });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error('[API_TRACER_DELETE_ERROR]', error);
+    return NextResponse.json({ success: false, error: 'Terjadi kesalahan sistem saat menghapus data tracer study.' }, { status: 500 });
   }
 }

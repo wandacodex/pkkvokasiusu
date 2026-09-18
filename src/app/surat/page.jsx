@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FileText,
@@ -35,13 +35,26 @@ export default function SuratPage() {
   const [selectedGeneratorTemplateId, setSelectedGeneratorTemplateId] = useState(null);
   const [toast, setToast] = useState({ message: '', type: 'success' });
 
+  // Close requirement modal on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setActiveModalTemplate(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const categories = [
     'Semua',
     'Magang & PKL',
     'Akademik & Perkuliahan',
-    'Beasiswa',
+    'Beasiswa & Prestasi',
     'Tunjangan Orang Tua',
     'Penelitian & Tugas Akhir',
+    'Kelulusan & Alumni',
+    'Keuangan & SPP',
     'Kehilangan Dokumen'
   ];
 
@@ -56,10 +69,12 @@ export default function SuratPage() {
     const matchCategory =
       selectedCategory === 'Semua' ||
       (selectedCategory === 'Magang & PKL' && (item.kategori.includes('Magang') || item.kategori.includes('PKL') || item.kategori.includes('Praktek'))) ||
-      (selectedCategory === 'Beasiswa' && item.kategori.includes('Beasiswa')) ||
+      (selectedCategory === 'Beasiswa & Prestasi' && item.kategori.includes('Beasiswa')) ||
       (selectedCategory === 'Akademik & Perkuliahan' && (item.kategori.includes('Akademik') && !item.kategori.includes('Kehilangan'))) ||
       (selectedCategory === 'Tunjangan Orang Tua' && item.kategori.includes('Tunjangan')) ||
-      (selectedCategory === 'Penelitian & Tugas Akhir' && item.kategori.includes('Penelitian')) ||
+      (selectedCategory === 'Penelitian & Tugas Akhir' && (item.kategori.includes('Penelitian') || item.kategori.includes('Tugas Akhir'))) ||
+      (selectedCategory === 'Kelulusan & Alumni' && (item.kategori.includes('Kelulusan') || item.kategori.includes('Alumni'))) ||
+      (selectedCategory === 'Keuangan & SPP' && (item.kategori.includes('Keuangan') || item.nama.includes('SPP'))) ||
       (selectedCategory === 'Kehilangan Dokumen' && (item.kategori.includes('Kehilangan') || item.nama.includes('Kehilangan')));
 
     return matchSearch && matchCategory;
@@ -194,9 +209,13 @@ export default function SuratPage() {
             </div>
 
             {/* Quick Count Badge */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+            <div
+              aria-live="polite"
+              aria-atomic="true"
+              style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}
+            >
               <Layers size={16} style={{ color: 'var(--usu-green)' }} />
-              <span>Menampilkan: <strong style={{ color: 'var(--usu-green-dark)' }}>{filteredTemplates.length} dari 10 Template Dokumen</strong></span>
+              <span>Menampilkan: <strong style={{ color: 'var(--usu-green-dark)' }}>{filteredTemplates.length} dari {TEMPLATE_SURAT.length} Template Dokumen</strong></span>
             </div>
           </div>
 
@@ -240,14 +259,66 @@ export default function SuratPage() {
         </div>
 
         {/* Super Premium Cards Grid (100% Fluid on Mobile) */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 330px), 1fr))', gap: '1.5rem' }}>
-          {filteredTemplates.map((template) => (
+        {filteredTemplates.length === 0 ? (
+          <div
+            style={{
+              backgroundColor: '#ffffff',
+              borderRadius: '16px',
+              border: '1.5px dashed var(--border-subtle)',
+              padding: '3.5rem 1.5rem',
+              textAlign: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '1rem',
+              maxWidth: '520px',
+              margin: '2rem auto',
+            }}
+          >
             <div
-              key={template.id}
-              className="template-card"
               style={{
-                backgroundColor: '#ffffff',
-                borderRadius: '16px',
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                backgroundColor: 'var(--usu-green-soft)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--usu-green-dark)',
+              }}
+            >
+              <FileText size={30} />
+            </div>
+            <div>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.35rem' }}>
+                Tidak Ada Template Surat Ditemukan
+              </h3>
+              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
+                Tidak ada dokumen yang cocok dengan kata kunci &ldquo;{searchQuery}&rdquo; pada kategori &ldquo;{selectedCategory}&rdquo;.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedCategory('Semua');
+              }}
+              className="btn btn-outline btn-sm"
+              style={{ padding: '0.55rem 1.25rem', fontWeight: 600, fontSize: '0.85rem' }}
+            >
+              Reset Filter & Pencarian
+            </button>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 330px), 1fr))', gap: '1.5rem' }}>
+            {filteredTemplates.map((template) => (
+              <div
+                key={template.id}
+                className="template-card"
+                style={{
+                  backgroundColor: '#ffffff',
+                  borderRadius: '16px',
                 border: '1px solid var(--border-subtle)',
                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
                 overflow: 'hidden',
@@ -318,59 +389,15 @@ export default function SuratPage() {
                 {/* Judul Surat */}
                 <h3
                   style={{
-                    fontSize: '1.1rem',
+                    fontSize: '1.05rem',
                     color: 'var(--text-main)',
-                    marginBottom: '0.5rem',
+                    marginBottom: '1rem',
                     lineHeight: 1.4,
                     fontWeight: 700,
                   }}
                 >
                   {template.nama}
                 </h3>
-
-                {/* Deskripsi Penggunaan */}
-                <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', lineHeight: 1.55, marginBottom: '1.25rem', flex: 1 }}>
-                  {template.deskripsi}
-                </p>
-
-                {/* Kotak Pratinjau Persyaratan */}
-                <div
-                  style={{
-                    backgroundColor: '#f8fafc',
-                    borderRadius: '10px',
-                    padding: '0.9rem',
-                    border: '1px solid #edf2f7',
-                    marginBottom: '1rem',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--usu-green-dark)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                      Syarat Berkas ({template.syarat.length}):
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setActiveModalTemplate(template)}
-                      style={{ background: 'none', border: 'none', color: 'var(--usu-green)', fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2px' }}
-                    >
-                      <span>Lihat Semua</span>
-                      <ChevronRight size={13} />
-                    </button>
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                    {template.syarat.slice(0, 2).map((s, idx) => (
-                      <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.45rem', fontSize: '0.785rem', color: '#475569' }}>
-                        <CheckCircle2 size={13} style={{ color: 'var(--usu-green)', flexShrink: 0, marginTop: '2px' }} />
-                        <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s}</span>
-                      </div>
-                    ))}
-                    {template.syarat.length > 2 && (
-                      <div style={{ fontSize: '0.74rem', color: '#94a3b8', paddingLeft: '1.15rem' }}>
-                        + {template.syarat.length - 2} berkas persyaratan lainnya...
-                      </div>
-                    )}
-                  </div>
-                </div>
               </div>
 
               {/* Action Buttons */}
@@ -405,7 +432,7 @@ export default function SuratPage() {
                     style={{ flex: 1, padding: '0.5rem 0.6rem', fontSize: '0.78rem' }}
                   >
                     <FileCheck size={13} />
-                    <span>Syarat</span>
+                    <span>Syarat Berkas</span>
                   </button>
 
                   <button
@@ -423,11 +450,18 @@ export default function SuratPage() {
             </div>
           ))}
         </div>
-      </div>
+      )}
+    </div>
 
       {/* Modal Detail Persyaratan Dokumen Lengkap */}
       {activeModalTemplate && (
-        <div className="modal-backdrop" onClick={() => setActiveModalTemplate(null)}>
+        <div
+          className="modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-syarat-title"
+          onClick={() => setActiveModalTemplate(null)}
+        >
           <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '580px' }}>
             <div className="modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -446,7 +480,10 @@ export default function SuratPage() {
                   <FileText size={20} />
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '1.15rem', color: 'var(--usu-green-dark)', margin: 0, fontWeight: 700 }}>
+                  <h3
+                    id="modal-syarat-title"
+                    style={{ fontSize: '1.15rem', color: 'var(--usu-green-dark)', margin: 0, fontWeight: 700 }}
+                  >
                     {activeModalTemplate.nama}
                   </h3>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '2px' }}>
@@ -466,15 +503,6 @@ export default function SuratPage() {
             </div>
 
             <div className="modal-body">
-              <div style={{ marginBottom: '1.25rem' }}>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', textTransform: 'uppercase', fontWeight: 700, marginBottom: '0.35rem', letterSpacing: '0.04em' }}>
-                  Kegunaan Dokumen:
-                </div>
-                <p style={{ fontSize: '0.875rem', color: 'var(--text-main)', lineHeight: 1.6, margin: 0 }}>
-                  {activeModalTemplate.deskripsi}
-                </p>
-              </div>
-
               <div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--usu-green-dark)', textTransform: 'uppercase', fontWeight: 700, marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem', letterSpacing: '0.04em' }}>
                   <FileCheck size={15} />

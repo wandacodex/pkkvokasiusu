@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/src/lib/auth';
 import { getCollection, setCollection, KEYS } from '@/src/lib/redis';
 import {
   INITIAL_SURAT_REQUESTS,
@@ -13,6 +15,17 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const force = searchParams.get('force') === 'true';
+
+    // Jika parameter force=true (reset database), wajibkan sesi SUPERADMIN
+    if (force) {
+      const session = await getServerSession(authOptions);
+      if (!session || (session.user?.role !== 'SUPERADMIN' && session.user?.role !== 'ADMIN')) {
+        return NextResponse.json(
+          { success: false, error: 'Akses ditolak: Hanya Administrator terautentikasi yang diizinkan mereset basis data.' },
+          { status: 401 }
+        );
+      }
+    }
 
     // Check existing data
     const existingSurat = await getCollection(KEYS.SURAT);
@@ -49,7 +62,7 @@ export async function GET(request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Seed check and execution completed successfully.',
+      message: 'Sinkronisasi basis data berhasil dijalankan.',
       seeded,
       counts: {
         surat: (await getCollection(KEYS.SURAT)).length,
@@ -59,9 +72,9 @@ export async function GET(request) {
       }
     });
   } catch (error) {
-    console.error('Error in seed route:', error);
+    console.error('[SEED_ERROR]', error);
     return NextResponse.json(
-      { success: false, error: error.message },
+      { success: false, error: 'Terjadi kesalahan sistem saat memproses basis data.' },
       { status: 500 }
     );
   }

@@ -1,9 +1,18 @@
 import { Redis } from '@upstash/redis';
 
-// Initialize Redis client using environment variables
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || 'https://equipped-falcon-217063.upstash.io',
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || 'gQAAAAAAA0_nAAIgcDI1NzMwZmZiODc3ODI0YWYwYWFjNDRjMTNkNDQ1ODRjOQ',
+// Initialize Redis client strictly using environment variables
+const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+if (!redisUrl || !redisToken) {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('FATAL: UPSTASH_REDIS_REST_URL dan UPSTASH_REDIS_REST_TOKEN wajib dikonfigurasi di environment!');
+  }
+}
+
+export const redis = new Redis({
+  url: redisUrl || 'https://placeholder-url.upstash.io',
+  token: redisToken || 'placeholder-token',
 });
 
 // Redis Keys

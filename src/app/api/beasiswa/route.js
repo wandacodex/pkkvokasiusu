@@ -75,13 +75,17 @@ export async function POST(request) {
     // Support bulk insertion for Excel import
     const items = Array.isArray(body) ? body : body.items;
     if (Array.isArray(items)) {
+      if (items.length > 1000) {
+        return NextResponse.json({ success: false, error: 'Jumlah data impor melebihi batas maksimal (1.000 baris per unggahan)' }, { status: 400 });
+      }
+
       const validItems = items
         .filter(item => item.namaMahasiswa && item.nim && item.jenisBeasiswa)
         .map(item => ({
-          nim: String(item.nim).trim(),
-          namaMahasiswa: String(item.namaMahasiswa).trim(),
-          prodi: item.prodi || 'D3 Teknik Informatika',
-          jenisBeasiswa: item.jenisBeasiswa || 'Beasiswa KIP Kuliah',
+          nim: String(item.nim).trim().slice(0, 30),
+          namaMahasiswa: String(item.namaMahasiswa).trim().slice(0, 150),
+          prodi: String(item.prodi || 'D3 Teknik Informatika').slice(0, 100),
+          jenisBeasiswa: String(item.jenisBeasiswa || 'Beasiswa KIP Kuliah').slice(0, 150),
         }));
 
       if (validItems.length === 0) {
@@ -105,16 +109,17 @@ export async function POST(request) {
 
     const newItem = {
       id: `BEA-${Date.now()}`,
-      nim: body.nim,
-      namaMahasiswa: body.namaMahasiswa,
-      prodi: body.prodi || 'D3 Teknik Informatika',
-      jenisBeasiswa: body.jenisBeasiswa,
+      nim: String(body.nim).trim().slice(0, 30),
+      namaMahasiswa: String(body.namaMahasiswa).trim().slice(0, 150),
+      prodi: String(body.prodi || 'D3 Teknik Informatika').slice(0, 100),
+      jenisBeasiswa: String(body.jenisBeasiswa).slice(0, 150),
     };
 
     const saved = await addItem(KEYS.BEASISWA, newItem);
     return NextResponse.json({ success: true, data: saved, message: 'Data penerima beasiswa berhasil ditambahkan' });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error('[API_BEASISWA_POST_ERROR]', error);
+    return NextResponse.json({ success: false, error: 'Terjadi kesalahan sistem saat menyimpan data beasiswa.' }, { status: 500 });
   }
 }
 
@@ -130,10 +135,18 @@ export async function PUT(request) {
       return NextResponse.json({ success: false, error: 'ID Beasiswa diperlukan' }, { status: 400 });
     }
 
-    const updated = await updateItem(KEYS.BEASISWA, body.id, body);
+    // Whitelist field yang diizinkan untuk diubah
+    const allowedUpdates = {};
+    if (body.nim !== undefined) allowedUpdates.nim = String(body.nim).trim().slice(0, 30);
+    if (body.namaMahasiswa !== undefined) allowedUpdates.namaMahasiswa = String(body.namaMahasiswa).trim().slice(0, 150);
+    if (body.prodi !== undefined) allowedUpdates.prodi = String(body.prodi).slice(0, 100);
+    if (body.jenisBeasiswa !== undefined) allowedUpdates.jenisBeasiswa = String(body.jenisBeasiswa).slice(0, 150);
+
+    const updated = await updateItem(KEYS.BEASISWA, body.id, allowedUpdates);
     return NextResponse.json({ success: true, data: updated, message: 'Data beasiswa berhasil diperbarui' });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error('[API_BEASISWA_PUT_ERROR]', error);
+    return NextResponse.json({ success: false, error: 'Terjadi kesalahan sistem saat memperbarui data beasiswa.' }, { status: 500 });
   }
 }
 
@@ -153,6 +166,7 @@ export async function DELETE(request) {
     await deleteItem(KEYS.BEASISWA, id);
     return NextResponse.json({ success: true, message: 'Data beasiswa berhasil dihapus' });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error('[API_BEASISWA_DELETE_ERROR]', error);
+    return NextResponse.json({ success: false, error: 'Terjadi kesalahan sistem saat menghapus data beasiswa.' }, { status: 500 });
   }
 }

@@ -1,9 +1,24 @@
 const { Redis } = require('@upstash/redis');
 const fs = require('fs');
+const path = require('path');
+
+// Read from .env.local if running standalone script
+if (fs.existsSync('.env.local')) {
+  const envContent = fs.readFileSync('.env.local', 'utf8');
+  envContent.split('\n').forEach(line => {
+    const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+    if (match) {
+      const key = match[1];
+      let value = match[2] || '';
+      value = value.trim().replace(/^["'](.*)["']$/, '$1');
+      process.env[key] = value;
+    }
+  });
+}
 
 const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || 'https://equipped-falcon-217063.upstash.io',
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || 'gQAAAAAAA0_nAAIgcDI1NzMwZmZiODc3ODI0YWYwYWFjNDRjMTNkNDQ1ODRjOQ',
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
 // Load the updated mockData

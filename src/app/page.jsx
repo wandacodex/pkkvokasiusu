@@ -113,7 +113,7 @@ export default function HomePage() {
                   <div className="title-fill__icon">
                     <img src="/ornament/flower-ora.svg" alt="" />
                   </div>
-                  <span className="title-fill__text">Format Word (.docx) • 10 Berkas Resmi</span>
+                  <span className="title-fill__text">Format Word (.docx) • 18 Berkas Resmi</span>
                 </div>
                 <h2 style={{ fontSize: 'clamp(1.25rem, 3vw, 1.6rem)', color: 'var(--usu-green-dark)', fontWeight: 800, marginBottom: '0.25rem' }}>
                   Koleksi Template Surat Permohonan Mahasiswa
@@ -162,13 +162,9 @@ export default function HomePage() {
                       </span>
                     </div>
 
-                    <h3 style={{ fontSize: '1rem', color: 'var(--text-main)', marginBottom: '0.45rem', lineHeight: 1.45, fontWeight: 700 }}>
+                    <h3 style={{ fontSize: '1rem', color: 'var(--text-main)', marginBottom: '1.25rem', lineHeight: 1.45, fontWeight: 700 }}>
                       {item.nama}
                     </h3>
-
-                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '1.25rem' }}>
-                      {item.deskripsi?.length > 95 ? `${item.deskripsi.substring(0, 95)}...` : item.deskripsi}
-                    </p>
                   </div>
 
                   {/* Redirect directly to /surat without direct download */}
@@ -213,7 +209,7 @@ export default function HomePage() {
                 <span>Seluruh dokumen telah disesuaikan dengan format tata naskah dinas Fakultas Vokasi USU.</span>
               </div>
               <Link href="/surat" style={{ color: 'var(--usu-green)', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                <span>Lihat Seluruh 10 Template</span>
+                <span>Lihat Seluruh 18 Template</span>
                 <ChevronRight size={14} />
               </Link>
             </div>

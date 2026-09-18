@@ -68,6 +68,20 @@ export async function GET(request) {
   }
 }
 
+// Helper: validate HTTP/HTTPS url safely
+function sanitizeImageUrl(rawUrl, fallback = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80') {
+  if (!rawUrl || typeof rawUrl !== 'string') return fallback;
+  try {
+    const parsed = new URL(rawUrl);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return parsed.href;
+    }
+    return fallback;
+  } catch (_) {
+    return fallback;
+  }
+}
+
 export async function POST(request) {
   try {
     const session = await getServerSession(authOptions);
@@ -80,22 +94,26 @@ export async function POST(request) {
     // Support bulk insertion for Excel import
     const items = Array.isArray(body) ? body : body.items;
     if (Array.isArray(items)) {
+      if (items.length > 1000) {
+        return NextResponse.json({ success: false, error: 'Jumlah data impor melebihi batas maksimal (1.000 baris per unggahan)' }, { status: 400 });
+      }
+
       const validItems = items
         .filter(item => item.nama && item.nim && item.namaKompetisi && item.capaian)
         .map(item => ({
           id: `MAPRES-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          nim: String(item.nim).trim(),
-          nama: String(item.nama).trim(),
-          prodi: item.prodi || 'D3 Teknik Informatika',
-          namaKompetisi: String(item.namaKompetisi).trim(),
-          capaian: String(item.capaian).trim(),
-          tingkat: item.tingkat || 'Nasional',
-          kategori: item.kategori || 'Sains & Teknologi Terapan',
+          nim: String(item.nim).trim().slice(0, 30),
+          nama: String(item.nama).trim().slice(0, 150),
+          prodi: String(item.prodi || 'D3 Teknik Informatika').slice(0, 100),
+          namaKompetisi: String(item.namaKompetisi).trim().slice(0, 200),
+          capaian: String(item.capaian).trim().slice(0, 100),
+          tingkat: String(item.tingkat || 'Nasional').slice(0, 50),
+          kategori: String(item.kategori || 'Sains & Teknologi Terapan').slice(0, 100),
           tahun: Number(item.tahun) || new Date().getFullYear(),
-          penyelenggara: item.penyelenggara || 'Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi',
-          dosenPembimbing: item.dosenPembimbing || 'Dosen Pembimbing Vokasi USU',
-          fotoUrl: item.fotoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80',
-          deskripsi: item.deskripsi || 'Prestasi membanggakan mahasiswa Fakultas Vokasi Universitas Sumatera Utara.'
+          penyelenggara: String(item.penyelenggara || 'Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi').slice(0, 200),
+          dosenPembimbing: String(item.dosenPembimbing || 'Dosen Pembimbing Vokasi USU').slice(0, 150),
+          fotoUrl: sanitizeImageUrl(item.fotoUrl),
+          deskripsi: String(item.deskripsi || 'Prestasi membanggakan mahasiswa Fakultas Vokasi Universitas Sumatera Utara.').slice(0, 1000)
         }));
 
       if (validItems.length === 0) {
@@ -119,24 +137,25 @@ export async function POST(request) {
 
     const newItem = {
       id: `MAPRES-${Date.now()}`,
-      nim: body.nim,
-      nama: body.nama,
-      prodi: body.prodi || 'D3 Manajemen Informatika',
-      namaKompetisi: body.namaKompetisi,
-      capaian: body.capaian,
-      tingkat: body.tingkat || 'Nasional',
-      kategori: body.kategori || 'Sains & Teknologi Terapan',
+      nim: String(body.nim).trim().slice(0, 30),
+      nama: String(body.nama).trim().slice(0, 150),
+      prodi: String(body.prodi || 'D3 Manajemen Informatika').slice(0, 100),
+      namaKompetisi: String(body.namaKompetisi).trim().slice(0, 200),
+      capaian: String(body.capaian).trim().slice(0, 100),
+      tingkat: String(body.tingkat || 'Nasional').slice(0, 50),
+      kategori: String(body.kategori || 'Sains & Teknologi Terapan').slice(0, 100),
       tahun: Number(body.tahun) || new Date().getFullYear(),
-      penyelenggara: body.penyelenggara || 'Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi',
-      dosenPembimbing: body.dosenPembimbing || 'Dosen Pembimbing Vokasi USU',
-      fotoUrl: body.fotoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80',
-      deskripsi: body.deskripsi || 'Prestasi membanggakan mahasiswa Fakultas Vokasi Universitas Sumatera Utara.'
+      penyelenggara: String(body.penyelenggara || 'Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi').slice(0, 200),
+      dosenPembimbing: String(body.dosenPembimbing || 'Dosen Pembimbing Vokasi USU').slice(0, 150),
+      fotoUrl: sanitizeImageUrl(body.fotoUrl),
+      deskripsi: String(body.deskripsi || 'Prestasi membanggakan mahasiswa Fakultas Vokasi Universitas Sumatera Utara.').slice(0, 1000)
     };
 
     const saved = await addItem(KEYS.PRESTASI, newItem);
     return NextResponse.json({ success: true, data: saved, message: 'Data prestasi mahasiswa berhasil ditambahkan!' });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error('[API_PRESTASI_POST_ERROR]', error);
+    return NextResponse.json({ success: false, error: 'Terjadi kesalahan sistem saat menyimpan data prestasi.' }, { status: 500 });
   }
 }
 
@@ -152,10 +171,26 @@ export async function PUT(request) {
       return NextResponse.json({ success: false, error: 'ID Prestasi diperlukan' }, { status: 400 });
     }
 
-    const updated = await updateItem(KEYS.PRESTASI, body.id, body);
+    // Whitelist field yang diizinkan untuk diubah
+    const allowedUpdates = {};
+    if (body.nim !== undefined) allowedUpdates.nim = String(body.nim).trim().slice(0, 30);
+    if (body.nama !== undefined) allowedUpdates.nama = String(body.nama).trim().slice(0, 150);
+    if (body.prodi !== undefined) allowedUpdates.prodi = String(body.prodi).slice(0, 100);
+    if (body.namaKompetisi !== undefined) allowedUpdates.namaKompetisi = String(body.namaKompetisi).trim().slice(0, 200);
+    if (body.capaian !== undefined) allowedUpdates.capaian = String(body.capaian).trim().slice(0, 100);
+    if (body.tingkat !== undefined) allowedUpdates.tingkat = String(body.tingkat).slice(0, 50);
+    if (body.kategori !== undefined) allowedUpdates.kategori = String(body.kategori).slice(0, 100);
+    if (body.tahun !== undefined) allowedUpdates.tahun = Number(body.tahun) || new Date().getFullYear();
+    if (body.penyelenggara !== undefined) allowedUpdates.penyelenggara = String(body.penyelenggara).slice(0, 200);
+    if (body.dosenPembimbing !== undefined) allowedUpdates.dosenPembimbing = String(body.dosenPembimbing).slice(0, 150);
+    if (body.fotoUrl !== undefined) allowedUpdates.fotoUrl = sanitizeImageUrl(body.fotoUrl);
+    if (body.deskripsi !== undefined) allowedUpdates.deskripsi = String(body.deskripsi).slice(0, 1000);
+
+    const updated = await updateItem(KEYS.PRESTASI, body.id, allowedUpdates);
     return NextResponse.json({ success: true, data: updated, message: 'Data prestasi berhasil diperbarui' });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error('[API_PRESTASI_PUT_ERROR]', error);
+    return NextResponse.json({ success: false, error: 'Terjadi kesalahan sistem saat memperbarui data prestasi.' }, { status: 500 });
   }
 }
 
@@ -175,6 +210,7 @@ export async function DELETE(request) {
     await deleteItem(KEYS.PRESTASI, id);
     return NextResponse.json({ success: true, message: 'Data prestasi berhasil dihapus' });
   } catch (error) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    console.error('[API_PRESTASI_DELETE_ERROR]', error);
+    return NextResponse.json({ success: false, error: 'Terjadi kesalahan sistem saat menghapus data prestasi.' }, { status: 500 });
   }
 }
