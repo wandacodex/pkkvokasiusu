@@ -327,6 +327,26 @@ export const TEMPLATE_SURAT = [
       "KRS dan KHS dari awal studi sampai semester terakhir",
       "Surat Izin PKA sebelumnya (jika melakukan perpanjangan PKA)"
     ]
+  },
+  {
+    id: "surat-perubahan-data-pddikti",
+    kode: "SPDM",
+    nama: "Surat Permohonan Perubahan Data Mahasiswa (PDM) Pada PDDIKTI",
+    kategori: "Administrasi Akademik",
+    fileName: "Surat Permohonan Perubahan Data Mahasiswa (Pdm) Pada Pddikti.docx",
+    fileUrl: "/assets/templatesurat/Surat Permohonan Perubahan Data Mahasiswa (Pdm) Pada Pddikti.docx",
+    fileSize: "21.8 KB",
+    formatDokumen: "DOCX (Word)",
+    estimasiWaktu: "2 - 3 Hari Kerja",
+    deskripsi: "Surat permohonan resmi perubahan / perbaikan data mahasiswa pada Pangkalan Data Pendidikan Tinggi (PDDIKTI) seperti perbaikan Nama, NIM, Tempat/Tanggal Lahir, atau Nama Ibu Kandung bermaterai Rp10.000.",
+    syarat: [
+      "Surat permohonan bermaterai Rp10.000 ditandatangani pemohon",
+      "Scan/Fotokopi Ijazah Pendidikan Terakhir (SMA/SMK/D3/S1) yang dilegalisir",
+      "Scan/Fotokopi Kartu Tanda Penduduk (KTP) dan Kartu Keluarga (KK)",
+      "Scan/Fotokopi Akta Kelahiran Mahasiswa",
+      "Scan Kartu Tanda Mahasiswa (KTM) aktif atau Transkrip Nilai Sementara",
+      "Dokumen resmi pendukung perubahan data lainnya (bila ada)"
+    ]
   }
 ];
 
@@ -36576,177 +36596,14 @@ export const INITIAL_PRESTASI = [
   }
 ];
 
-// 3. Data Rekapitulasi Statistik Tiap Program Studi (Dari TRACER STUDY LULUSAN 2025.xlsx)
-export const TRACER_PRODI_STATS = [
-  {
-    "no": 1,
-    "prodi": "D3 Akuntansi",
-    "lulusan": 58,
-    "bekerja": 10,
-    "belumMemungkinkan": 3,
-    "wiraswasta": 1,
-    "melanjutkanPendidikan": 6,
-    "mencariKerja": 38,
-    "totalRespons": 58,
-    "responRatePct": "100.0"
-  },
-  {
-    "no": 2,
-    "prodi": "D3 Kesekretariatan",
-    "lulusan": 55,
-    "bekerja": 5,
-    "belumMemungkinkan": 1,
-    "wiraswasta": 3,
-    "melanjutkanPendidikan": 1,
-    "mencariKerja": 45,
-    "totalRespons": 55,
-    "responRatePct": "100.0"
-  },
-  {
-    "no": 3,
-    "prodi": "D3 Keuangan",
-    "lulusan": 58,
-    "bekerja": 10,
-    "belumMemungkinkan": 2,
-    "wiraswasta": 21,
-    "melanjutkanPendidikan": 1,
-    "mencariKerja": 24,
-    "totalRespons": 58,
-    "responRatePct": "100.0"
-  },
-  {
-    "no": 4,
-    "prodi": "D3 Analis Farmasi dan Makanan",
-    "lulusan": 16,
-    "bekerja": 0,
-    "belumMemungkinkan": 1,
-    "wiraswasta": 0,
-    "melanjutkanPendidikan": 5,
-    "mencariKerja": 7,
-    "totalRespons": 13,
-    "responRatePct": "81.3"
-  },
-  {
-    "no": 5,
-    "prodi": "D3 Perpajakan",
-    "lulusan": 69,
-    "bekerja": 13,
-    "belumMemungkinkan": 2,
-    "wiraswasta": 0,
-    "melanjutkanPendidikan": 3,
-    "mencariKerja": 49,
-    "totalRespons": 67,
-    "responRatePct": "97.1"
-  },
-  {
-    "no": 6,
-    "prodi": "D3 Bahasa Inggris",
-    "lulusan": 47,
-    "bekerja": 7,
-    "belumMemungkinkan": 2,
-    "wiraswasta": 1,
-    "melanjutkanPendidikan": 1,
-    "mencariKerja": 35,
-    "totalRespons": 46,
-    "responRatePct": "97.9"
-  },
-  {
-    "no": 7,
-    "prodi": "D3 Bahasa Jepang",
-    "lulusan": 12,
-    "bekerja": 2,
-    "belumMemungkinkan": 1,
-    "wiraswasta": 0,
-    "melanjutkanPendidikan": 1,
-    "mencariKerja": 8,
-    "totalRespons": 12,
-    "responRatePct": "100.0"
-  },
-  {
-    "no": 8,
-    "prodi": "D3 Perpustakaan",
-    "lulusan": 28,
-    "bekerja": 4,
-    "belumMemungkinkan": 2,
-    "wiraswasta": 0,
-    "melanjutkanPendidikan": 2,
-    "mencariKerja": 21,
-    "totalRespons": 29,
-    "responRatePct": "103.6"
-  },
-  {
-    "no": 9,
-    "prodi": "D3 Perjalanan Wisata",
-    "lulusan": 65,
-    "bekerja": 17,
-    "belumMemungkinkan": 2,
-    "wiraswasta": 1,
-    "melanjutkanPendidikan": 0,
-    "mencariKerja": 45,
-    "totalRespons": 65,
-    "responRatePct": "100.0"
-  },
-  {
-    "no": 10,
-    "prodi": "D3 Kimia",
-    "lulusan": 44,
-    "bekerja": 2,
-    "belumMemungkinkan": 0,
-    "wiraswasta": 0,
-    "melanjutkanPendidikan": 1,
-    "mencariKerja": 41,
-    "totalRespons": 44,
-    "responRatePct": "100.0"
-  },
-  {
-    "no": 11,
-    "prodi": "D3 Fisika",
-    "lulusan": 23,
-    "bekerja": 5,
-    "belumMemungkinkan": 0,
-    "wiraswasta": 0,
-    "melanjutkanPendidikan": 1,
-    "mencariKerja": 16,
-    "totalRespons": 22,
-    "responRatePct": "95.7"
-  },
-  {
-    "no": 12,
-    "prodi": "D3 Teknik Informatika",
-    "lulusan": 48,
-    "bekerja": 3,
-    "belumMemungkinkan": 7,
-    "wiraswasta": 1,
-    "melanjutkanPendidikan": 3,
-    "mencariKerja": 34,
-    "totalRespons": 48,
-    "responRatePct": "100.0"
-  },
-  {
-    "no": 13,
-    "prodi": "D3 Metrologi dan Instrumentasi",
-    "lulusan": 56,
-    "bekerja": 9,
-    "belumMemungkinkan": 0,
-    "wiraswasta": 6,
-    "melanjutkanPendidikan": 1,
-    "mencariKerja": 40,
-    "totalRespons": 56,
-    "responRatePct": "100.0"
-  },
-  {
-    "no": 14,
-    "prodi": "D3 Statistika",
-    "lulusan": 46,
-    "bekerja": 6,
-    "belumMemungkinkan": 5,
-    "wiraswasta": 1,
-    "melanjutkanPendidikan": 2,
-    "mencariKerja": 30,
-    "totalRespons": 44,
-    "responRatePct": "95.7"
-  }
-];
+// 3. Data Rekapitulasi Statistik Tiap Program Studi (Dari LAPORAN TRACER STUDY.xlsx)
+export {
+  TRACER_DATA_SOURCE_INFO,
+  TRACER_YEARLY_DATA,
+  TRACER_PRODI_STATS_2025,
+  TRACER_MULTI_YEAR_TREND
+} from './tracerStudyData';
+export { TRACER_PRODI_STATS_2025 as TRACER_PRODI_STATS } from './tracerStudyData';
 
 // 4. Data Bank Alumni Tracer Study (617 Responden dari TRACER STUDY LULUSAN 2025.xlsx)
 export const INITIAL_TRACER = [

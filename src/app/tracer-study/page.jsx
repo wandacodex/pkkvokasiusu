@@ -19,9 +19,23 @@ import {
   SlidersHorizontal,
   Check,
   RotateCcw,
-  Sparkles
+  Sparkles,
+  Download,
+  Calendar,
+  FileSpreadsheet
 } from 'lucide-react';
 import { TRACER_PRODI_STATS } from '@/src/lib/mockData';
+import {
+  TRACER_YEARLY_DATA,
+  TRACER_DATA_SOURCE_INFO,
+  TRACER_MULTI_YEAR_TREND,
+  TRACER_PRODI_STATS_2025
+} from '@/src/lib/tracerStudyData';
+import {
+  ALUMNI_WISUDAWAN_SUMMARY,
+  REKAP_WISUDAWAN_PRODI,
+  YEARLY_WISUDAWAN_DATA
+} from '@/src/lib/alumniData';
 
 // Helper to make buttery-smooth curved line path in SVG
 function makeSmoothPath(points) {
@@ -42,10 +56,17 @@ function makeSmoothPath(points) {
 }
 
 export default function TracerStudyPage() {
-  const [prodiStats, setProdiStats] = useState(TRACER_PRODI_STATS || []);
-  const [loading, setLoading] = useState(true);
+  const [tracerYear, setTracerYear] = useState('2025');
+  const [prodiStats, setProdiStats] = useState(TRACER_YEARLY_DATA['2025']?.prodiStats || TRACER_PRODI_STATS || []);
+  const [tableTab, setTableTab] = useState('status'); // 'status' | 'triwulan'
+  const [loading, setLoading] = useState(false);
   const [hoveredProdiIndex, setHoveredProdiIndex] = useState(null);
   const [prodiFilterSearch, setProdiFilterSearch] = useState('');
+
+  // Alumni Wisudawan States (Data Jumlah Wisudawan Fakultas Vokasi.xlsx)
+  const [alumniYear, setAlumniYear] = useState('semua');
+  const [alumniJenjang, setAlumniJenjang] = useState('Semua');
+  const [alumniSearch, setAlumniSearch] = useState('');
 
   // Series visibility toggles for Line Chart 1
   const [visibleSeries, setVisibleSeries] = useState({
@@ -115,23 +136,27 @@ export default function TracerStudyPage() {
     },
   ];
 
+  const handleTracerYearChange = (yr) => {
+    setTracerYear(yr);
+    if (TRACER_YEARLY_DATA[yr]?.prodiStats) {
+      setProdiStats(TRACER_YEARLY_DATA[yr].prodiStats);
+    }
+  };
+
   useEffect(() => {
     async function fetchTracer() {
       try {
-        setLoading(true);
-        const res = await fetch('/api/tracer');
+        const res = await fetch(`/api/tracer?tahun=${tracerYear}`);
         const data = await res.json();
         if (data.success && data.prodiStats && data.prodiStats.length > 0) {
           setProdiStats(data.prodiStats);
         }
       } catch (err) {
         console.error('Error fetching tracer study:', err);
-      } finally {
-        setLoading(false);
       }
     }
     fetchTracer();
-  }, []);
+  }, [tracerYear]);
 
   // Aggregated totals across all 14 Prodis
   const totals = useMemo(() => {
@@ -144,12 +169,16 @@ export default function TracerStudyPage() {
         melanjutkanPendidikan: acc.melanjutkanPendidikan + (curr.melanjutkanPendidikan || 0),
         mencariKerja: acc.mencariKerja + (curr.mencariKerja || 0),
         totalRespons: acc.totalRespons + (curr.totalRespons || 0),
+        tw1: acc.tw1 + (curr.triwulan?.['TW I'] || 0),
+        tw2: acc.tw2 + (curr.triwulan?.['TW II'] || 0),
+        tw3: acc.tw3 + (curr.triwulan?.['TW III'] || 0),
+        tw4: acc.tw4 + (curr.triwulan?.['TW IV'] || 0),
       }),
-      { lulusan: 0, bekerja: 0, belumMemungkinkan: 0, wiraswasta: 0, melanjutkanPendidikan: 0, mencariKerja: 0, totalRespons: 0 }
+      { lulusan: 0, bekerja: 0, belumMemungkinkan: 0, wiraswasta: 0, melanjutkanPendidikan: 0, mencariKerja: 0, totalRespons: 0, tw1: 0, tw2: 0, tw3: 0, tw4: 0 }
     );
   }, [prodiStats]);
 
-  const overallResponseRate = totals.lulusan ? ((totals.totalRespons / totals.lulusan) * 100).toFixed(1) : '98.7';
+  const overallResponseRate = totals.lulusan ? ((totals.totalRespons / totals.lulusan) * 100).toFixed(1) : '0.0';
 
   // KPI Categories Data
   const categoriesKpi = [
@@ -223,8 +252,31 @@ export default function TracerStudyPage() {
   // X Coordinate for each Prodi
   const getX = (i) => padL + (i / Math.max(1, prodiStats.length - 1)) * plotW;
 
-  // Max Y value for Count Line Chart
-  const yCountMax = 50; // max value in prodi status is 49 (D3 Perpajakan mencari kerja)
+  // Dynamic Max Y value for Count Line Chart
+  const yCountMax = useMemo(() => {
+    let maxVal = 20;
+    prodiStats.forEach((p) => {
+      ['mencariKerja', 'bekerja', 'wiraswasta', 'melanjutkanPendidikan', 'belumMemungkinkan'].forEach((k) => {
+        if (visibleSeries[k] && (p[k] || 0) > maxVal) {
+          maxVal = p[k];
+        }
+      });
+      if (visibleSeries.totalRespons && (p.totalRespons || 0) > maxVal) {
+        maxVal = p.totalRespons;
+      }
+    });
+    return Math.max(40, Math.ceil((maxVal + 5) / 10) * 10);
+  }, [prodiStats, visibleSeries]);
+
+  const yTicks = useMemo(() => {
+    const ticks = [];
+    const step = yCountMax <= 50 ? 10 : (yCountMax <= 80 ? 15 : 20);
+    for (let v = 0; v <= yCountMax; v += step) {
+      ticks.push(v);
+    }
+    return ticks;
+  }, [yCountMax]);
+
   const getYCount = (val) => padT + (1 - Math.min(yCountMax, Math.max(0, val)) / yCountMax) * plotH;
 
   // Compute points and SVG paths for each series
@@ -243,14 +295,24 @@ export default function TracerStudyPage() {
       };
     });
     return res;
-  }, [prodiStats]);
+  }, [prodiStats, yCountMax]);
 
-  // Rate Chart Geometry
+  // Rate Chart Geometry (scales with any year's response rates)
   const rateH = 300;
   const ratePadB = 85;
   const ratePlotH = rateH - padT - ratePadB;
-  const rateMin = 75;
-  const rateMax = 105;
+  const rateMin = 0;
+  const rateMax = useMemo(() => {
+    let maxR = 100;
+    prodiStats.forEach((p) => {
+      const r = parseFloat(p.responRatePct || 0);
+      if (r > maxR) maxR = r;
+    });
+    return Math.max(105, Math.ceil((maxR + 5) / 10) * 10);
+  }, [prodiStats]);
+
+  const rateTicks = [0, 25, 50, 75, 100];
+
   const getYRate = (pct) => padT + (1 - (Math.min(rateMax, Math.max(rateMin, pct)) - rateMin) / (rateMax - rateMin)) * ratePlotH;
 
   const ratePoints = useMemo(() => {
@@ -274,6 +336,48 @@ export default function TracerStudyPage() {
 
   // Filtered prodi for data table
   const filteredProdi = prodiStats.filter(p => !prodiFilterSearch || p.prodi.toLowerCase().includes(prodiFilterSearch.toLowerCase()));
+
+  // Filtered Alumni & Wisudawan from Data Jumlah Wisudawan Fakultas Vokasi.xlsx
+  const filteredAlumniData = useMemo(() => {
+    let list = [];
+    if (alumniYear === 'semua') {
+      list = REKAP_WISUDAWAN_PRODI;
+    } else {
+      list = YEARLY_WISUDAWAN_DATA[alumniYear]?.prodis || [];
+    }
+
+    return list.filter((item) => {
+      const matchJenjang = alumniJenjang === 'Semua' || item.jenjang === alumniJenjang;
+      const matchSearch = !alumniSearch || item.prodi.toLowerCase().includes(alumniSearch.toLowerCase());
+      return matchJenjang && matchSearch;
+    });
+  }, [alumniYear, alumniJenjang, alumniSearch]);
+
+  const alumniTotals = useMemo(() => {
+    if (alumniYear === 'semua') {
+      return filteredAlumniData.reduce(
+        (acc, item) => ({
+          y22_23: acc.y22_23 + (item.y22_23 || 0),
+          y23_24: acc.y23_24 + (item.y23_24 || 0),
+          y24_25: acc.y24_25 + (item.y24_25 || 0),
+          y25_26: acc.y25_26 + (item.y25_26 || 0),
+          total: acc.total + (item.total || 0),
+        }),
+        { y22_23: 0, y23_24: 0, y24_25: 0, y25_26: 0, total: 0 }
+      );
+    } else {
+      return filteredAlumniData.reduce(
+        (acc, item) => ({
+          p1: acc.p1 + (item.p1 || 0),
+          p2: acc.p2 + (item.p2 || 0),
+          p3: acc.p3 + (item.p3 || 0),
+          p4: acc.p4 + (item.p4 || 0),
+          total: acc.total + (item.total || 0),
+        }),
+        { p1: 0, p2: 0, p3: 0, p4: 0, total: 0 }
+      );
+    }
+  }, [filteredAlumniData, alumniYear]);
 
   const activeHoveredProdi = hoveredProdiIndex !== null ? prodiStats[hoveredProdiIndex] : null;
 
@@ -386,24 +490,97 @@ export default function TracerStudyPage() {
           </div>
         </div>
 
+        {/* Toolbar Pemilih Tahun Laporan Tracer Study & Unduh Berkas */}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '1rem',
+            marginBottom: '1.75rem',
+            backgroundColor: '#ffffff',
+            padding: '1.1rem 1.4rem',
+            borderRadius: '16px',
+            border: '1px solid var(--border-subtle)',
+            boxShadow: '0 3px 12px rgba(0,0,0,0.03)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', color: 'var(--usu-green-dark)', fontWeight: 800, fontSize: '0.9rem' }}>
+              <Calendar size={18} style={{ color: 'var(--usu-green)' }} />
+              <span>Tahun Lulusan Tracer:</span>
+            </div>
+            <div style={{ display: 'inline-flex', backgroundColor: '#f1f5f9', padding: '4px', borderRadius: '12px', gap: '4px' }}>
+              {['2025', '2024', '2023', '2022'].map((yr) => {
+                const isActive = tracerYear === yr;
+                return (
+                  <button
+                    key={yr}
+                    type="button"
+                    onClick={() => handleTracerYearChange(yr)}
+                    style={{
+                      padding: '0.5rem 1.1rem',
+                      borderRadius: '9px',
+                      fontSize: '0.875rem',
+                      fontWeight: isActive ? 800 : 600,
+                      border: 'none',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      backgroundColor: isActive ? 'var(--usu-green)' : 'transparent',
+                      color: isActive ? '#ffffff' : 'var(--text-muted)',
+                      boxShadow: isActive ? '0 2px 8px rgba(0, 101, 53, 0.25)' : 'none',
+                    }}
+                  >
+                    {yr === '2025' ? '2025 (Terbaru)' : yr}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              Berkas: <strong>LAPORAN TRACER STUDY.xlsx</strong>
+            </span>
+            <a
+              href="/data/LAPORAN TRACER STUDY.xlsx"
+              download="LAPORAN TRACER STUDY.xlsx"
+              className="btn btn-secondary"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                fontSize: '0.825rem',
+                padding: '0.5rem 1rem',
+                borderRadius: '9px',
+                textDecoration: 'none'
+              }}
+            >
+              <Download size={15} />
+              <span>Unduh File Excel Asli</span>
+            </a>
+          </div>
+        </div>
+
         {/* Section Heading: KPI Cards */}
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', gap: '1rem', marginBottom: '1.75rem' }}>
           <div>
             <span className="badge badge-green" style={{ marginBottom: '0.5rem' }}>
-              Sinkronisasi Berkas: REKAPITULASI TRACER STUDY LULUSAN 2025.xlsx
+              Sinkronisasi Berkas: LAPORAN TRACER STUDY.xlsx • Sheet {tracerYear}
             </span>
             <h2 style={{ fontSize: '1.8rem', color: 'var(--usu-green-dark)', fontWeight: 800, margin: 0 }}>
-              Ringkasan Capaian Tracer Study Fakultas Vokasi
+              Ringkasan Capaian Tracer Study {tracerYear === '2025' ? 'Lulusan 2025 (Terbaru)' : `Lulusan ${tracerYear}`}
             </h2>
             <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>
-              Akumulasi 617 responden terlacak dari 625 lulusan tahun 2024 pada seluruh 14 Program Studi Diploma III (D3).
+              Akumulasi {totals.totalRespons} responden terlacak dari {totals.lulusan} lulusan tahun {tracerYear} pada seluruh 14 Program Studi Diploma III (D3).
             </p>
           </div>
 
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.75rem', backgroundColor: '#ffffff', padding: '0.6rem 1.2rem', borderRadius: '12px', border: '1px solid var(--border-subtle)', boxShadow: '0 2px 6px rgba(0,0,0,0.04)' }}>
             <Activity size={22} style={{ color: 'var(--usu-green)' }} />
             <div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', lineHeight: 1.2 }}>Respon Rate Fakultas</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-light)', lineHeight: 1.2 }}>Respon Rate Fakultas ({tracerYear})</div>
               <strong style={{ fontSize: '1.15rem', color: 'var(--usu-green-dark)' }}>{totals.totalRespons} / {totals.lulusan} Mahasiswa ({overallResponseRate}%)</strong>
             </div>
           </div>
@@ -579,8 +756,8 @@ export default function TracerStudyPage() {
               {/* Chart Plot Background */}
               <rect x={padL} y={padT} width={plotW} height={plotH} fill="url(#gridGrad)" rx="6" />
 
-              {/* Y-Axis Grid Lines & Numbers (0, 10, 20, 30, 40, 50) */}
-              {[0, 10, 20, 30, 40, 50].map((val) => {
+              {/* Y-Axis Grid Lines & Numbers */}
+              {yTicks.map((val) => {
                 const y = getYCount(val);
                 return (
                   <g key={val}>
@@ -813,7 +990,7 @@ export default function TracerStudyPage() {
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.25rem', fontSize: '0.8rem', color: 'var(--text-light)', borderTop: '1px solid #f1f5f9', paddingTop: '0.85rem' }}>
             <div>* Arahkan kursor / klik titik diagram garis untuk melihat rincian persis tiap Program Studi.</div>
-            <div>Sumber Data: File Resmi REKAPITULASI TRACER STUDY LULUSAN 2025.xlsx</div>
+            <div>Sumber Data: File Resmi public/data/LAPORAN TRACER STUDY.xlsx (Sheet: {tracerYear})</div>
           </div>
         </div>
 
@@ -828,17 +1005,17 @@ export default function TracerStudyPage() {
                 <span>Diagram Garis Capaian Respon (Area Line Chart)</span>
               </div>
               <h3 style={{ fontSize: '1.35rem', color: 'var(--usu-green-dark)', fontWeight: 800, margin: 0 }}>
-                Diagram Garis Capaian Respon Rate (%) Tiap Program Studi
+                Diagram Garis Capaian Respon Rate (%) Tiap Program Studi ({tracerYear})
               </h3>
               <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0.25rem 0 0' }}>
-                Kurva persentase tingkat partisipasi alumni menyelesaikan kuesioner pelacakan karir (Target Rata-rata: 98.7%).
+                Kurva persentase tingkat partisipasi alumni menyelesaikan kuesioner pelacakan karir (Rata-rata Vokasi: {overallResponseRate}%).
               </p>
             </div>
 
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', fontSize: '0.8rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                 <span style={{ width: '12px', height: '3px', backgroundColor: '#f59e0b', display: 'inline-block' }} />
-                <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Rata-rata Vokasi (98.7%)</span>
+                <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Rata-rata Vokasi ({overallResponseRate}%)</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                 <span style={{ width: '12px', height: '3px', backgroundColor: '#ef4444', display: 'inline-block' }} />
@@ -860,8 +1037,8 @@ export default function TracerStudyPage() {
                 </linearGradient>
               </defs>
 
-              {/* Y Grid lines for 80%, 90%, 100% */}
-              {[80, 90, 100].map((val) => {
+              {/* Y Grid lines */}
+              {rateTicks.map((val) => {
                 const y = getYRate(val);
                 return (
                   <g key={val}>
@@ -876,15 +1053,15 @@ export default function TracerStudyPage() {
               {/* Benchmark Reference Lines */}
               <line
                 x1={padL}
-                y1={getYRate(98.7)}
+                y1={getYRate(parseFloat(overallResponseRate) || 0)}
                 x2={padL + plotW}
-                y2={getYRate(98.7)}
+                y2={getYRate(parseFloat(overallResponseRate) || 0)}
                 stroke="#f59e0b"
                 strokeWidth="1.5"
                 strokeDasharray="6 3"
               />
-              <text x={padL + plotW + 5} y={getYRate(98.7) + 3} fontSize="10" fill="#d97706" fontWeight="700">
-                98.7%
+              <text x={padL + plotW + 5} y={getYRate(parseFloat(overallResponseRate) || 0) + 3} fontSize="10" fill="#d97706" fontWeight="700">
+                {overallResponseRate}%
               </text>
 
               <line
@@ -973,54 +1150,117 @@ export default function TracerStudyPage() {
         </div>
 
         {/* ========================================================================= */}
-        {/* TABEL DATA REKAPITULASI RESMI (SESUAI FILE EXCEL REKAPITULASI)           */}
+        {/* ========================================================================= */}
+        {/* TABEL 1: DATA REKAPITULASI SURVEI TRACER STUDY (LAPORAN TRACER STUDY.xlsx)*/}
         {/* ========================================================================= */}
         <div className="card" style={{ padding: '2rem', marginBottom: '2.5rem' }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
             <div>
-              <span className="badge badge-gold" style={{ marginBottom: '0.4rem' }}>
-                Sumber: public/data/REKAPITULASI TRACER STUDY LULUSAN 2025.xlsx
-              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
+                <span className="badge badge-gold">
+                  Sumber: public/data/LAPORAN TRACER STUDY.xlsx (Sheet: {tracerYear})
+                </span>
+                <span className="badge badge-green">
+                  {filteredProdi.length} Program Studi
+                </span>
+              </div>
               <h3 style={{ fontSize: '1.35rem', color: 'var(--usu-green-dark)', fontWeight: 800, margin: 0 }}>
-                Tabel Rekapitulasi Data Tiap Program Studi
+                Tabel Hasil Survei Tracer Study Lulusan {tracerYear}
               </h3>
               <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                Rincian resmi data sheet <em>&quot;Data tiap prodi&quot;</em> mencakup 14 Program Studi Diploma III (D3).
+                Rincian survei penelusuran lulusan tahun {tracerYear} pada seluruh 14 Program Studi Diploma III (D3).
               </p>
             </div>
 
-            <div style={{ position: 'relative', width: '280px' }}>
-              <input
-                type="text"
-                placeholder="Cari program studi..."
-                value={prodiFilterSearch}
-                onChange={(e) => setProdiFilterSearch(e.target.value)}
-                className="input-text"
-                style={{ paddingLeft: '2.4rem', height: '40px', fontSize: '0.875rem' }}
-              />
-              <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+              {/* Tab Selector: Status vs Triwulan */}
+              <div style={{ display: 'inline-flex', backgroundColor: '#f1f5f9', padding: '3px', borderRadius: '10px', gap: '3px' }}>
+                <button
+                  type="button"
+                  onClick={() => setTableTab('status')}
+                  style={{
+                    padding: '0.4rem 0.85rem',
+                    borderRadius: '7px',
+                    fontSize: '0.8rem',
+                    fontWeight: tableTab === 'status' ? 800 : 600,
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    backgroundColor: tableTab === 'status' ? '#ffffff' : 'transparent',
+                    color: tableTab === 'status' ? 'var(--usu-green-dark)' : 'var(--text-muted)',
+                    boxShadow: tableTab === 'status' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
+                  }}
+                >
+                  Status Karir (5 Kategori)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTableTab('triwulan')}
+                  style={{
+                    padding: '0.4rem 0.85rem',
+                    borderRadius: '7px',
+                    fontSize: '0.8rem',
+                    fontWeight: tableTab === 'triwulan' ? 800 : 600,
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    backgroundColor: tableTab === 'triwulan' ? '#ffffff' : 'transparent',
+                    color: tableTab === 'triwulan' ? 'var(--usu-green-dark)' : 'var(--text-muted)',
+                    boxShadow: tableTab === 'triwulan' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
+                  }}
+                >
+                  Distribusi Triwulan (TW I - IV)
+                </button>
+              </div>
+
+              <div style={{ position: 'relative', width: '240px' }}>
+                <input
+                  type="text"
+                  placeholder="Cari program studi survei..."
+                  value={prodiFilterSearch}
+                  onChange={(e) => setProdiFilterSearch(e.target.value)}
+                  className="input-text"
+                  style={{ paddingLeft: '2.4rem', height: '38px', fontSize: '0.85rem' }}
+                />
+                <Search size={15} style={{ position: 'absolute', left: '11px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} />
+              </div>
             </div>
           </div>
 
           <div className="table-wrapper">
             <table className="custom-table" style={{ fontSize: '0.875rem' }}>
               <thead>
-                <tr>
-                  <th style={{ width: '45px', textAlign: 'center' }}>No</th>
-                  <th style={{ minWidth: '220px' }}>Program Studi</th>
-                  <th style={{ width: '100px', textAlign: 'center' }}>Lulusan 2024</th>
-                  <th style={{ width: '90px', textAlign: 'center', color: '#059669' }}>Bekerja</th>
-                  <th style={{ width: '95px', textAlign: 'center', color: '#64748b' }}>Belum Bekerja</th>
-                  <th style={{ width: '95px', textAlign: 'center', color: '#d97706' }}>Wiraswasta</th>
-                  <th style={{ width: '95px', textAlign: 'center', color: '#0284c7' }}>Melanjutkan</th>
-                  <th style={{ width: '105px', textAlign: 'center', color: '#7c3aed' }}>Masih Mencari</th>
-                  <th style={{ width: '105px', textAlign: 'center' }}>Total Respons</th>
-                  <th style={{ width: '110px', textAlign: 'center' }}>Respon Rate</th>
-                </tr>
+                {tableTab === 'status' ? (
+                  <tr>
+                    <th style={{ width: '45px', textAlign: 'center' }}>No</th>
+                    <th style={{ minWidth: '220px' }}>Program Studi</th>
+                    <th style={{ width: '100px', textAlign: 'center' }}>Lulusan {tracerYear}</th>
+                    <th style={{ width: '90px', textAlign: 'center', color: '#059669' }}>Bekerja</th>
+                    <th style={{ width: '95px', textAlign: 'center', color: '#64748b' }}>Belum Bekerja</th>
+                    <th style={{ width: '95px', textAlign: 'center', color: '#d97706' }}>Wiraswasta</th>
+                    <th style={{ width: '95px', textAlign: 'center', color: '#0284c7' }}>Melanjutkan</th>
+                    <th style={{ width: '105px', textAlign: 'center', color: '#7c3aed' }}>Masih Mencari</th>
+                    <th style={{ width: '105px', textAlign: 'center' }}>Total Respons</th>
+                    <th style={{ width: '110px', textAlign: 'center' }}>Respon Rate</th>
+                  </tr>
+                ) : (
+                  <tr>
+                    <th style={{ width: '45px', textAlign: 'center' }}>No</th>
+                    <th style={{ minWidth: '220px' }}>Program Studi</th>
+                    <th style={{ width: '100px', textAlign: 'center' }}>Lulusan {tracerYear}</th>
+                    <th style={{ width: '105px', textAlign: 'center', color: '#0284c7' }}>Triwulan I (TW I)</th>
+                    <th style={{ width: '105px', textAlign: 'center', color: '#059669' }}>Triwulan II (TW II)</th>
+                    <th style={{ width: '105px', textAlign: 'center', color: '#d97706' }}>Triwulan III (TW III)</th>
+                    <th style={{ width: '105px', textAlign: 'center', color: '#7c3aed' }}>Triwulan IV (TW IV)</th>
+                    <th style={{ width: '110px', textAlign: 'center' }}>Total Respons</th>
+                    <th style={{ width: '110px', textAlign: 'center' }}>Respon Rate</th>
+                  </tr>
+                )}
               </thead>
               <tbody>
                 {filteredProdi.map((p, idx) => {
                   const rate = p.responRatePct || (p.lulusan ? ((p.totalRespons / p.lulusan) * 100).toFixed(1) : '0.0');
+                  const isTriwulan = tableTab === 'triwulan';
                   return (
                     <tr key={p.prodi}>
                       <td style={{ textAlign: 'center', color: 'var(--text-light)', fontWeight: 600 }}>{p.no || idx + 1}</td>
@@ -1030,31 +1270,60 @@ export default function TracerStudyPage() {
                       <td style={{ textAlign: 'center', fontWeight: 700, backgroundColor: '#fafafa' }}>
                         {p.lulusan}
                       </td>
-                      <td style={{ textAlign: 'center' }}>
-                        <span style={{ padding: '0.2rem 0.55rem', borderRadius: '6px', backgroundColor: '#ecfdf5', color: '#059669', fontWeight: 700 }}>
-                          {p.bekerja}
-                        </span>
-                      </td>
-                      <td style={{ textAlign: 'center' }}>
-                        <span style={{ padding: '0.2rem 0.55rem', borderRadius: '6px', backgroundColor: '#f1f5f9', color: '#64748b', fontWeight: 600 }}>
-                          {p.belumMemungkinkan}
-                        </span>
-                      </td>
-                      <td style={{ textAlign: 'center' }}>
-                        <span style={{ padding: '0.2rem 0.55rem', borderRadius: '6px', backgroundColor: '#fffbeb', color: '#d97706', fontWeight: 700 }}>
-                          {p.wiraswasta}
-                        </span>
-                      </td>
-                      <td style={{ textAlign: 'center' }}>
-                        <span style={{ padding: '0.2rem 0.55rem', borderRadius: '6px', backgroundColor: '#f0f9ff', color: '#0284c7', fontWeight: 700 }}>
-                          {p.melanjutkanPendidikan}
-                        </span>
-                      </td>
-                      <td style={{ textAlign: 'center' }}>
-                        <span style={{ padding: '0.2rem 0.55rem', borderRadius: '6px', backgroundColor: '#f5f3ff', color: '#7c3aed', fontWeight: 700 }}>
-                          {p.mencariKerja}
-                        </span>
-                      </td>
+
+                      {isTriwulan ? (
+                        <>
+                          <td style={{ textAlign: 'center' }}>
+                            <span style={{ padding: '0.2rem 0.55rem', borderRadius: '6px', backgroundColor: '#f0f9ff', color: '#0284c7', fontWeight: 700 }}>
+                              {p.triwulan?.['TW I'] || 0}
+                            </span>
+                          </td>
+                          <td style={{ textAlign: 'center' }}>
+                            <span style={{ padding: '0.2rem 0.55rem', borderRadius: '6px', backgroundColor: '#ecfdf5', color: '#059669', fontWeight: 700 }}>
+                              {p.triwulan?.['TW II'] || 0}
+                            </span>
+                          </td>
+                          <td style={{ textAlign: 'center' }}>
+                            <span style={{ padding: '0.2rem 0.55rem', borderRadius: '6px', backgroundColor: '#fffbeb', color: '#d97706', fontWeight: 700 }}>
+                              {p.triwulan?.['TW III'] || 0}
+                            </span>
+                          </td>
+                          <td style={{ textAlign: 'center' }}>
+                            <span style={{ padding: '0.2rem 0.55rem', borderRadius: '6px', backgroundColor: '#f5f3ff', color: '#7c3aed', fontWeight: 700 }}>
+                              {p.triwulan?.['TW IV'] || 0}
+                            </span>
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td style={{ textAlign: 'center' }}>
+                            <span style={{ padding: '0.2rem 0.55rem', borderRadius: '6px', backgroundColor: '#ecfdf5', color: '#059669', fontWeight: 700 }}>
+                              {p.bekerja}
+                            </span>
+                          </td>
+                          <td style={{ textAlign: 'center' }}>
+                            <span style={{ padding: '0.2rem 0.55rem', borderRadius: '6px', backgroundColor: '#f1f5f9', color: '#64748b', fontWeight: 600 }}>
+                              {p.belumMemungkinkan}
+                            </span>
+                          </td>
+                          <td style={{ textAlign: 'center' }}>
+                            <span style={{ padding: '0.2rem 0.55rem', borderRadius: '6px', backgroundColor: '#fffbeb', color: '#d97706', fontWeight: 700 }}>
+                              {p.wiraswasta}
+                            </span>
+                          </td>
+                          <td style={{ textAlign: 'center' }}>
+                            <span style={{ padding: '0.2rem 0.55rem', borderRadius: '6px', backgroundColor: '#f0f9ff', color: '#0284c7', fontWeight: 700 }}>
+                              {p.melanjutkanPendidikan}
+                            </span>
+                          </td>
+                          <td style={{ textAlign: 'center' }}>
+                            <span style={{ padding: '0.2rem 0.55rem', borderRadius: '6px', backgroundColor: '#f5f3ff', color: '#7c3aed', fontWeight: 700 }}>
+                              {p.mencariKerja}
+                            </span>
+                          </td>
+                        </>
+                      )}
+
                       <td style={{ textAlign: 'center', fontWeight: 800, color: 'var(--usu-green-dark)' }}>
                         {p.totalRespons}
                       </td>
@@ -1065,8 +1334,8 @@ export default function TracerStudyPage() {
                             borderRadius: '999px',
                             fontSize: '0.775rem',
                             fontWeight: 800,
-                            backgroundColor: Number(rate) >= 95 ? '#dcfce7' : '#fef3c7',
-                            color: Number(rate) >= 95 ? '#15803d' : '#b45309',
+                            backgroundColor: Number(rate) >= 95 ? '#dcfce7' : (Number(rate) >= 75 ? '#fef3c7' : '#fee2e2'),
+                            color: Number(rate) >= 95 ? '#15803d' : (Number(rate) >= 75 ? '#b45309' : '#dc2626'),
                           }}
                         >
                           {rate}%
@@ -1079,26 +1348,47 @@ export default function TracerStudyPage() {
               <tfoot>
                 <tr style={{ backgroundColor: '#f8fafc', fontWeight: 800, borderTop: '2px solid var(--usu-green)', fontSize: '0.925rem' }}>
                   <td colSpan={2} style={{ textAlign: 'right', color: 'var(--usu-green-dark)', padding: '1rem' }}>
-                    TOTAL FAKULTAS VOKASI USU:
+                    TOTAL FAKULTAS VOKASI ({tracerYear}):
                   </td>
                   <td style={{ textAlign: 'center', color: 'var(--usu-green-dark)', backgroundColor: '#f1f5f9' }}>
                     {totals.lulusan} Orang
                   </td>
-                  <td style={{ textAlign: 'center', color: '#059669' }}>
-                    {totals.bekerja}
-                  </td>
-                  <td style={{ textAlign: 'center', color: '#64748b' }}>
-                    {totals.belumMemungkinkan}
-                  </td>
-                  <td style={{ textAlign: 'center', color: '#d97706' }}>
-                    {totals.wiraswasta}
-                  </td>
-                  <td style={{ textAlign: 'center', color: '#0284c7' }}>
-                    {totals.melanjutkanPendidikan}
-                  </td>
-                  <td style={{ textAlign: 'center', color: '#7c3aed' }}>
-                    {totals.mencariKerja}
-                  </td>
+
+                  {tableTab === 'triwulan' ? (
+                    <>
+                      <td style={{ textAlign: 'center', color: '#0284c7' }}>
+                        {totals.tw1}
+                      </td>
+                      <td style={{ textAlign: 'center', color: '#059669' }}>
+                        {totals.tw2}
+                      </td>
+                      <td style={{ textAlign: 'center', color: '#d97706' }}>
+                        {totals.tw3}
+                      </td>
+                      <td style={{ textAlign: 'center', color: '#7c3aed' }}>
+                        {totals.tw4}
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td style={{ textAlign: 'center', color: '#059669' }}>
+                        {totals.bekerja}
+                      </td>
+                      <td style={{ textAlign: 'center', color: '#64748b' }}>
+                        {totals.belumMemungkinkan}
+                      </td>
+                      <td style={{ textAlign: 'center', color: '#d97706' }}>
+                        {totals.wiraswasta}
+                      </td>
+                      <td style={{ textAlign: 'center', color: '#0284c7' }}>
+                        {totals.melanjutkanPendidikan}
+                      </td>
+                      <td style={{ textAlign: 'center', color: '#7c3aed' }}>
+                        {totals.mencariKerja}
+                      </td>
+                    </>
+                  )}
+
                   <td style={{ textAlign: 'center', color: 'var(--usu-green-dark)', fontSize: '1rem' }}>
                     {totals.totalRespons}
                   </td>
@@ -1107,6 +1397,542 @@ export default function TracerStudyPage() {
                       {overallResponseRate}%
                     </span>
                   </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        {/* ========================================================================= */}
+        {/* CARD KOMPARASI MULTI-TAHUN TRACER STUDY (2022 - 2025)                     */}
+        {/* ========================================================================= */}
+        <div className="card" style={{ padding: '2rem', marginBottom: '2.5rem', backgroundColor: '#ffffff', border: '1px solid var(--border-subtle)' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)' }}>
+            <div>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: 'var(--usu-green)', fontWeight: 700, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.25rem' }}>
+                <Layers size={16} />
+                <span>Rekapitulasi Lintas Tahun</span>
+              </div>
+              <h3 style={{ fontSize: '1.35rem', color: 'var(--usu-green-dark)', fontWeight: 800, margin: 0 }}>
+                Perbandingan Capaian Tracer Study Antar Tahun (2022 – 2025)
+              </h3>
+              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', margin: '0.25rem 0 0' }}>
+                Perbandingan akumulasi respon dan distribusi status transisi karir seluruh lulusan Fakultas Vokasi dari 4 sheet berkas laporan.
+              </p>
+            </div>
+
+            <span className="badge badge-gold" style={{ fontSize: '0.8rem' }}>
+              4 Tahun Laporan Resmi
+            </span>
+          </div>
+
+          <div className="table-wrapper">
+            <table className="custom-table" style={{ fontSize: '0.875rem' }}>
+              <thead>
+                <tr>
+                  <th style={{ width: '130px', textAlign: 'center' }}>Tahun Lulusan</th>
+                  <th style={{ width: '110px', textAlign: 'center' }}>Total Lulusan</th>
+                  <th style={{ width: '120px', textAlign: 'center' }}>Responden Survei</th>
+                  <th style={{ width: '110px', textAlign: 'center' }}>Respon Rate</th>
+                  <th style={{ textAlign: 'center', color: '#059669' }}>Bekerja</th>
+                  <th style={{ textAlign: 'center', color: '#d97706' }}>Wiraswasta</th>
+                  <th style={{ textAlign: 'center', color: '#0284c7' }}>Melanjutkan Studi</th>
+                  <th style={{ textAlign: 'center', color: '#64748b' }}>Belum Memungkinkan</th>
+                  <th style={{ textAlign: 'center', color: '#7c3aed' }}>Masih Mencari</th>
+                  <th style={{ width: '130px', textAlign: 'center' }}>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {TRACER_MULTI_YEAR_TREND.map((row) => {
+                  const isCurrent = tracerYear === row.tahun;
+                  return (
+                    <tr
+                      key={row.tahun}
+                      style={{
+                        backgroundColor: isCurrent ? 'rgba(0, 101, 53, 0.04)' : '#ffffff',
+                        borderLeft: isCurrent ? '4px solid var(--usu-green)' : 'none'
+                      }}
+                    >
+                      <td style={{ textAlign: 'center', fontWeight: 800 }}>
+                        <span style={{ fontSize: '1rem', color: isCurrent ? 'var(--usu-green)' : 'inherit' }}>
+                          Lulusan {row.tahun}
+                        </span>
+                        {row.tahun === '2025' && (
+                          <span style={{ marginLeft: '6px', fontSize: '0.675rem', padding: '2px 6px', borderRadius: '4px', backgroundColor: '#dcfce7', color: '#15803d', fontWeight: 700 }}>
+                            Terbaru
+                          </span>
+                        )}
+                      </td>
+                      <td style={{ textAlign: 'center', fontWeight: 700 }}>
+                        {row.lulusan} Orang
+                      </td>
+                      <td style={{ textAlign: 'center', fontWeight: 700, color: 'var(--usu-green-dark)' }}>
+                        {row.responden}
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <span
+                          style={{
+                            padding: '0.25rem 0.65rem',
+                            borderRadius: '999px',
+                            fontSize: '0.8rem',
+                            fontWeight: 800,
+                            backgroundColor: Number(row.responRate) >= 90 ? '#dcfce7' : (Number(row.responRate) >= 70 ? '#fef3c7' : '#fee2e2'),
+                            color: Number(row.responRate) >= 90 ? '#15803d' : (Number(row.responRate) >= 70 ? '#b45309' : '#dc2626'),
+                          }}
+                        >
+                          {row.responRate}%
+                        </span>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <strong>{row.bekerja}</strong>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginLeft: '4px' }}>({row.bekerjaPct}%)</span>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <strong>{row.wiraswasta}</strong>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <strong>{row.lanjutStudi}</strong>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <strong>{row.belumMemungkinkan}</strong>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <strong>{row.mencariKerja}</strong>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <button
+                          type="button"
+                          onClick={() => handleTracerYearChange(row.tahun)}
+                          style={{
+                            padding: '0.35rem 0.8rem',
+                            fontSize: '0.775rem',
+                            fontWeight: 700,
+                            borderRadius: '7px',
+                            border: isCurrent ? '1px solid var(--usu-green)' : '1px solid var(--border-subtle)',
+                            backgroundColor: isCurrent ? 'var(--usu-green)' : '#ffffff',
+                            color: isCurrent ? '#ffffff' : 'var(--usu-green)',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                          }}
+                        >
+                          {isCurrent ? 'Aktif Ditampilkan' : 'Pilih Tahun Ini'}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* ========================================================================= */}
+        {/* TABEL 2: JUMLAH ALUMNI & WISUDAWAN (DATA RESMI DARI FILE EXCEL WISUDAWAN) */}
+        {/* ========================================================================= */}
+        <div
+          id="jumlah-alumni"
+          className="card"
+          style={{
+            padding: '2.25rem',
+            marginBottom: '2.5rem',
+            scrollMarginTop: '100px',
+            border: '2px solid rgba(6, 127, 66, 0.18)',
+            boxShadow: '0 12px 36px rgba(0, 54, 32, 0.08)',
+          }}
+        >
+          {/* Header & Download Bar */}
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              gap: '1.25rem',
+              marginBottom: '1.75rem',
+              paddingBottom: '1.5rem',
+              borderBottom: '1.5px solid var(--border-subtle)',
+            }}
+          >
+            <div>
+              <span
+                className="badge badge-green"
+                style={{
+                  marginBottom: '0.5rem',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                }}
+              >
+                <FileSpreadsheet size={13} />
+                <span>Sumber Resmi: public/data/Data Jumlah Wisudawan Fakultas Vokasi.xlsx</span>
+              </span>
+              <h3 style={{ fontSize: '1.6rem', color: 'var(--usu-green-dark)', fontWeight: 800, margin: 0, fontFamily: 'Outfit, sans-serif' }}>
+                Data Jumlah Wisudawan & Alumni Fakultas Vokasi USU
+              </h3>
+              <p style={{ fontSize: '0.925rem', color: 'var(--text-muted)', marginTop: '0.35rem', maxWidth: '720px' }}>
+                Rekapitulasi resmi data kelulusan wisudawan jenjang Diploma Tiga (D3) dan Sarjana Terapan (D4) Fakultas Vokasi Universitas Sumatera Utara untuk Tahun Ajaran 2022/2023 s.d. 2025/2026.
+              </p>
+            </div>
+
+            <div>
+              <a
+                href="/data/Data Jumlah Wisudawan Fakultas Vokasi.xlsx"
+                download="Data Jumlah Wisudawan Fakultas Vokasi.xlsx"
+                className="btn btn-outline"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.55rem',
+                  padding: '0.75rem 1.4rem',
+                  borderRadius: '10px',
+                  color: 'var(--usu-green-dark)',
+                  borderColor: 'var(--usu-green)',
+                  backgroundColor: 'var(--usu-green-soft)',
+                  fontWeight: 700,
+                  fontSize: '0.875rem',
+                  textDecoration: 'none',
+                  boxShadow: '0 2px 8px rgba(6, 127, 66, 0.1)',
+                }}
+              >
+                <Download size={16} />
+                <span>Unduh Berkas Excel (.xlsx)</span>
+              </a>
+            </div>
+          </div>
+
+          {/* 5 KPI Metric Cards for Wisudawan */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
+              gap: '1rem',
+              marginBottom: '2rem',
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: 'var(--usu-green-soft)',
+                border: '1.5px solid rgba(6, 127, 66, 0.25)',
+                borderRadius: '12px',
+                padding: '1.15rem 1.25rem',
+              }}
+            >
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--usu-green)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                Total Seluruh Wisudawan
+              </div>
+              <div style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--usu-green-dark)', marginTop: '0.2rem', fontFamily: 'Outfit, sans-serif' }}>
+                {ALUMNI_WISUDAWAN_SUMMARY.totalAlumni.toLocaleString('id-ID')}
+                <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-muted)', marginLeft: '0.35rem' }}>Orang</span>
+              </div>
+              <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                14 Prodi D3 & 7 Prodi D4
+              </div>
+            </div>
+
+            <div
+              style={{
+                backgroundColor: '#ffffff',
+                border: '1.5px solid #e2e8f0',
+                borderRadius: '12px',
+                padding: '1.15rem 1.25rem',
+              }}
+            >
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#0369a1', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                T.A 2025/2026 (Aktif)
+              </div>
+              <div style={{ fontSize: '1.85rem', fontWeight: 800, color: '#0c4a6e', marginTop: '0.2rem', fontFamily: 'Outfit, sans-serif' }}>
+                {ALUMNI_WISUDAWAN_SUMMARY.byYear['2025/2026'].toLocaleString('id-ID')}
+                <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-muted)', marginLeft: '0.35rem' }}>Orang</span>
+              </div>
+              <div style={{ fontSize: '0.725rem', color: '#0284c7', fontWeight: 600, marginTop: '0.2rem' }}>
+                Jumlah Wisudawan Terbanyak
+              </div>
+            </div>
+
+            <div
+              style={{
+                backgroundColor: '#ffffff',
+                border: '1.5px solid #e2e8f0',
+                borderRadius: '12px',
+                padding: '1.15rem 1.25rem',
+              }}
+            >
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#b45309', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                T.A 2024/2025
+              </div>
+              <div style={{ fontSize: '1.85rem', fontWeight: 800, color: '#78350f', marginTop: '0.2rem', fontFamily: 'Outfit, sans-serif' }}>
+                {ALUMNI_WISUDAWAN_SUMMARY.byYear['2024/2025'].toLocaleString('id-ID')}
+                <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-muted)', marginLeft: '0.35rem' }}>Orang</span>
+              </div>
+              <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                4 Periode Wisuda
+              </div>
+            </div>
+
+            <div
+              style={{
+                backgroundColor: '#ffffff',
+                border: '1.5px solid #e2e8f0',
+                borderRadius: '12px',
+                padding: '1.15rem 1.25rem',
+              }}
+            >
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                T.A 2023/2024
+              </div>
+              <div style={{ fontSize: '1.85rem', fontWeight: 800, color: '#1e293b', marginTop: '0.2rem', fontFamily: 'Outfit, sans-serif' }}>
+                {ALUMNI_WISUDAWAN_SUMMARY.byYear['2023/2024'].toLocaleString('id-ID')}
+                <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-muted)', marginLeft: '0.35rem' }}>Orang</span>
+              </div>
+              <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                4 Periode Wisuda
+              </div>
+            </div>
+
+            <div
+              style={{
+                backgroundColor: '#ffffff',
+                border: '1.5px solid #e2e8f0',
+                borderRadius: '12px',
+                padding: '1.15rem 1.25rem',
+              }}
+            >
+              <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                T.A 2022/2023
+              </div>
+              <div style={{ fontSize: '1.85rem', fontWeight: 800, color: '#1e293b', marginTop: '0.2rem', fontFamily: 'Outfit, sans-serif' }}>
+                {ALUMNI_WISUDAWAN_SUMMARY.byYear['2022/2023'].toLocaleString('id-ID')}
+                <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-muted)', marginLeft: '0.35rem' }}>Orang</span>
+              </div>
+              <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                4 Periode Wisuda
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive Filter Bar */}
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '1rem',
+              marginBottom: '1.5rem',
+              backgroundColor: '#f8fafc',
+              padding: '1rem 1.25rem',
+              borderRadius: '12px',
+              border: '1px solid var(--border-subtle)',
+            }}
+          >
+            {/* Year Switcher Pills */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-light)', marginRight: '0.25rem' }}>
+                Tahun Ajaran:
+              </span>
+              {ALUMNI_WISUDAWAN_SUMMARY.yearLabels.map((yl) => {
+                const isActive = alumniYear === yl.key;
+                return (
+                  <button
+                    key={yl.key}
+                    type="button"
+                    onClick={() => setAlumniYear(yl.key)}
+                    style={{
+                      padding: '0.45rem 0.85rem',
+                      borderRadius: '8px',
+                      fontSize: '0.825rem',
+                      fontWeight: isActive ? 700 : 600,
+                      backgroundColor: isActive ? 'var(--usu-green)' : '#ffffff',
+                      color: isActive ? '#ffffff' : '#334155',
+                      border: isActive ? '1px solid var(--usu-green)' : '1px solid var(--border-subtle)',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      boxShadow: isActive ? '0 2px 6px rgba(6, 127, 66, 0.25)' : 'none',
+                    }}
+                  >
+                    {yl.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Jenjang Filter & Search */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-light)' }}>Jenjang:</span>
+                <select
+                  value={alumniJenjang}
+                  onChange={(e) => setAlumniJenjang(e.target.value)}
+                  className="input-select"
+                  style={{ height: '36px', fontSize: '0.825rem', padding: '0 0.65rem' }}
+                >
+                  <option value="Semua">Semua Jenjang (21 Prodi)</option>
+                  <option value="D3">Diploma Tiga - D3 (14 Prodi)</option>
+                  <option value="D4">Sarjana Terapan - D4 (7 Prodi)</option>
+                </select>
+              </div>
+
+              <div style={{ position: 'relative', width: '220px' }}>
+                <input
+                  type="text"
+                  placeholder="Cari program studi..."
+                  value={alumniSearch}
+                  onChange={(e) => setAlumniSearch(e.target.value)}
+                  className="input-text"
+                  style={{ paddingLeft: '2.2rem', height: '36px', fontSize: '0.825rem' }}
+                />
+                <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} />
+              </div>
+            </div>
+          </div>
+
+          {/* Wisudawan Data Table */}
+          <div className="table-wrapper">
+            <table className="custom-table" style={{ fontSize: '0.875rem' }}>
+              <thead>
+                {alumniYear === 'semua' ? (
+                  <tr>
+                    <th style={{ width: '45px', textAlign: 'center' }}>No</th>
+                    <th style={{ minWidth: '240px' }}>Program Studi</th>
+                    <th style={{ width: '90px', textAlign: 'center' }}>Jenjang</th>
+                    <th style={{ width: '115px', textAlign: 'center' }}>T.A 2022/2023</th>
+                    <th style={{ width: '115px', textAlign: 'center' }}>T.A 2023/2024</th>
+                    <th style={{ width: '115px', textAlign: 'center' }}>T.A 2024/2025</th>
+                    <th style={{ width: '115px', textAlign: 'center' }}>T.A 2025/2026</th>
+                    <th style={{ width: '130px', textAlign: 'center', backgroundColor: 'rgba(6, 127, 66, 0.08)', color: 'var(--usu-green-dark)' }}>
+                      Total Alumni
+                    </th>
+                  </tr>
+                ) : (
+                  <tr>
+                    <th style={{ width: '45px', textAlign: 'center' }}>No</th>
+                    <th style={{ minWidth: '240px' }}>Program Studi</th>
+                    <th style={{ width: '90px', textAlign: 'center' }}>Jenjang</th>
+                    <th style={{ width: '115px', textAlign: 'center' }}>Periode 1 (Nov)</th>
+                    <th style={{ width: '115px', textAlign: 'center' }}>Periode 2 (Feb)</th>
+                    <th style={{ width: '115px', textAlign: 'center' }}>Periode 3 (Mei)</th>
+                    <th style={{ width: '115px', textAlign: 'center' }}>Periode 4 (Agt)</th>
+                    <th style={{ width: '130px', textAlign: 'center', backgroundColor: 'rgba(6, 127, 66, 0.08)', color: 'var(--usu-green-dark)' }}>
+                      Total {alumniYear}
+                    </th>
+                  </tr>
+                )}
+              </thead>
+              <tbody>
+                {filteredAlumniData.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} style={{ textAlign: 'center', padding: '2.5rem', color: 'var(--text-light)' }}>
+                      Tidak ada program studi yang sesuai dengan filter atau kata kunci pencarian.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredAlumniData.map((item, idx) => (
+                    <tr key={item.prodi}>
+                      <td style={{ textAlign: 'center', color: 'var(--text-light)', fontWeight: 600 }}>
+                        {idx + 1}
+                      </td>
+                      <td>
+                        <strong style={{ color: 'var(--usu-green-dark)' }}>{item.prodi}</strong>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <span
+                          style={{
+                            padding: '0.2rem 0.5rem',
+                            borderRadius: '6px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            backgroundColor: item.jenjang === 'D3' ? '#ecfdf5' : '#eff6ff',
+                            color: item.jenjang === 'D3' ? '#059669' : '#1d4ed8',
+                            border: item.jenjang === 'D3' ? '1px solid #a7f3d0' : '1px solid #bfdbfe',
+                          }}
+                        >
+                          {item.jenjang}
+                        </span>
+                      </td>
+
+                      {alumniYear === 'semua' ? (
+                        <>
+                          <td style={{ textAlign: 'center', color: item.y22_23 > 0 ? '#1e293b' : '#94a3b8' }}>
+                            {item.y22_23 || '-'}
+                          </td>
+                          <td style={{ textAlign: 'center', color: item.y23_24 > 0 ? '#1e293b' : '#94a3b8' }}>
+                            {item.y23_24 || '-'}
+                          </td>
+                          <td style={{ textAlign: 'center', color: item.y24_25 > 0 ? '#1e293b' : '#94a3b8' }}>
+                            {item.y24_25 || '-'}
+                          </td>
+                          <td style={{ textAlign: 'center', color: item.y25_26 > 0 ? '#1e293b' : '#94a3b8' }}>
+                            {item.y25_26 || '-'}
+                          </td>
+                          <td style={{ textAlign: 'center', fontWeight: 800, color: 'var(--usu-green-dark)', backgroundColor: 'rgba(6, 127, 66, 0.04)' }}>
+                            {item.total > 0 ? item.total.toLocaleString('id-ID') : '-'}
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td style={{ textAlign: 'center', color: item.p1 > 0 ? '#1e293b' : '#94a3b8' }}>
+                            {item.p1 || '-'}
+                          </td>
+                          <td style={{ textAlign: 'center', color: item.p2 > 0 ? '#1e293b' : '#94a3b8' }}>
+                            {item.p2 || '-'}
+                          </td>
+                          <td style={{ textAlign: 'center', color: item.p3 > 0 ? '#1e293b' : '#94a3b8' }}>
+                            {item.p3 || '-'}
+                          </td>
+                          <td style={{ textAlign: 'center', color: item.p4 > 0 ? '#1e293b' : '#94a3b8' }}>
+                            {item.p4 || '-'}
+                          </td>
+                          <td style={{ textAlign: 'center', fontWeight: 800, color: 'var(--usu-green-dark)', backgroundColor: 'rgba(6, 127, 66, 0.04)' }}>
+                            {item.total > 0 ? item.total.toLocaleString('id-ID') : '-'}
+                          </td>
+                        </>
+                      )}
+                    </tr>
+                  ))
+                )}
+              </tbody>
+              <tfoot>
+                <tr style={{ backgroundColor: '#f8fafc', fontWeight: 800, borderTop: '2px solid var(--usu-green)', fontSize: '0.925rem' }}>
+                  <td colSpan={3} style={{ textAlign: 'right', color: 'var(--usu-green-dark)', padding: '1rem' }}>
+                    {alumniYear === 'semua' ? 'TOTAL KESELURUHAN WISUDAWAN:' : `TOTAL WISUDAWAN T.A ${alumniYear}:`}
+                  </td>
+                  {alumniYear === 'semua' ? (
+                    <>
+                      <td style={{ textAlign: 'center', color: '#1e293b' }}>
+                        {alumniTotals.y22_23.toLocaleString('id-ID')}
+                      </td>
+                      <td style={{ textAlign: 'center', color: '#1e293b' }}>
+                        {alumniTotals.y23_24.toLocaleString('id-ID')}
+                      </td>
+                      <td style={{ textAlign: 'center', color: '#1e293b' }}>
+                        {alumniTotals.y24_25.toLocaleString('id-ID')}
+                      </td>
+                      <td style={{ textAlign: 'center', color: '#1e293b' }}>
+                        {alumniTotals.y25_26.toLocaleString('id-ID')}
+                      </td>
+                      <td style={{ textAlign: 'center', color: 'var(--usu-green-dark)', backgroundColor: 'rgba(6, 127, 66, 0.1)', fontSize: '1.05rem', fontWeight: 900 }}>
+                        {alumniTotals.total.toLocaleString('id-ID')} Orang
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td style={{ textAlign: 'center', color: '#1e293b' }}>
+                        {alumniTotals.p1.toLocaleString('id-ID')}
+                      </td>
+                      <td style={{ textAlign: 'center', color: '#1e293b' }}>
+                        {alumniTotals.p2.toLocaleString('id-ID')}
+                      </td>
+                      <td style={{ textAlign: 'center', color: '#1e293b' }}>
+                        {alumniTotals.p3.toLocaleString('id-ID')}
+                      </td>
+                      <td style={{ textAlign: 'center', color: '#1e293b' }}>
+                        {alumniTotals.p4.toLocaleString('id-ID')}
+                      </td>
+                      <td style={{ textAlign: 'center', color: 'var(--usu-green-dark)', backgroundColor: 'rgba(6, 127, 66, 0.1)', fontSize: '1.05rem', fontWeight: 900 }}>
+                        {alumniTotals.total.toLocaleString('id-ID')} Orang
+                      </td>
+                    </>
+                  )}
                 </tr>
               </tfoot>
             </table>

@@ -209,7 +209,7 @@ export default function HomePage() {
                 <span>Seluruh dokumen telah disesuaikan dengan format tata naskah dinas Fakultas Vokasi USU.</span>
               </div>
               <Link href="/surat" style={{ color: 'var(--usu-green)', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
-                <span>Lihat Seluruh 18 Template</span>
+                <span>Lihat Seluruh 19 Template</span>
                 <ChevronRight size={14} />
               </Link>
             </div>

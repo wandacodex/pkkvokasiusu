@@ -587,6 +587,46 @@ export const TEMPLATES_CONFIG = [
       namaOrangTua: 'Bambang Kusumo',
       tanggalSurat: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
     }
+  },
+  {
+    id: 'surat-perubahan-data-pddikti',
+    title: 'Surat Permohonan Perubahan Data Mahasiswa (PDM) Pada PDDIKTI',
+    filename: 'Surat Permohonan Perubahan Data Mahasiswa (Pdm) Pada Pddikti.docx',
+    category: 'Administrasi Akademik',
+    fileUrl: '/assets/templatesurat/Surat Permohonan Perubahan Data Mahasiswa (Pdm) Pada Pddikti.docx',
+    description: 'Permohonan perubahan atau perbaikan biodata mahasiswa pada Pangkalan Data Pendidikan Tinggi (PDDIKTI).',
+    fields: [
+      { name: 'prodiTujuan', label: 'Program Studi Tujuan (Kaprodi)', type: 'select', options: PRODI_OPTIONS, defaultValue: 'D3 Teknik Informatika' },
+      { name: 'nama', label: 'Nama Lengkap Mahasiswa', type: 'text', placeholder: 'Nama Mahasiswa', required: true },
+      { name: 'nim', label: 'NIM Mahasiswa', type: 'text', placeholder: 'NIM Mahasiswa', required: true },
+      { name: 'prodi', label: 'Program Studi', type: 'select', options: PRODI_OPTIONS, defaultValue: 'D3 Teknik Informatika', required: true },
+      { name: 'tempatLahir', label: 'Tempat Lahir', type: 'text', placeholder: 'Contoh: Medan', required: true },
+      { name: 'tanggalLahir', label: 'Tanggal Lahir', type: 'text', placeholder: 'Contoh: 14 Mei 2004', required: true },
+      { name: 'namaIbuKandung', label: 'Nama Ibu Kandung', type: 'text', placeholder: 'Nama Ibu Kandung', required: true },
+      { name: 'nomorIjazahNasional', label: 'Nomor Ijazah Nasional', type: 'text', placeholder: 'Contoh: 12345/D3/2026 atau - (belum lulus)', defaultValue: '-' },
+      { name: 'nomorTranskripNilai', label: 'Nomor Transkrip Nilai', type: 'text', placeholder: 'Contoh: TR-2026-0012 atau -', defaultValue: '-' },
+      { name: 'noHpEmail', label: 'Nomor HP & Email Mahasiswa', type: 'text', placeholder: '0812-xxxx-xxxx / mhs@students.usu.ac.id', required: true },
+      { name: 'dataTercatat', label: 'Data yang Tercatat pada PDDIKTI', type: 'text', placeholder: 'Contoh: Wanda Anisa (Data keliru di PDDIKTI)', required: true },
+      { name: 'dataSeharusnya', label: 'Data yang Seharusnya (Benar)', type: 'text', placeholder: 'Contoh: Wanda Annisa Lubis (Sesuai Ijazah/Akta)', required: true },
+      { name: 'alasanPerubahan', label: 'Alasan Perubahan Data', type: 'textarea', placeholder: 'Contoh: Penyesuaian ejaan nama lengkap agar sesuai dengan Akta Kelahiran dan Ijazah SMA.', required: true },
+      { name: 'tanggalSurat', label: 'Tanggal Surat', type: 'text', defaultValue: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) }
+    ],
+    sampleDemo: {
+      prodiTujuan: 'D3 Teknik Informatika',
+      nama: 'Wanda Annisa Lubis',
+      nim: '220501001',
+      prodi: 'D3 Teknik Informatika',
+      tempatLahir: 'Medan',
+      tanggalLahir: '14 Mei 2004',
+      namaIbuKandung: 'Nurhalimah',
+      nomorIjazahNasional: '-',
+      nomorTranskripNilai: 'TR-2026-0012',
+      noHpEmail: '0812-6000-8654 / wanda@students.usu.ac.id',
+      dataTercatat: 'Wanda Anisa',
+      dataSeharusnya: 'Wanda Annisa Lubis',
+      alasanPerubahan: 'Penyesuaian ejaan nama lengkap agar sinkron dengan Akta Kelahiran, Kartu Keluarga, dan Ijazah SMA.',
+      tanggalSurat: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+    }
   }
 ];
 
@@ -791,6 +831,33 @@ export async function generateWordDocument(templateConfig, formData, membersList
       if (plainText.startsWith('Judul Tugas Akhir:') || plainText.startsWith('Judul Tugas Akhir :') || plainText.startsWith('Judul Skripsi/Tugas Akhir:')) {
         docXml = docXml.replace(pXml, buildLabelLine('Judul Tugas Akhir', formData.judulTA || formData.judulProposal || ''));
       }
+
+      // PDM PDDIKTI Fields
+      if (plainText.includes('D3/D4 (Nama Program Studi Anda)')) {
+        const prd = formData.prodiTujuan || formData.prodi || 'Fakultas Vokasi';
+        docXml = docXml.replace(pXml, pXml.replace(/D3\/D4 \(Nama Program Studi Anda\)/g, escapeXml(prd)));
+      }
+      if (plainText.startsWith('Tempat Lahir:') || plainText.startsWith('Tempat Lahir :')) {
+        docXml = docXml.replace(pXml, buildLabelLine('Tempat Lahir', formData.tempatLahir || formData.ttl || ''));
+      }
+      if (plainText.startsWith('Tanggal Lahir:') || plainText.startsWith('Tanggal Lahir :')) {
+        docXml = docXml.replace(pXml, buildLabelLine('Tanggal Lahir', formData.tanggalLahir || ''));
+      }
+      if (plainText.startsWith('Nama Ibu Kandung:') || plainText.startsWith('Nama Ibu Kandung :')) {
+        docXml = docXml.replace(pXml, buildLabelLine('Nama Ibu Kandung', formData.namaIbuKandung || ''));
+      }
+      if (plainText.startsWith('Nomor Ijazah Nasional:') || plainText.startsWith('Nomor Ijazah Nasional :')) {
+        docXml = docXml.replace(pXml, buildLabelLine('Nomor Ijazah Nasional', formData.nomorIjazahNasional || '-'));
+      }
+      if (plainText.startsWith('Nomor Transkrip Nilai:') || plainText.startsWith('Nomor Transkrip Nilai :')) {
+        docXml = docXml.replace(pXml, buildLabelLine('Nomor Transkrip Nilai', formData.nomorTranskripNilai || '-'));
+      }
+      if (plainText.startsWith('Nomor HP/Email:') || plainText.startsWith('Nomor HP/Email :')) {
+        docXml = docXml.replace(pXml, buildLabelLine('Nomor HP/Email', formData.noHpEmail || formData.noHp || ''));
+      }
+      if (plainText.trim() === 'Nama Pemohon') {
+        docXml = docXml.replace(pXml, setParagraphText(pXml, formData.nama || 'Nama Pemohon', true));
+      }
     });
 
     // 4b. Handle 3-column table rows (e.g. Permohonan SKL, Ujian Tugas Akhir)
@@ -844,6 +911,23 @@ export async function generateWordDocument(templateConfig, formData, membersList
           });
           const newTable = oldTable.replace(/<w:tr[\s\S]*?<\/w:tbl>/, `${newRows}</w:tbl>`);
           docXml = docXml.replace(oldTable, newTable);
+        }
+      }
+    }
+
+    // 5b. Handle PDM 4-column Table row 2
+    if (templateConfig.id === 'surat-perubahan-data-pddikti' && formData.dataTercatat) {
+      const tableMatch = docXml.match(/<w:tbl[\s\S]*?<\/w:tbl>/);
+      if (tableMatch) {
+        const rows = tableMatch[0].match(/<w:tr[\s\S]*?<\/w:tr>/g) || [];
+        if (rows.length >= 2) {
+          const row2 = rows[1];
+          const newRow2 = `<w:tr><w:trPr><w:trHeight w:val="720"/></w:trPr>` +
+            `<w:tc><w:tcPr><w:tcW w:w="511" w:type="dxa"/><w:vAlign w:val="center"/></w:tcPr><w:p><w:pPr><w:spacing w:line="276" w:lineRule="auto"/><w:jc w:val="center"/><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/></w:rPr><w:t>1</w:t></w:r></w:p></w:tc>` +
+            `<w:tc><w:tcPr><w:tcW w:w="3084" w:type="dxa"/><w:vAlign w:val="center"/></w:tcPr><w:p><w:pPr><w:spacing w:line="276" w:lineRule="auto"/><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/></w:rPr><w:t xml:space="preserve">${escapeXml(formData.dataTercatat)}</w:t></w:r></w:p></w:tc>` +
+            `<w:tc><w:tcPr><w:tcW w:w="2880" w:type="dxa"/><w:vAlign w:val="center"/></w:tcPr><w:p><w:pPr><w:spacing w:line="276" w:lineRule="auto"/><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/></w:rPr><w:t xml:space="preserve">${escapeXml(formData.dataSeharusnya)}</w:t></w:r></w:p></w:tc>` +
+            `<w:tc><w:tcPr><w:tcW w:w="2541" w:type="dxa"/><w:vAlign w:val="center"/></w:tcPr><w:p><w:pPr><w:spacing w:line="276" w:lineRule="auto"/><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/></w:rPr></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman"/></w:rPr><w:t xml:space="preserve">${escapeXml(formData.alasanPerubahan)}</w:t></w:r></w:p></w:tc></w:tr>`;
+          docXml = docXml.replace(row2, newRow2);
         }
       }
     }

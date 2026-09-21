@@ -72,7 +72,11 @@
   margin: 0;
 }
 
-html,
+html {
+  max-width: 100vw;
+  scroll-behavior: smooth;
+}
+
 body {
   max-width: 100vw;
   overflow-x: hidden;
@@ -80,7 +84,6 @@ body {
   background-color: var(--bg-main);
   color: var(--text-main);
   line-height: 1.5;
-  scroll-behavior: smooth;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -888,6 +891,15 @@ a {
 /* =========================================================
    RESPONSIVE NAVBAR & MOBILE SYSTEM
    ========================================================= */
+.site-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  width: 100% !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 4px 20px rgba(6, 127, 66, 0.05) !important;
+}
+
 .nav-desktop-container {
   display: flex;
   align-items: center;
@@ -913,7 +925,22 @@ a {
   border-color: var(--usu-green);
 }
 
-@media (max-width: 1080px) {
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-item-hover:hover {
+  background-color: var(--usu-green-soft) !important;
+}
+
+@media (max-width: 880px) {
   .nav-desktop-container {
     display: none !important;
   }

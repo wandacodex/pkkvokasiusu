@@ -2,7 +2,13 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/src/lib/auth';
 import { getCollection, addItem, addItems, updateItem, deleteItem, setCollection, KEYS } from '@/src/lib/redis';
-import { INITIAL_TRACER, TRACER_PRODI_STATS } from '@/src/lib/mockData';
+import {
+  INITIAL_TRACER,
+  TRACER_PRODI_STATS,
+  TRACER_YEARLY_DATA,
+  TRACER_DATA_SOURCE_INFO,
+  TRACER_MULTI_YEAR_TREND
+} from '@/src/lib/mockData';
 
 async function ensureTracerData() {
   const data = await getCollection(KEYS.TRACER);
@@ -76,13 +82,20 @@ export async function GET(request) {
 
     const session = await getServerSession(authOptions);
 
+    const activeProdiStats = (tahun && TRACER_YEARLY_DATA[tahun]?.prodiStats)
+      ? TRACER_YEARLY_DATA[tahun].prodiStats
+      : (TRACER_PRODI_STATS || []);
+
     return NextResponse.json({
       success: true,
       data: session ? result : [], // Data individual responden bersifat privat (hanya dapat diakses admin terverifikasi)
       total: result.length,
       analytics: analyticsData,
       stats: analyticsData,
-      prodiStats: TRACER_PRODI_STATS || []
+      prodiStats: activeProdiStats,
+      yearlyData: TRACER_YEARLY_DATA,
+      multiYearTrend: TRACER_MULTI_YEAR_TREND,
+      sourceInfo: TRACER_DATA_SOURCE_INFO
     });
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
