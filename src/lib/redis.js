@@ -21,6 +21,7 @@ export const KEYS = {
   PRESTASI: 'pkk:prestasi',
   SURAT: 'pkk:surat',
   TRACER: 'pkk:tracer',
+  KALENDER: 'pkk:kalender',
 };
 
 // Generic CRUD helpers

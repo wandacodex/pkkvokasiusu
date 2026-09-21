@@ -11,7 +11,8 @@ import {
   Briefcase,
   BookOpen,
   Sparkles,
-  ShieldCheck
+  ShieldCheck,
+  Calendar
 } from 'lucide-react';
 
 export default function Footer() {
@@ -171,6 +172,12 @@ export default function Footer() {
                 <Link href="/akreditasi" style={{ color: 'rgba(255, 255, 255, 0.82)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'color 0.2s' }} className="footer-link">
                   <ShieldCheck size={15} style={{ color: 'var(--usu-gold)', flexShrink: 0 }} />
                   <span>Sertifikat Akreditasi 21 Prodi</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/kalender-akademik" style={{ color: 'rgba(255, 255, 255, 0.82)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', transition: 'color 0.2s' }} className="footer-link">
+                  <Calendar size={15} style={{ color: 'var(--usu-gold)', flexShrink: 0 }} />
+                  <span>Kalender Akademik USU</span>
                 </Link>
               </li>
             </ul>

@@ -18,7 +18,8 @@ import {
   User,
   ShieldCheck,
   Lock,
-  Sparkles
+  Sparkles,
+  Calendar
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -45,6 +46,7 @@ export default function Navbar() {
     { name: 'Prestasi', href: '/prestasi', icon: Award },
     { name: 'Tracer Study', href: '/tracer-study', icon: Briefcase },
     { name: 'Sertifikat Akreditasi', href: '/akreditasi', icon: ShieldCheck },
+    { name: 'Kalender Akademik', href: '/kalender-akademik', icon: Calendar },
   ];
 
   return (
