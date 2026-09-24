@@ -1,14 +1,17 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { gsap } from 'gsap';
 import {
   FileText,
   GraduationCap,
   Award,
   BookOpen,
-  Sparkles,
-  CheckCircle2
+  ArrowRight,
+  ShieldCheck,
+  CheckCircle2,
+  Sparkles
 } from 'lucide-react';
 
 export default function HeroBanner() {
@@ -39,9 +42,9 @@ export default function HeroBanner() {
   }, []);
 
   const institutionalHighlights = [
-    { label: '19 Template Resmi', desc: 'Format Word .docx', icon: FileText },
-    { label: '3.645+ Penerima', desc: 'Basis Data Beasiswa', icon: GraduationCap },
-    { label: '227+ Prestasi', desc: 'Wilayah s.d. Internasional', icon: Award },
+    { label: '19 Format Baku', desc: 'Word (.docx) Resmi', icon: FileText },
+    { label: '3.645+ Penerima', desc: 'Direktori Beasiswa', icon: GraduationCap },
+    { label: '227+ Prestasi', desc: 'Kompetisi Terverifikasi', icon: Award },
     { label: '21 Program Studi', desc: '14 D3 & 7 D4 Terapan', icon: BookOpen },
   ];
 
@@ -50,22 +53,22 @@ export default function HeroBanner() {
       ref={heroRef}
       style={{
         position: 'relative',
-        background: 'linear-gradient(135deg, #022b16 0%, #034825 35%, #067f42 100%)',
+        background: 'linear-gradient(135deg, var(--usu-brand-deep) 0%, #004423 45%, var(--usu-brand) 100%)',
         color: '#ffffff',
         overflow: 'hidden',
-        paddingTop: '3.75rem',
+        paddingTop: '3.5rem',
         paddingBottom: '4.5rem',
-        borderBottom: '4px solid var(--usu-gold)'
+        borderBottom: '4px solid var(--usu-accent)'
       }}
     >
-      {/* Background Subtle Grid & Wave Watermark */}
+      {/* Background Subtle Institutional Grid Watermark */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
           backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px)',
           backgroundSize: '28px 28px',
-          opacity: 0.75,
+          opacity: 0.65,
           pointerEvents: 'none',
         }}
       />
@@ -82,12 +85,12 @@ export default function HeroBanner() {
           backgroundRepeat: 'repeat-x',
           backgroundPosition: 'bottom center',
           backgroundSize: '240px 240px',
-          opacity: 0.08,
+          opacity: 0.07,
           pointerEvents: 'none',
         }}
       />
 
-      {/* Official USU Seal Watermark (Center on Mobile via hero-seal-watermark) */}
+      {/* Official USU Seal Watermark */}
       <div className="hero-seal-watermark">
         <img
           src="/assets/mainlogo.webp"
@@ -104,7 +107,7 @@ export default function HeroBanner() {
               <div className="title-fill__icon">
                 <img src="/ornament/flower-ora.svg" alt="Vokasi USU" />
               </div>
-              <span className="title-fill__text" style={{ color: '#fef08a' }}>
+              <span className="title-fill__text" style={{ color: '#fff5d6', fontWeight: 600 }}>
                 Fakultas Vokasi • Universitas Sumatera Utara
               </span>
             </div>
@@ -112,11 +115,11 @@ export default function HeroBanner() {
             {/* Main Portal Title */}
             <h1
               style={{
-                fontSize: 'clamp(2.2rem, 4.2vw, 3.2rem)',
-                lineHeight: 1.15,
-                fontWeight: 800,
-                fontFamily: 'Outfit, sans-serif',
-                marginBottom: '0.75rem',
+                fontSize: 'clamp(2rem, 3.8vw, 3rem)',
+                lineHeight: 'var(--usu-leading-heading)',
+                fontWeight: 700,
+                fontFamily: 'var(--usu-font)',
+                marginBottom: '0.85rem',
                 color: '#ffffff',
                 letterSpacing: '-0.02em',
               }}
@@ -127,19 +130,21 @@ export default function HeroBanner() {
             {/* Official Vokasi Motto Pill */}
             <div
               style={{
-                display: 'inline-block',
-                backgroundColor: 'rgba(213, 216, 0, 0.2)',
-                border: '1px solid rgba(213, 216, 0, 0.45)',
-                color: '#fef08a',
-                padding: '0.35rem 0.95rem',
-                borderRadius: '8px',
-                fontSize: '0.9rem',
-                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                backgroundColor: 'rgba(255, 198, 0, 0.15)',
+                border: '1px solid rgba(255, 198, 0, 0.4)',
+                color: '#ffc600',
+                padding: '0.35rem 0.85rem',
+                borderRadius: 'var(--usu-radius-control)',
+                fontSize: '0.875rem',
+                fontWeight: 600,
                 marginBottom: '1.25rem',
                 fontStyle: 'italic',
               }}
             >
-              &ldquo;Ahli Berkarya, Siap Menginspirasi&rdquo;
+              <span>&ldquo;Ahli Berkarya, Siap Menginspirasi&rdquo;</span>
             </div>
 
             {/* Slogan & Description */}
@@ -147,13 +152,34 @@ export default function HeroBanner() {
               style={{
                 fontSize: '1rem',
                 color: 'rgba(255, 255, 255, 0.9)',
-                lineHeight: 1.65,
-                marginBottom: '2rem',
+                lineHeight: 'var(--usu-leading-body)',
+                marginBottom: '1.75rem',
                 fontWeight: 400,
+                maxWidth: '62ch',
               }}
             >
               Portal layanan resmi terpadu Fakultas Vokasi USU untuk pengunduhan template surat permohonan mahasiswa, penelusuran direktori beasiswa, rekognisi torehan prestasi mahasiswa, serta diagram penelusuran lulusan (tracer study).
             </p>
+
+            {/* Call To Actions */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.85rem', marginBottom: '2.25rem' }}>
+              <Link
+                href="/surat"
+                className="usu-button usu-button--accent"
+                style={{ fontWeight: 700, textDecoration: 'none' }}
+              >
+                <span>Ajukan Surat Permohonan</span>
+                <ArrowRight size={16} />
+              </Link>
+              <Link
+                href="/beasiswa"
+                className="usu-button usu-button--secondary"
+                style={{ textDecoration: 'none' }}
+              >
+                <GraduationCap size={16} />
+                <span>Direktori Beasiswa & Prestasi</span>
+              </Link>
+            </div>
 
             {/* Executive Institutional Metrics Strip */}
             <div
@@ -169,10 +195,10 @@ export default function HeroBanner() {
                   <div
                     key={idx}
                     style={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                      backgroundColor: 'rgba(12, 59, 42, 0.45)',
                       backdropFilter: 'blur(8px)',
                       border: '1px solid rgba(255, 255, 255, 0.16)',
-                      borderRadius: '12px',
+                      borderRadius: 'var(--usu-radius-control)',
                       padding: '0.85rem 0.65rem',
                       textAlign: 'center',
                     }}
@@ -181,9 +207,9 @@ export default function HeroBanner() {
                       style={{
                         width: '32px',
                         height: '32px',
-                        borderRadius: '8px',
-                        backgroundColor: 'rgba(245, 158, 11, 0.2)',
-                        color: 'var(--usu-gold)',
+                        borderRadius: 'var(--usu-radius-control)',
+                        backgroundColor: 'rgba(255, 198, 0, 0.2)',
+                        color: 'var(--usu-accent)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -192,15 +218,25 @@ export default function HeroBanner() {
                     >
                       <Icon size={16} />
                     </div>
-                    <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#ffffff', marginBottom: '0.1rem' }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#ffffff', marginBottom: '0.1rem' }}>
                       {item.label}
                     </div>
-                    <div style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.7)', fontWeight: 500 }}>
+                    <div style={{ fontSize: '0.7rem', color: '#e0ebe4', fontWeight: 500 }}>
                       {item.desc}
                     </div>
                   </div>
                 );
               })}
+            </div>
+            <div
+              style={{
+                fontSize: '0.75rem',
+                color: '#e0ebe4',
+                marginTop: '0.85rem',
+                opacity: 0.8,
+              }}
+            >
+              * Data terverifikasi per Tahun Akademik 2025/2026 • Subbagian PKK Fakultas Vokasi USU
             </div>
           </div>
 
@@ -216,21 +252,22 @@ export default function HeroBanner() {
                 maxWidth: '520px',
               }}
             >
-              {/* Tile 1: Main Campus Life Photo */}
+              {/* Tile 1: Authentic CodeStudio Facility Photo from konten.usu.ac.id */}
               <div
                 style={{
                   gridColumn: '1 / 8',
                   gridRow: '1 / 5',
-                  borderRadius: '22px',
+                  borderRadius: 'var(--usu-radius-control)',
                   overflow: 'hidden',
                   position: 'relative',
-                  boxShadow: '0 12px 30px rgba(0, 0, 0, 0.25)',
-                  border: '2px solid rgba(255, 255, 255, 0.2)',
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  backgroundColor: '#0c3b2a',
                 }}
               >
                 <img
-                  src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&auto=format&fit=crop&q=80"
-                  alt="Mahasiswa Vokasi USU"
+                  src="https://konten.usu.ac.id/storage/year/2025-01/satker/885/statis/fasilitas/IMG_1208.webp"
+                  alt="Aktivitas belajar di ruang CodeStudio Fakultas Vokasi USU"
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
                 <div
@@ -239,33 +276,50 @@ export default function HeroBanner() {
                     bottom: 0,
                     left: 0,
                     right: 0,
-                    padding: '10px 14px',
-                    background: 'linear-gradient(to top, rgba(3, 72, 37, 0.9) 0%, transparent 100%)',
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
+                    padding: '8px 12px',
+                    background: 'linear-gradient(to top, rgba(12, 59, 42, 0.95) 0%, transparent 100%)',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
                     color: '#ffffff',
                   }}
                 >
-                  Kolaborasi & Riset Terapan
+                  Laboratorium CodeStudio Vokasi USU
                 </div>
               </div>
 
-              {/* Tile 2: Secondary Photo */}
+              {/* Tile 2: Authentic Vokasi Aula Exterior from konten.usu.ac.id */}
               <div
                 style={{
                   gridColumn: '8 / 13',
                   gridRow: '1 / 4',
-                  borderRadius: '20px',
+                  borderRadius: 'var(--usu-radius-control)',
                   overflow: 'hidden',
-                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
-                  border: '2px solid rgba(255, 255, 255, 0.15)',
+                  boxShadow: '0 8px 20px rgba(0, 0, 0, 0.2)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  backgroundColor: '#0c3b2a',
+                  position: 'relative',
                 }}
               >
                 <img
-                  src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&auto=format&fit=crop&q=80"
-                  alt="Gedung Vokasi USU"
+                  src="https://konten.usu.ac.id/storage/year/2025-03/satker/885/statis/fasilitas/IMG_1522.webp"
+                  alt="Tampak Luar Aula Fakultas Vokasi USU"
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    padding: '6px 8px',
+                    background: 'linear-gradient(to top, rgba(12, 59, 42, 0.9) 0%, transparent 100%)',
+                    fontSize: '0.68rem',
+                    fontWeight: 600,
+                    color: '#ffffff',
+                  }}
+                >
+                  Aula Fakultas Vokasi
+                </div>
               </div>
 
               {/* Tile 3: Official Stripe & Pixel Ornament Tile (Green) */}
@@ -273,9 +327,9 @@ export default function HeroBanner() {
                 style={{
                   gridColumn: '8 / 13',
                   gridRow: '4 / 6',
-                  borderRadius: '18px',
-                  background: 'linear-gradient(135deg, #067f42 0%, #034825 100%)',
-                  border: '1.5px solid rgba(255, 255, 255, 0.25)',
+                  borderRadius: 'var(--usu-radius-control)',
+                  background: 'linear-gradient(135deg, var(--usu-brand) 0%, var(--usu-brand-deep) 100%)',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -298,28 +352,28 @@ export default function HeroBanner() {
                 />
               </div>
 
-              {/* Tile 4: Official Flower Ora Ornament Tile (White Card) */}
+              {/* Tile 4: Official Flower Ornament Tile (White Card) */}
               <div
                 style={{
                   gridColumn: '1 / 4',
                   gridRow: '5 / 8',
-                  borderRadius: '20px',
+                  borderRadius: 'var(--usu-radius-control)',
                   background: '#ffffff',
-                  border: '2px solid var(--usu-gold)',
+                  border: '1.5px solid var(--usu-accent)',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  padding: '10px',
-                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.18)',
+                  padding: '8px',
+                  boxShadow: '0 6px 16px rgba(0, 0, 0, 0.15)',
                 }}
               >
                 <img
                   src="/ornament/flower-ora.svg"
                   alt="Flower Gold"
-                  style={{ width: '48px', height: '48px', objectFit: 'contain', marginBottom: '4px' }}
+                  style={{ width: '40px', height: '40px', objectFit: 'contain', marginBottom: '4px' }}
                 />
-                <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#b45309', textTransform: 'uppercase', textAlign: 'center' }}>
+                <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#7a4b00', textTransform: 'uppercase', textAlign: 'center' }}>
                   Unggul
                 </span>
               </div>
@@ -329,23 +383,23 @@ export default function HeroBanner() {
                 style={{
                   gridColumn: '4 / 8',
                   gridRow: '5 / 8',
-                  borderRadius: '20px',
-                  background: 'linear-gradient(135deg, #d5d800 0%, #39a935 100%)',
-                  border: '1.5px solid rgba(255, 255, 255, 0.3)',
+                  borderRadius: 'var(--usu-radius-control)',
+                  background: 'linear-gradient(135deg, #b8be14 0%, #3dae2b 100%)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  padding: '10px',
-                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.18)',
+                  padding: '8px',
+                  boxShadow: '0 6px 16px rgba(0, 0, 0, 0.15)',
                 }}
               >
                 <img
                   src="/ornament/plusx-sec2.svg"
                   alt="PlusX Ornament"
-                  style={{ width: '44px', height: '44px', objectFit: 'contain', marginBottom: '4px' }}
+                  style={{ width: '38px', height: '38px', objectFit: 'contain', marginBottom: '4px' }}
                 />
-                <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#034825', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#0c3b2a', textTransform: 'uppercase' }}>
                   Inspiratif
                 </span>
               </div>
@@ -355,9 +409,9 @@ export default function HeroBanner() {
                 style={{
                   gridColumn: '8 / 13',
                   gridRow: '6 / 8',
-                  borderRadius: '18px',
+                  borderRadius: 'var(--usu-radius-control)',
                   background: 'rgba(255, 255, 255, 0.12)',
-                  border: '1.5px solid rgba(255, 255, 255, 0.22)',
+                  border: '1px solid rgba(255, 255, 255, 0.22)',
                   backdropFilter: 'blur(10px)',
                   display: 'flex',
                   alignItems: 'center',
@@ -369,13 +423,13 @@ export default function HeroBanner() {
                 <img
                   src="/ornament/circle-pri.svg"
                   alt="Circle Ornament"
-                  style={{ width: '32px', height: '32px' }}
+                  style={{ width: '28px', height: '28px' }}
                 />
                 <div>
-                  <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#ffffff' }}>
+                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#ffffff' }}>
                     Fakultas Vokasi
                   </div>
-                  <div style={{ fontSize: '0.68rem', color: '#fef08a' }}>
+                  <div style={{ fontSize: '0.68rem', color: '#ffc600' }}>
                     Universitas Sumatera Utara
                   </div>
                 </div>

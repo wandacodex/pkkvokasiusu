@@ -1,69 +1,150 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 :root {
-  /* USU Brand Colors - Strictly updated to #067f42 */
-  --usu-green: #067f42;
-  --usu-green-dark: #056635;
-  --usu-green-deep: #034825;
-  --usu-green-light: #08a355;
-  --usu-green-soft: #ecfdf3;
-  --usu-green-tint: #e6f7ee;
+  /* Vokasi USU Reference-Informed Design Tokens (from Vokasi_USU_Design_Kit) */
+  color-scheme: light;
+  --usu-brand: #006937;
+  --usu-brand-hover: #00562d;
+  --usu-brand-active: #004423;
+  --usu-brand-deep: #0c3b2a;
+  --usu-brand-bright: #3dae2b;
+  --usu-accent: #ffc600;
+  --usu-accent-hover: #edb800;
+  --usu-canvas: #ffffff;
+  --usu-surface: #f2f6f3;
+  --usu-surface-muted: #f7f8f7;
+  --usu-text: #18251e;
+  --usu-text-secondary: #536157;
+  --usu-on-brand: #ffffff;
+  --usu-on-accent: #18251e;
+  --usu-border: #d7e0d9;
+  --usu-border-strong: #748579;
+  --usu-danger: #b42318;
+  --usu-danger-surface: #fff1f0;
+  --usu-warning: #7a4b00;
+  --usu-warning-surface: #fff5d6;
+  --usu-info: #315e91;
+  --usu-info-surface: #edf3fa;
+  --usu-success: #006937;
+  --usu-focus: #006937;
+  --usu-disabled-surface: #e7ece8;
+  --usu-disabled-text: #536157;
 
-  --usu-gold: #F59E0B;
-  --usu-gold-hover: #d97706;
-  --usu-gold-light: #fef3c7;
-  --usu-gold-gradient: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-  --usu-green-gradient: linear-gradient(135deg, #067f42 0%, #034825 100%);
-  --usu-emerald-mesh: radial-gradient(at 0% 0%, rgba(6, 127, 66, 0.16) 0px, transparent 50%),
-                      radial-gradient(at 100% 0%, rgba(245, 158, 11, 0.14) 0px, transparent 50%),
-                      radial-gradient(at 50% 100%, rgba(8, 163, 85, 0.1) 0px, transparent 50%);
+  --usu-font: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --usu-text-meta: 0.875rem;
+  --usu-text-body: 1rem;
+  --usu-text-lead: clamp(1.125rem, 1rem + 0.35vw, 1.25rem);
+  --usu-text-h3: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  --usu-text-h2: clamp(1.75rem, 1.35rem + 1.1vw, 2.25rem);
+  --usu-text-h1: clamp(2rem, 1.4rem + 1.8vw, 3rem);
+  --usu-text-display: clamp(2rem, 1.25rem + 2.7vw, 3.5rem);
+  --usu-leading-heading: 1.15;
+  --usu-leading-body: 1.65;
+
+  --usu-space-1: 0.25rem;
+  --usu-space-2: 0.5rem;
+  --usu-space-3: 0.75rem;
+  --usu-space-4: 1rem;
+  --usu-space-5: 1.25rem;
+  --usu-space-6: 1.5rem;
+  --usu-space-8: 2rem;
+  --usu-space-10: 2.5rem;
+  --usu-space-12: 3rem;
+  --usu-space-16: 4rem;
+  --usu-space-20: 5rem;
+  --usu-space-24: 6rem;
+
+  --usu-container: 80rem;
+  --usu-reading-width: 68ch;
+  --usu-gutter: 1rem;
+  --usu-grid-gap: 1rem;
+  --usu-section-space: clamp(2.5rem, 1.8rem + 2.5vw, 5rem);
+  --usu-header-offset: 6rem;
+  --usu-radius-flat: 0;
+  --usu-radius-sm: 0.125rem;
+  --usu-radius-control: 0.25rem;
+  --usu-radius-dialog: 0.5rem;
+  --usu-shadow-menu: 0 8px 24px rgb(12 59 42 / 12%);
+  --usu-duration-fast: 140ms;
+  --usu-duration-normal: 200ms;
+  --usu-ease: ease-out;
+  --usu-z-sticky: 20;
+  --usu-z-dropdown: 40;
+  --usu-z-backdrop: 60;
+  --usu-z-dialog: 70;
+  --usu-z-toast: 80;
+
+  /* Aliases for backwards compatibility with existing UI components */
+  --usu-green: var(--usu-brand);
+  --usu-green-dark: var(--usu-brand-hover);
+  --usu-green-deep: var(--usu-brand-deep);
+  --usu-green-light: var(--usu-brand-bright);
+  --usu-green-soft: var(--usu-surface);
+  --usu-green-tint: var(--usu-surface);
+
+  --usu-gold: var(--usu-accent);
+  --usu-gold-hover: var(--usu-accent-hover);
+  --usu-gold-light: var(--usu-warning-surface);
+  --usu-gold-gradient: linear-gradient(135deg, #FFC600 0%, #EDB800 100%);
+  --usu-green-gradient: linear-gradient(135deg, #006937 0%, #0C3B2A 100%);
+  --usu-emerald-mesh: radial-gradient(at 0% 0%, rgba(0, 105, 55, 0.12) 0px, transparent 50%),
+                      radial-gradient(at 100% 0%, rgba(255, 198, 0, 0.12) 0px, transparent 50%),
+                      radial-gradient(at 50% 100%, rgba(61, 174, 43, 0.08) 0px, transparent 50%);
 
   /* Neutrals & Surfaces */
-  --bg-main: #f8fafc;
-  --bg-surface: #ffffff;
+  --bg-main: var(--usu-surface-muted);
+  --bg-surface: var(--usu-canvas);
   --bg-surface-elevated: #ffffff;
-  --bg-muted: #f1f5f9;
+  --bg-muted: var(--usu-surface);
   
-  --text-main: #0f172a;
-  --text-muted: #475569;
-  --text-light: #64748b;
+  --text-main: var(--usu-text);
+  --text-muted: var(--usu-text-secondary);
+  --text-light: #536157;
   --text-inverse: #ffffff;
 
-  --border-subtle: #e2e8f0;
-  --border-green: rgba(6, 127, 66, 0.22);
-  --border-gold: rgba(245, 158, 11, 0.3);
+  --border-subtle: var(--usu-border);
+  --border-strong: var(--usu-border-strong);
+  --border-green: rgba(0, 105, 55, 0.22);
+  --border-gold: rgba(255, 198, 0, 0.45);
 
-  /* Glassmorphism */
-  --glass-bg: rgba(255, 255, 255, 0.9);
-  --glass-border: rgba(255, 255, 255, 0.7);
-  --glass-shadow: 0 20px 40px -15px rgba(6, 127, 66, 0.09);
+  /* Glassmorphism & Elevation */
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: var(--usu-border);
+  --glass-shadow: 0 10px 25px -5px rgba(12, 59, 42, 0.08);
 
   /* Status Colors */
-  --status-approved: #16a34a;
-  --status-approved-bg: #dcfce7;
-  --status-pending: #ea580c;
-  --status-pending-bg: #ffedd5;
-  --status-rejected: #dc2626;
-  --status-rejected-bg: #fee2e2;
-  --status-process: #0284c7;
-  --status-process-bg: #e0f2fe;
+  --status-approved: #006937;
+  --status-approved-bg: #e6f5ec;
+  --status-pending: #7a4b00;
+  --status-pending-bg: #fff5d6;
+  --status-rejected: #b42318;
+  --status-rejected-bg: #fff1f0;
+  --status-process: #315e91;
+  --status-process-bg: #edf3fa;
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(6, 127, 66, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 15px -3px rgba(6, 127, 66, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(6, 127, 66, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-  --shadow-glow: 0 0 25px rgba(6, 127, 66, 0.25);
+  --shadow-md: 0 4px 6px -1px rgba(12, 59, 42, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(12, 59, 42, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(12, 59, 42, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 25px rgba(0, 105, 55, 0.2);
 
-  /* Radii */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
+  /* Radii - Control radius is crisp 4px as mandated by Design Kit */
+  --radius-sm: var(--usu-radius-sm);
+  --radius-md: var(--usu-radius-control);
+  --radius-lg: 8px;
+  --radius-xl: 12px;
   --radius-full: 9999px;
 
   /* Layout */
-  --max-width: 1240px;
+  --max-width: var(--usu-container);
+}
+
+@media (min-width: 48rem) {
+  :root { --usu-gutter: 1.5rem; --usu-grid-gap: 1.5rem; }
+}
+@media (min-width: 80rem) {
+  :root { --usu-gutter: 2rem; --usu-grid-gap: 2rem; }
 }
 
 * {
@@ -75,27 +156,39 @@
 html {
   max-width: 100vw;
   scroll-behavior: smooth;
+  scroll-padding-top: var(--usu-header-offset);
 }
 
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;
+  font-family: var(--usu-font);
   background-color: var(--bg-main);
   color: var(--text-main);
-  line-height: 1.5;
+  font-size: var(--usu-text-body);
+  line-height: var(--usu-leading-body);
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--usu-font);
   color: var(--text-main);
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  line-height: var(--usu-leading-heading);
 }
+
+h1 { font-size: var(--usu-text-h1); }
+h2 { font-size: var(--usu-text-h2); line-height: 1.2; }
+h3 { font-size: var(--usu-text-h3); line-height: 1.3; }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--usu-focus);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px #fff;
 }
 
 /* Custom Scrollbar */
@@ -104,14 +197,14 @@ a {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: var(--usu-surface);
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
+  background: var(--usu-border-strong);
+  border-radius: var(--usu-radius-control);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--usu-green);
+  background: var(--usu-brand);
 }
 
 /* Layout Utilities */
@@ -1026,6 +1119,90 @@ a {
   .hero-seal-watermark img {
     width: min(80vw, 360px) !important;
   }
+}
+
+/* ==========================================================================
+   Vokasi USU Reference-Informed Component Utilities (tokens.css)
+   ========================================================================== */
+.usu-display { font-size: var(--usu-text-display); line-height: 1.1; }
+.usu-lead { font-size: var(--usu-text-lead); line-height: 1.55; }
+.usu-container {
+  inline-size: min(calc(100% - 2 * var(--usu-gutter)), var(--usu-container));
+  margin-inline: auto;
+}
+.usu-prose { max-inline-size: var(--usu-reading-width); }
+.usu-section { padding-block: var(--usu-section-space); }
+.usu-section--compact { padding-block: clamp(2rem, 3vw, 3rem); }
+.usu-section--soft { background: var(--usu-surface); }
+.usu-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--usu-grid-gap); }
+.usu-grid > * { min-inline-size: 0; }
+.usu-section-heading {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  justify-content: space-between; gap: 1rem 2rem; margin-block-end: 2rem;
+}
+.usu-section-heading h2 { margin: 0; }
+.usu-meta { color: var(--usu-text-secondary); font-size: var(--usu-text-meta); line-height: 1.5; }
+.usu-media { margin: 0; overflow: hidden; border-radius: var(--usu-radius-flat); }
+.usu-media img {
+  inline-size: 100%; block-size: 100%; object-fit: cover;
+  object-position: var(--usu-focal-point, 50% 50%);
+}
+.usu-media--landscape { aspect-ratio: 4 / 3; }
+.usu-media--wide { aspect-ratio: 16 / 9; }
+.usu-panel { border: 1px solid var(--usu-border); padding: 1.5rem; border-radius: var(--usu-radius-control); background: var(--usu-canvas); }
+.usu-list { margin: 0; padding: 0; list-style: none; }
+.usu-list > li { padding-block: 1.25rem; border-block-end: 1px solid var(--usu-border); }
+.usu-button {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 0.5rem; min-block-size: 2.75rem; padding: 0.65rem 1.15rem;
+  border: 1px solid transparent; border-radius: var(--usu-radius-control);
+  font-weight: 600; line-height: 1.4; text-align: center;
+  text-decoration: none; cursor: pointer;
+  transition: background-color var(--usu-duration-fast) var(--usu-ease),
+              border-color var(--usu-duration-fast) var(--usu-ease),
+              color var(--usu-duration-fast) var(--usu-ease);
+}
+.usu-button--primary { color: var(--usu-on-brand); background: var(--usu-brand); }
+.usu-button--primary:hover { background: var(--usu-brand-hover); }
+.usu-button--primary:active { background: var(--usu-brand-active); }
+.usu-button--secondary { color: var(--usu-brand); background: #fff; border-color: var(--usu-brand); }
+.usu-button--secondary:hover { background: var(--usu-surface); }
+.usu-button--accent { color: var(--usu-on-accent); background: var(--usu-accent); }
+.usu-button--accent:hover { background: var(--usu-accent-hover); }
+.usu-button:disabled, .usu-button[aria-disabled="true"] {
+  color: var(--usu-disabled-text); background: var(--usu-disabled-surface);
+  border-color: var(--usu-border); cursor: not-allowed;
+}
+.usu-input {
+  inline-size: 100%; min-block-size: 2.75rem; padding: 0.65rem 0.875rem;
+  border: 1px solid var(--usu-border-strong); border-radius: var(--usu-radius-control);
+  color: var(--usu-text); background: #fff;
+}
+.usu-input::placeholder { color: var(--usu-text-secondary); }
+.usu-input[aria-invalid="true"] { border-color: var(--usu-danger); }
+.usu-error { color: var(--usu-danger); font-size: var(--usu-text-meta); }
+.usu-table-scroll { overflow-x: auto; }
+.usu-table { inline-size: 100%; border-collapse: collapse; text-align: start; }
+.usu-table th, .usu-table td { padding: 0.875rem 1rem; border-block-end: 1px solid var(--usu-border); }
+.usu-table th { font-weight: 600; background: var(--usu-surface); }
+.usu-inverse { color: #fff; background: var(--usu-brand-deep); }
+.usu-inverse a:not(.usu-button) { color: #fff; }
+.usu-inverse .usu-meta { color: #e0ebe4; }
+.usu-skip-link {
+  position: fixed; top: 0.5rem; left: 0.5rem; z-index: 100;
+  transform: translateY(-200%); padding: 0.75rem 1rem;
+  color: #fff; background: var(--usu-brand-deep);
+  border-radius: var(--usu-radius-control);
+  font-weight: 600;
+}
+.usu-skip-link:focus { transform: translateY(0); }
+@media (min-width: 64rem) {
+  .usu-grid--editorial { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+  .usu-grid--equal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .usu-button { transition: none; }
+  html { scroll-behavior: auto; }
 }
 
 

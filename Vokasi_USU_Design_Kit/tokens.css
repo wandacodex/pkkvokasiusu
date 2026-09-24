@@ -1,0 +1,195 @@
+/*
+ * Vokasi USU reference-informed design tokens, 2026-09-24.
+ * NOT an extraction of the live website's CSS.
+ * Primary green is converted from RGB (0, 105, 55) in the USU guide.
+ * Other semantic assignments, geometry and component styles are adaptations.
+ * Public Sans must be loaded separately from an approved source.
+ * Import selectively or scope the rules when integrating an existing app.
+ */
+:root {
+  color-scheme: light;
+  --usu-brand: #006937;
+  --usu-brand-hover: #00562d;
+  --usu-brand-active: #004423;
+  --usu-brand-deep: #0c3b2a;
+  --usu-brand-bright: #3dae2b;
+  --usu-accent: #ffc600;
+  --usu-accent-hover: #edb800;
+  --usu-canvas: #ffffff;
+  --usu-surface: #f2f6f3;
+  --usu-surface-muted: #f7f8f7;
+  --usu-text: #18251e;
+  --usu-text-secondary: #536157;
+  --usu-on-brand: #ffffff;
+  --usu-on-accent: #18251e;
+  --usu-border: #d7e0d9;
+  --usu-border-strong: #748579;
+  --usu-danger: #b42318;
+  --usu-danger-surface: #fff1f0;
+  --usu-warning: #7a4b00;
+  --usu-warning-surface: #fff5d6;
+  --usu-info: #315e91;
+  --usu-info-surface: #edf3fa;
+  --usu-success: #006937;
+  --usu-focus: #006937;
+  --usu-disabled-surface: #e7ece8;
+  --usu-disabled-text: #536157;
+
+  --usu-font: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --usu-text-meta: 0.875rem;
+  --usu-text-body: 1rem;
+  --usu-text-lead: clamp(1.125rem, 1rem + 0.35vw, 1.25rem);
+  --usu-text-h3: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  --usu-text-h2: clamp(1.75rem, 1.35rem + 1.1vw, 2.25rem);
+  --usu-text-h1: clamp(2rem, 1.4rem + 1.8vw, 3rem);
+  --usu-text-display: clamp(2rem, 1.25rem + 2.7vw, 3.5rem);
+  --usu-leading-heading: 1.15;
+  --usu-leading-body: 1.65;
+
+  --usu-space-1: 0.25rem;
+  --usu-space-2: 0.5rem;
+  --usu-space-3: 0.75rem;
+  --usu-space-4: 1rem;
+  --usu-space-5: 1.25rem;
+  --usu-space-6: 1.5rem;
+  --usu-space-8: 2rem;
+  --usu-space-10: 2.5rem;
+  --usu-space-12: 3rem;
+  --usu-space-16: 4rem;
+  --usu-space-20: 5rem;
+  --usu-space-24: 6rem;
+
+  --usu-container: 80rem;
+  --usu-reading-width: 68ch;
+  --usu-gutter: 1rem;
+  --usu-grid-gap: 1rem;
+  --usu-section-space: clamp(2.5rem, 1.8rem + 2.5vw, 5rem);
+  --usu-header-offset: 6rem;
+  --usu-radius-flat: 0;
+  --usu-radius-sm: 0.125rem;
+  --usu-radius-control: 0.25rem;
+  --usu-radius-dialog: 0.5rem;
+  --usu-shadow-menu: 0 8px 24px rgb(12 59 42 / 12%);
+  --usu-duration-fast: 140ms;
+  --usu-duration-normal: 200ms;
+  --usu-ease: ease-out;
+  --usu-z-sticky: 20;
+  --usu-z-dropdown: 40;
+  --usu-z-backdrop: 60;
+  --usu-z-dialog: 70;
+  --usu-z-toast: 80;
+}
+
+@media (min-width: 48rem) {
+  :root { --usu-gutter: 1.5rem; --usu-grid-gap: 1.5rem; }
+}
+@media (min-width: 80rem) {
+  :root { --usu-gutter: 2rem; --usu-grid-gap: 2rem; }
+}
+
+/* Optional foundation. Do not overwrite an existing reset blindly. */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-padding-top: var(--usu-header-offset); }
+body {
+  margin: 0;
+  background: var(--usu-canvas);
+  color: var(--usu-text);
+  font-family: var(--usu-font);
+  font-size: var(--usu-text-body);
+  line-height: var(--usu-leading-body);
+}
+img, video { display: block; max-inline-size: 100%; block-size: auto; }
+button, input, select, textarea { font: inherit; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+button, a { touch-action: manipulation; }
+h1, h2, h3 { line-height: var(--usu-leading-heading); font-weight: 600; }
+h1 { font-size: var(--usu-text-h1); }
+h2 { font-size: var(--usu-text-h2); line-height: 1.2; }
+h3 { font-size: var(--usu-text-h3); line-height: 1.3; }
+.usu-display { font-size: var(--usu-text-display); line-height: 1.1; }
+.usu-lead { font-size: var(--usu-text-lead); line-height: 1.55; }
+p, li, h1, h2, h3 { overflow-wrap: anywhere; }
+a { color: var(--usu-brand); text-underline-offset: 0.2em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible {
+  outline: 3px solid var(--usu-focus);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px #fff;
+}
+.usu-container {
+  inline-size: min(calc(100% - 2 * var(--usu-gutter)), var(--usu-container));
+  margin-inline: auto;
+}
+.usu-prose { max-inline-size: var(--usu-reading-width); }
+.usu-section { padding-block: var(--usu-section-space); }
+.usu-section--compact { padding-block: clamp(2rem, 3vw, 3rem); }
+.usu-section--soft { background: var(--usu-surface); }
+.usu-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--usu-grid-gap); }
+.usu-grid > * { min-inline-size: 0; }
+.usu-section-heading {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  justify-content: space-between; gap: 1rem 2rem; margin-block-end: 2rem;
+}
+.usu-section-heading h2 { margin: 0; }
+.usu-meta { color: var(--usu-text-secondary); font-size: var(--usu-text-meta); line-height: 1.5; }
+.usu-media { margin: 0; overflow: hidden; border-radius: var(--usu-radius-flat); }
+.usu-media img {
+  inline-size: 100%; block-size: 100%; object-fit: cover;
+  object-position: var(--usu-focal-point, 50% 50%);
+}
+.usu-media--landscape { aspect-ratio: 4 / 3; }
+.usu-media--wide { aspect-ratio: 16 / 9; }
+.usu-panel { border: 1px solid var(--usu-border); padding: 1.5rem; border-radius: var(--usu-radius-control); }
+.usu-list { margin: 0; padding: 0; list-style: none; }
+.usu-list > li { padding-block: 1.25rem; border-block-end: 1px solid var(--usu-border); }
+.usu-button {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 0.5rem; min-block-size: 2.75rem; padding: 0.65rem 1.15rem;
+  border: 1px solid transparent; border-radius: var(--usu-radius-control);
+  font-weight: 600; line-height: 1.4; text-align: center;
+  text-decoration: none; cursor: pointer;
+  transition: background-color var(--usu-duration-fast) var(--usu-ease),
+              border-color var(--usu-duration-fast) var(--usu-ease),
+              color var(--usu-duration-fast) var(--usu-ease);
+}
+.usu-button--primary { color: var(--usu-on-brand); background: var(--usu-brand); }
+.usu-button--primary:hover { background: var(--usu-brand-hover); }
+.usu-button--primary:active { background: var(--usu-brand-active); }
+.usu-button--secondary { color: var(--usu-brand); background: #fff; border-color: var(--usu-brand); }
+.usu-button--secondary:hover { background: var(--usu-surface); }
+.usu-button--accent { color: var(--usu-on-accent); background: var(--usu-accent); }
+.usu-button--accent:hover { background: var(--usu-accent-hover); }
+.usu-button:disabled, .usu-button[aria-disabled="true"] {
+  color: var(--usu-disabled-text); background: var(--usu-disabled-surface);
+  border-color: var(--usu-border); cursor: not-allowed;
+}
+/* aria-disabled does NOT prevent activation; implement that in the component. */
+.usu-input {
+  inline-size: 100%; min-block-size: 2.75rem; padding: 0.65rem 0.875rem;
+  border: 1px solid var(--usu-border-strong); border-radius: var(--usu-radius-control);
+  color: var(--usu-text); background: #fff;
+}
+.usu-input::placeholder { color: var(--usu-text-secondary); }
+.usu-input[aria-invalid="true"] { border-color: var(--usu-danger); }
+.usu-error { color: var(--usu-danger); font-size: var(--usu-text-meta); }
+.usu-table-scroll { overflow-x: auto; }
+.usu-table { inline-size: 100%; border-collapse: collapse; text-align: start; }
+.usu-table th, .usu-table td { padding: 0.875rem 1rem; border-block-end: 1px solid var(--usu-border); }
+.usu-table th { font-weight: 600; background: var(--usu-surface); }
+.usu-inverse { color: #fff; background: var(--usu-brand-deep); }
+.usu-inverse a:not(.usu-button) { color: #fff; }
+.usu-inverse .usu-meta { color: #e0ebe4; }
+.usu-skip-link {
+  position: fixed; top: 0.5rem; left: 0.5rem; z-index: 100;
+  transform: translateY(-200%); padding: 0.75rem 1rem;
+  color: #fff; background: var(--usu-brand-deep);
+}
+.usu-skip-link:focus { transform: translateY(0); }
+@media (min-width: 64rem) {
+  .usu-grid--editorial { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+  .usu-grid--equal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .usu-button { transition: none; }
+  html { scroll-behavior: auto; }
+}

@@ -2,7 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['images.unsplash.com', 'vokasi.usu.ac.id', 'usu.ac.id'],
+    domains: ['images.unsplash.com', 'vokasi.usu.ac.id', 'usu.ac.id', 'konten.usu.ac.id'],
+  },
+  experimental: {
+    serverComponentsExternalPackages: ['jszip'],
   },
   async headers() {
     const cspHeader = `

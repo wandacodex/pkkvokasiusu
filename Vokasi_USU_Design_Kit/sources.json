@@ -1,0 +1,144 @@
+{
+  "schemaVersion": "1.0",
+  "reviewedAt": "2026-09-24",
+  "sources": [
+    {
+      "id": "S01",
+      "title": "Beranda Fakultas Vokasi USU",
+      "url": "https://vokasi.usu.ac.id/id",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S02",
+      "title": "Pendidikan Vokasi USU",
+      "url": "https://vokasi.usu.ac.id/id/pendidikan",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S03",
+      "title": "Berita Fakultas Vokasi USU",
+      "url": "https://vokasi.usu.ac.id/id/berita/berita-fakultas",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S04",
+      "title": "Direktori fasilitas Vokasi USU",
+      "url": "https://vokasi.usu.ac.id/id/tentang/fasilitas",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S05",
+      "title": "Fasilitas CodeStudio",
+      "url": "https://vokasi.usu.ac.id/id/fasilitas/codestudio",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S06",
+      "title": "Panduan USU - Tipografi Public Sans",
+      "url": "https://www.usu.ac.id/images/compressed/identitas-usu/pedoman-identitas/pedoman_identitas-31.webp?q=75&w=992",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S07",
+      "title": "Panduan USU - Warna formal",
+      "url": "https://www.usu.ac.id/images/compressed/identitas-usu/pedoman-identitas/pedoman_identitas-32.webp?q=75&w=992",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S08",
+      "title": "Panduan USU - Warna kasual",
+      "url": "https://www.usu.ac.id/images/compressed/identitas-usu/pedoman-identitas/pedoman_identitas-33.webp?q=75&w=992",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S09",
+      "title": "Panduan USU - Elemen grafis",
+      "url": "https://www.usu.ac.id/images/compressed/identitas-usu/pedoman-identitas/pedoman_identitas-35.webp?q=75&w=992",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S10",
+      "title": "Panduan USU - Larangan penggunaan logo",
+      "url": "https://www.usu.ac.id/images/compressed/identitas-usu/pedoman-identitas/pedoman_identitas-27.webp?q=75&w=992",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S11",
+      "title": "Panduan USU - Clear space logo",
+      "url": "https://www.usu.ac.id/images/compressed/identitas-usu/pedoman-identitas/pedoman_identitas-25.webp?q=75&w=992",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S12",
+      "title": "Panduan USU - Warna dan gradien elemen",
+      "url": "https://www.usu.ac.id/images/compressed/identitas-usu/pedoman-identitas/pedoman_identitas-36.webp?q=75&w=992",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S13",
+      "title": "Panduan USU - Kombinasi elemen",
+      "url": "https://www.usu.ac.id/images/compressed/identitas-usu/pedoman-identitas/pedoman_identitas-37.webp?q=75&w=992",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S14",
+      "title": "W3C Web Content Accessibility Guidelines 2.2",
+      "url": "https://www.w3.org/TR/WCAG22/",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S15",
+      "title": "Anti-slop design quality filter",
+      "url": "https://github.com/miqdadbadjuber/anti-slop/blob/main/antislop.md",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S16",
+      "title": "Foto aktivitas ruang CodeStudio",
+      "url": "https://konten.usu.ac.id/storage/year/2025-01/satker/885/statis/fasilitas/IMG_1208.webp",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S17",
+      "title": "Foto eksterior Aula Vokasi",
+      "url": "https://konten.usu.ac.id/storage/year/2025-03/satker/885/statis/fasilitas/IMG_1522.webp",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S18",
+      "title": "Foto kelompok mahasiswa",
+      "url": "https://konten.usu.ac.id/storage/posts/30624/IMG_7348%20%281%29.webp",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S19",
+      "title": "Foto kelompok dengan penghargaan",
+      "url": "https://konten.usu.ac.id/storage/posts/Jun-2025/50851/WhatsApp%20Image%202025-06-30%20at%2010.31.26.webp",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S20",
+      "title": "Foto kegiatan kelompok besar",
+      "url": "https://konten.usu.ac.id/storage/posts/Aug-2025/53178/DSC04989.webp",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S21",
+      "title": "Aset logo putih USU",
+      "url": "https://konten.usu.ac.id/storage/satker/44/logos/usu-logo.png",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S22",
+      "title": "Identitas resmi USU",
+      "url": "https://www.usu.ac.id/id/tentang/identitas",
+      "reviewedAt": "2026-09-24"
+    },
+    {
+      "id": "S23",
+      "title": "Aula Fakultas Vokasi USU",
+      "url": "https://vokasi.usu.ac.id/id/fasilitas/aula-fakultas-vokasi-usu",
+      "reviewedAt": "2026-09-24"
+    }
+  ]
+}

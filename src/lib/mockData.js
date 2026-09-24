@@ -11,11 +11,12 @@ export const TEMPLATE_SURAT = [
     estimasiWaktu: "1 - 2 Hari Kerja",
     deskripsi: "Surat rekomendasi resmi dari pimpinan Fakultas Vokasi USU sebagai syarat pendaftaran program beasiswa internal maupun eksternal (KIP-K, BI, Djarum, Pemda, dll).",
     syarat: [
-      "Transkrip nilai akademik terbaru dengan IPK minimal 3.00 (disahkan Koordinator Prodi / Dosen PA)",
-      "Scan Kartu Tanda Mahasiswa (KTM) aktif",
-      "Surat pernyataan bermaterai 10.000 tidak sedang menerima beasiswa dari sumber lain",
-      "Fotokopi Kartu Rencana Studi (KRS) semester aktif",
-      "Slip gaji / surat keterangan penghasilan orang tua dari kelurahan/instansi"
+      "Transkrip nilai akademik terbaru dengan IPK minimal sesuai ketentuan beasiswa (disahkan Kaprodi / Dosen PA)",
+      "Scan Kartu Tanda Mahasiswa (KTM) aktif semester berjalan",
+      "Surat pernyataan bermaterai Rp10.000 tidak sedang menerima beasiswa dari sumber lain",
+      "Bukti pembayaran UKT/SPP semester berjalan (asli/valid)",
+      "Slip gaji atau Surat Keterangan Penghasilan Orang Tua dari Kelurahan/Instansi",
+      "Sertifikat prestasi akademik atau ko-kurikuler penunjang (bila ada)"
     ]
   },
   {
@@ -30,10 +31,11 @@ export const TEMPLATE_SURAT = [
     estimasiWaktu: "1 Hari Kerja",
     deskripsi: "Surat resmi yang menerangkan bahwa mahasiswa terdaftar aktif pada semester berjalan untuk keperluan beasiswa, BPJS, visa luar negeri, atau administrasi umum.",
     syarat: [
-      "Scan bukti pembayaran SPP / UKT semester berjalan (asli/valid)",
+      "Scan bukti pelunasan UKT / SPP semester berjalan",
       "Scan Kartu Tanda Mahasiswa (KTM) aktif",
-      "KRS semester berjalan yang telah disetujui Dosen Pembimbing Akademik",
-      "Surat pengantar permohonan dari jurusan/prodi"
+      "Kartu Rencana Studi (KRS) semester aktif yang telah disetujui Dosen Pembimbing Akademik",
+      "Kartu Hasil Studi (KHS) semester sebelumnya",
+      "Keterangan tertulis mengenai tujuan dan instansi penerima surat keterangan"
     ]
   },
   {
@@ -48,11 +50,11 @@ export const TEMPLATE_SURAT = [
     estimasiWaktu: "1 Hari Kerja",
     deskripsi: "Surat pernyataan resmi pimpinan fakultas yang ditujukan kepada instansi tempat orang tua bekerja (PNS, TNI, Polri, BUMN, atau BUMD) guna pencairan tunjangan anak.",
     syarat: [
-      "Scan bukti pembayaran UKT semester berjalan",
       "Scan Kartu Tanda Mahasiswa (KTM) aktif",
-      "Fotokopi Kartu Keluarga (KK) yang masih berlaku",
-      "SK Pangkat / Golongan terakhir orang tua atau Surat Keterangan Bekerja dari instansi",
-      "Formulir blangko tunjangan anak dari instansi tempat orang tua berdinas"
+      "Bukti pembayaran UKT semester berjalan",
+      "Fotokopi Kartu Keluarga (KK) terbaru yang masih berlaku",
+      "SK Pangkat/Golongan Terakhir atau Surat Keterangan Bekerja Aktif Orang Tua dari instansi kedinasan",
+      "Formulir blangko permohonan KP4 / tunjangan keluarga resmi dari instansi tempat orang tua berdinas"
     ]
   },
   {
@@ -67,10 +69,10 @@ export const TEMPLATE_SURAT = [
     estimasiWaktu: "1 Hari Kerja",
     deskripsi: "Surat permohonan izin dispensasi ketidakhadiran kuliah/praktikum karena kondisi sakit, kedukaan keluarga inti, atau penugasan resmi mewakili fakultas/universitas.",
     syarat: [
-      "Surat Keterangan Sakit dari Dokter/Klinik/Rumah Sakit (jika sakit)",
-      "Surat Tugas / Dispensasi dari Pimpinan Fakultas (jika penugasan lomba/kegiatan)",
-      "Fotokopi Kartu Rencana Studi (KRS) untuk jadwal mata kuliah yang ditinggalkan",
-      "Persetujuan tertulis Dosen Pengampu mata kuliah bersangkutan"
+      "Surat Keterangan Sakit asli dari Dokter / Klinik / Rumah Sakit (jika alasan medis)",
+      "Surat Tugas / Surat Dispensasi resmi dari Universitas / Penyelenggara kegiatan lomba/kegiatan (jika dispensasi penugasan)",
+      "Kartu Rencana Studi (KRS) untuk mata kuliah dan jadwal praktikum yang ditinggalkan",
+      "Konfirmasi persetujuan tertulis dari Dosen Pengampu mata kuliah bersangkutan"
     ]
   },
   {
@@ -85,10 +87,10 @@ export const TEMPLATE_SURAT = [
     estimasiWaktu: "1 - 2 Hari Kerja",
     deskripsi: "Surat pengantar resmi fakultas kepada pimpinan instansi pemerintah, BUMN, atau perusahaan swasta untuk izin pengambilan data penelitian/Tugas Akhir mahasiswa vokasi.",
     syarat: [
-      "Proposal Tugas Akhir / Penelitian yang telah disetujui Dosen Pembimbing",
-      "Surat rekomendasi dari Ketua Program Studi",
-      "Nama instansi/perusahaan, alamat lengkap, dan nama pimpinan yang dituju",
-      "Scan KTM aktif pemohon"
+      "Cover dan Lembar Pengesahan Proposal Tugas Akhir yang telah disetujui Dosen Pembimbing (ACC)",
+      "Scan Kartu Tanda Mahasiswa (KTM) aktif",
+      "Bukti Pembayaran UKT / Slip SPP semester berjalan",
+      "Data lengkap instansi tujuan (Nama Instansi/Perusahaan, Jabatan Pimpinan, Alamat Lengkap, dan Periode Penelitian)"
     ]
   },
   {
@@ -104,9 +106,9 @@ export const TEMPLATE_SURAT = [
     deskripsi: "Surat permohonan pengantar magang industri perorangan / mandiri ke perusahaan mitra DUDI untuk menunjang kompetensi terapan vokasi.",
     syarat: [
       "Persetujuan dari Koordinator Magang / Ketua Program Studi",
-      "Proposal Rencana Magang Mandiri / Kerangka Acuan Kerja (KAK)",
-      "Nama perusahaan, bidang industri, dan kontak HRD/pimpinan tujuan",
-      "Scan KTM aktif dan Transkrip Nilai semester berjalan"
+      "Proposal Rencana Magang Mandiri / Kerangka Acuan Kerja (KAK) Magang",
+      "Data profil perusahaan mitra (Nama Perusahaan, Divisi yang dituju, Alamat Lengkap, dan Kontak HRD)",
+      "Scan KTM aktif dan Transkrip Nilai Akademik semester berjalan"
     ]
   },
   {
@@ -121,10 +123,10 @@ export const TEMPLATE_SURAT = [
     estimasiWaktu: "2 Hari Kerja",
     deskripsi: "Surat permohonan pengantar magang industri yang diajukan bersama oleh kelompok mahasiswa vokasi pada perusahaan/instansi mitra.",
     syarat: [
-      "Daftar nama lengkap, NIM, dan program studi seluruh anggota kelompok",
-      "Proposal Magang Bersama yang telah disahkan Dosen Pembimbing",
-      "Surat persetujuan dari Koordinator Magang Fakultas Vokasi USU",
-      "Profil singkat dan alamat kantor perusahaan/instansi mitra"
+      "Daftar nama lengkap, NIM, dan program studi seluruh anggota kelompok (beserta kontak WA)",
+      "Proposal Magang Bersama yang telah disetujui Dosen Pembimbing / Kaprodi",
+      "Surat konfirmasi kesediaan menerima dari perusahaan/instansi mitra (jika sudah ada)",
+      "Profil singkat dan alamat kantor perusahaan/instansi mitra target magang"
     ]
   },
   {
@@ -140,9 +142,9 @@ export const TEMPLATE_SURAT = [
     deskripsi: "Surat permohonan pengantar pelaksanaan Praktik Kerja Lapangan (PKL) perorangan untuk memenuhi kurikulum wajib diploma/sarjana terapan.",
     syarat: [
       "Bukti telah memprogramkan mata kuliah PKL pada KRS semester aktif",
-      "Persetujuan Dosen Pembimbing PKL",
-      "Nama instansi/perusahaan tempat pelaksanaan PKL beserta narahubung",
-      "Rencana jadwal dan durasi waktu pelaksanaan PKL"
+      "Persetujuan tertulis Dosen Pembimbing PKL",
+      "Data instansi/industri tujuan (Nama Perusahaan/Lab, Alamat, dan Pembimbing Lapangan/Narahubung)",
+      "Rencana jadwal dan durasi waktu pelaksanaan PKL di industri"
     ]
   },
   {
@@ -157,10 +159,10 @@ export const TEMPLATE_SURAT = [
     estimasiWaktu: "2 Hari Kerja",
     deskripsi: "Surat permohonan pengantar pelaksanaan PKL kelompok yang diterbitkan resmi oleh pimpinan fakultas kepada instansi industri atau lembaga pemerintah.",
     syarat: [
-      "Daftar anggota kelompok PKL (Nama, NIM, Program Studi, No HP)",
-      "Surat rekomendasi dari Ketua Program Studi bersangkutan",
-      "Proposal dan Kerangka Acuan Kerja (KAK) pelaksanaan PKL kelompok",
-      "Surat konfirmasi kesediaan menerima dari instansi mitra (jika sudah ada)"
+      "Daftar seluruh anggota kelompok PKL (Nama Lengkap, NIM, Program Studi)",
+      "Lembar Pengesahan Proposal PKL Kelompok oleh Ketua Program Studi",
+      "Surat permohonan penerimaan atau balasan kesediaan dari instansi mitra",
+      "Rincian pembagian topik/tugas dan jadwal rotasi PKL kelompok"
     ]
   },
   {
@@ -175,10 +177,10 @@ export const TEMPLATE_SURAT = [
     estimasiWaktu: "1 - 2 Hari Kerja",
     deskripsi: "Surat permohonan pengurusan cetak ulang dokumen akademik resmi mahasiswa (KRS, KHS, KTM, atau Transkrip Nilai) yang hilang atau rusak berat.",
     syarat: [
-      "Surat Tanda Penerimaan Laporan Kehilangan dari Kepolisian setempat (asli/legalisir)",
-      "Bukti pembayaran biaya penggantian cetak dokumen (sesuai ketentuan tarif USU)",
-      "Scan identitas pendukung (KTP / KK)",
-      "Surat pengantar kehilangan dari Bagian Akademik Program Studi"
+      "Surat Tanda Penerimaan Laporan Kehilangan (STPLK) asli dari Kepolisian Republik Indonesia",
+      "Scan Kartu Tanda Mahasiswa (KTM) atau KTP/KK pemohon sebagai identitas pembanding",
+      "Bukti pembayaran biaya penggantian cetak dokumen (sesuai ketentuan tarif resmi USU jika ada)",
+      "Surat pengantar kehilangan dari Bagian Tata Usaha / Akademik Program Studi"
     ]
   },
   {
@@ -193,10 +195,11 @@ export const TEMPLATE_SURAT = [
     estimasiWaktu: "1 - 2 Hari Kerja",
     deskripsi: "Surat permohonan penerbitan Surat Keterangan Lulus (SKL) resmi dari Dekan Fakultas Vokasi USU bagi mahasiswa yang telah diyudisium/lulus namun belum terbit PIN Ijazah.",
     syarat: [
-      "Scan Berita Acara Sidang Tugas Akhir yang telah disahkan penguji",
-      "Scan Kartu Kemajuan Mahasiswa (KKM) / Transkrip Sementara",
-      "Surat Keterangan Bebas Pustaka Universitas dan Fakultas",
-      "Scan Kartu Tanda Mahasiswa (KTM) dan Bukti Pembayaran SPP Terakhir"
+      "Scan Berita Acara Sidang Ujian Tugas Akhir yang telah disahkan Dosen Pembimbing dan Dosen Penguji",
+      "Kartu Kemajuan Mahasiswa (KKM) / Transkrip Nilai Sementara lengkap dengan cap basah",
+      "Surat Keterangan Bebas Pustaka dari Perpustakaan Pusat USU dan Ruang Baca Vokasi",
+      "Bukti pelunasan SPP / UKT dari semester awal hingga semester kelulusan",
+      "Scan Kartu Tanda Mahasiswa (KTM) aktif terakhir"
     ]
   },
   {
@@ -211,10 +214,11 @@ export const TEMPLATE_SURAT = [
     estimasiWaktu: "1 Hari Kerja",
     deskripsi: "Bukti penyerahan berkas Tugas Akhir (Hard Copy/Soft Copy) kepada Dosen Pembimbing, Dosen Penguji, Ketua Program Studi, dan Manajer PKK sebagai syarat bebas administrasi wisuda.",
     syarat: [
-      "Naskah Tugas Akhir final yang telah dijilid rapi / berkas digital lengkap",
-      "Lembar pengesahan Tugas Akhir bertandatangan lengkap",
-      "Tanda tangan bukti penerimaan dari Dosen Pembimbing dan Penguji",
-      "Pengesahan Ketua Program Studi"
+      "Naskah Tugas Akhir final lengkap yang telah dijilid hardcover resmi fakultas",
+      "CD/Flashdisk berisi naskah soft copy Tugas Akhir (format Word dan PDF per bab)",
+      "Lembar Pengesahan Tugas Akhir bertandatangan lengkap Dosen Pembimbing, Penguji, dan Kaprodi",
+      "Bukti tanda tangan tanda terima penyerahan berkas dari Dosen Pembimbing dan Penguji",
+      "Bukti unggah karya ilmiah mandiri ke Repositori Institusi Universitas Sumatera Utara"
     ]
   },
   {
@@ -231,8 +235,9 @@ export const TEMPLATE_SURAT = [
     syarat: [
       "Scan Kartu Tanda Mahasiswa (KTM) aktif",
       "KRS Semester Terakhir",
-      "Bukti Pembayaran SPP/UKT Terakhir",
-      "Surat pernyataan alasan keterlambatan pembayaran ditandatangani orang tua/wali"
+      "Bukti Pembayaran SPP/UKT semester sebelumnya",
+      "Surat pernyataan alasan keterlambatan pembayaran bermaterai Rp10.000 ditandatangani mahasiswa dan orang tua/wali",
+      "Tangkapan layar kendala teknis pembayaran / Virtual Account expired pada portal billing USU"
     ]
   },
   {
@@ -248,10 +253,10 @@ export const TEMPLATE_SURAT = [
     deskripsi: "Surat permohonan pengunduran diri resmi sebagai mahasiswa Program Studi Fakultas Vokasi USU bermaterai Rp10.000 dengan persetujuan orang tua/wali.",
     syarat: [
       "Surat permohonan pengunduran diri bermaterai Rp10.000 ditandatangani pemohon dan orang tua/wali",
-      "Fotokopi KTP dan Kartu Tanda Mahasiswa (KTM) asli",
+      "Scan KTP dan Kartu Tanda Mahasiswa (KTM) asli yang masih berlaku",
       "Fotokopi Slip Bukti Pembayaran SPP/UKT Terakhir",
       "Fotokopi KRS Semester Terakhir",
-      "Surat keterangan bebas pinjaman perpustakaan dan laboratorium"
+      "Surat keterangan bebas pinjaman dari Perpustakaan Pusat USU dan Laboratorium Terkait"
     ]
   },
   {
@@ -266,10 +271,11 @@ export const TEMPLATE_SURAT = [
     estimasiWaktu: "1 - 2 Hari Kerja",
     deskripsi: "Surat permohonan kepada Ketua Program Studi untuk penerbitan Undangan Ujian Tugas Akhir / Sidang Komprehensif mahasiswa vokasi.",
     syarat: [
-      "Scan cover proposal Tugas Akhir yang telah ditandatangani oleh Dosen Pembimbing",
-      "Scan cover halaman persetujuan ujian bertandatangan Dosen Pembimbing dan Ketua Program Studi",
+      "Scan cover proposal Tugas Akhir yang telah ditandatangani oleh Dosen Pembimbing (ACC Ujian)",
+      "Scan lembar persetujuan ujian bertandatangan Dosen Pembimbing dan Ketua Program Studi",
       "KRS semester berjalan yang memprogramkan Tugas Akhir",
-      "Transkrip nilai sementara dengan jumlah SKS lulus sesuai kurikulum"
+      "Transkrip nilai sementara dengan perolehan SKS minimal sesuai kurikulum program studi",
+      "Draf lengkap naskah Tugas Akhir yang siap diujikan di hadapan dewan penguji"
     ]
   },
   {
@@ -284,10 +290,11 @@ export const TEMPLATE_SURAT = [
     estimasiWaktu: "1 Hari Kerja",
     deskripsi: "Surat pernyataan resmi mahasiswa bermaterai Rp10.000 bahwa seluruh kewajiban akademik, keuangan, perpustakaan, dan toga telah selesai untuk pengambilan Ijazah & Transkrip.",
     syarat: [
-      "Surat pernyataan bermaterai Rp10.000 dan ditandatangani Ketua Program Studi",
-      "Bukti bebas administrasi perpustakaan universitas & fakultas",
-      "Bukti pengembalian toga wisuda",
-      "Scan berita acara kelulusan / SKL"
+      "Surat pernyataan bebas administrasi bermaterai Rp10.000 ditandatangani mahasiswa dan Ketua Program Studi",
+      "Bukti Bebas Pustaka Perpustakaan Universitas Sumatera Utara & Fakultas Vokasi",
+      "Bukti pengembalian Toga Wisuda dari Bagian Perlengkapan Fakultas Vokasi",
+      "Salinan Berita Acara Kelulusan / Surat Keterangan Lulus (SKL) resmi",
+      "Bukti penyerahan hard copy dan soft copy Tugas Akhir ke Program Studi"
     ]
   },
   {
@@ -302,10 +309,11 @@ export const TEMPLATE_SURAT = [
     estimasiWaktu: "2 - 3 Hari Kerja",
     deskripsi: "Berkas formulir rekomendasi dan surat permohonan resmi kepada Dekan Fakultas Vokasi USU untuk aktif kuliah kembali setelah cuti akademik atau penundaan kegiatan akademik.",
     syarat: [
-      "Surat Izin PKA (Penundaan Kegiatan Akademik) dari Universitas",
-      "Rekomendasi Aktif Kuliah Kembali yang telah ditandatangani Ketua Program Studi dan Wakil Dekan I",
-      "Bukti pembayaran SPP/UKT terakhir",
-      "Fotokopi KTM dan KHS semester sebelumnya"
+      "Surat Keputusan Izin PKA (Penundaan Kegiatan Akademik) dari Universitas Sumatera Utara sebelumnya",
+      "Formulir Rekomendasi AKK yang telah ditandatangani Ketua Program Studi dan Wakil Dekan I",
+      "Bukti pembayaran SPP/UKT terakhir sebelum periode cuti",
+      "Fotokopi Kartu Tanda Mahasiswa (KTM) dan KHS seluruh semester yang pernah ditempuh",
+      "Surat pernyataan kesiapan aktif kembali menempuh perkuliahan"
     ]
   },
   {
@@ -320,12 +328,13 @@ export const TEMPLATE_SURAT = [
     estimasiWaktu: "2 - 3 Hari Kerja",
     deskripsi: "Berkas formulir rekomendasi dan surat permohonan cuti / Penundaan Kegiatan Akademik (PKA) resmi bermaterai Rp10.000 bagi mahasiswa yang berhalangan mengikuti perkuliahan.",
     syarat: [
-      "Surat permohonan PKA bermaterai Rp10.000 yang disetujui Orang Tua/Wali",
-      "Rekomendasi PKA dari Ketua Program Studi dan Wakil Dekan I",
+      "Surat permohonan cuti / PKA bermaterai Rp10.000 yang disetujui Orang Tua/Wali",
+      "Formulir Rekomendasi PKA dari Ketua Program Studi dan Wakil Dekan I",
       "Fotokopi Kartu Tanda Mahasiswa (KTM) aktif",
-      "Bukti pembayaran SPP/UKT terakhir",
-      "KRS dan KHS dari awal studi sampai semester terakhir",
-      "Surat Izin PKA sebelumnya (jika melakukan perpanjangan PKA)"
+      "Bukti pelunasan SPP/UKT semester berjalan atau bukti pembayaran semester sebelumnya",
+      "KRS dan KHS lengkap dari semester awal studi sampai semester terakhir",
+      "Dokumen pendukung alasan cuti (Surat Keterangan Dokter/RS jika sakit, Surat Mutasi Kerja, dll)",
+      "Salinan Surat Izin PKA sebelumnya (khusus jika memperpanjang cuti)"
     ]
   },
   {
@@ -340,12 +349,12 @@ export const TEMPLATE_SURAT = [
     estimasiWaktu: "2 - 3 Hari Kerja",
     deskripsi: "Surat permohonan resmi perubahan / perbaikan data mahasiswa pada Pangkalan Data Pendidikan Tinggi (PDDIKTI) seperti perbaikan Nama, NIM, Tempat/Tanggal Lahir, atau Nama Ibu Kandung bermaterai Rp10.000.",
     syarat: [
-      "Surat permohonan bermaterai Rp10.000 ditandatangani pemohon",
-      "Scan/Fotokopi Ijazah Pendidikan Terakhir (SMA/SMK/D3/S1) yang dilegalisir",
-      "Scan/Fotokopi Kartu Tanda Penduduk (KTP) dan Kartu Keluarga (KK)",
-      "Scan/Fotokopi Akta Kelahiran Mahasiswa",
+      "Surat permohonan perubahan data bermaterai Rp10.000 ditandatangani pemohon",
+      "Scan Ijazah Pendidikan Terakhir (SMA/SMK/MA/D3) yang dilegalisir basah",
+      "Scan Akta Kelahiran Mahasiswa (asli/legalisir)",
+      "Scan Kartu Tanda Penduduk (KTP) dan Kartu Keluarga (KK) terbaru",
       "Scan Kartu Tanda Mahasiswa (KTM) aktif atau Transkrip Nilai Sementara",
-      "Dokumen resmi pendukung perubahan data lainnya (bila ada)"
+      "Tangkapan layar (screenshot) bukti kekeliruan data mahasiswa pada PDDIKTI / SIA USU"
     ]
   }
 ];
@@ -36602,8 +36611,8 @@ export {
   TRACER_YEARLY_DATA,
   TRACER_PRODI_STATS_2025,
   TRACER_MULTI_YEAR_TREND
-} from './tracerStudyData';
-export { TRACER_PRODI_STATS_2025 as TRACER_PRODI_STATS } from './tracerStudyData';
+} from './tracerStudyData.js';
+export { TRACER_PRODI_STATS_2025 as TRACER_PRODI_STATS } from './tracerStudyData.js';
 
 // 4. Data Bank Alumni Tracer Study (617 Responden dari TRACER STUDY LULUSAN 2025.xlsx)
 export const INITIAL_TRACER = [

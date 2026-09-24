@@ -44,9 +44,9 @@ export default function Footer() {
   ];
 
   return (
-    <footer style={{ backgroundColor: 'var(--usu-green-deep)', color: '#ffffff', borderTop: '3px solid var(--usu-gold)', position: 'relative', overflow: 'hidden' }}>
+    <footer style={{ backgroundColor: 'var(--usu-brand-deep)', color: '#ffffff', borderTop: '4px solid var(--usu-accent)', position: 'relative', overflow: 'hidden', fontFamily: 'var(--usu-font)' }}>
       {/* Top Banner Quick Bar */}
-      <div style={{ backgroundColor: 'var(--usu-green-dark)', padding: '1.75rem 0', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ backgroundColor: 'var(--usu-brand-active)', padding: '1.5rem 0', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', position: 'relative', overflow: 'hidden' }}>
         {/* Subtle Static Watermark */}
         <div style={{ position: 'absolute', right: '-20px', top: '-25px', pointerEvents: 'none', opacity: 0.08, zIndex: 1 }}>
           <img src="/ornament/flower-ora.svg" alt="" style={{ width: '120px', height: '120px' }} />
@@ -55,25 +55,37 @@ export default function Footer() {
         <div className="container" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1.25rem', position: 'relative', zIndex: 10 }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-              <Sparkles size={16} style={{ color: 'var(--usu-gold)' }} />
-              <h3 style={{ color: '#ffffff', fontSize: '1.25rem', fontWeight: 800, margin: 0, fontFamily: 'Outfit, sans-serif' }}>
+              <Sparkles size={16} style={{ color: 'var(--usu-accent)' }} />
+              <h3 style={{ color: '#ffffff', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>
                 Pendidikan, Kemahasiswaan, dan Kealumnian (PKK)
               </h3>
             </div>
-            <p style={{ color: 'rgba(255, 255, 255, 0.75)', fontSize: '0.85rem', margin: 0 }}>
+            <p style={{ color: '#e0ebe4', fontSize: '0.85rem', margin: 0 }}>
               Fakultas Vokasi Universitas Sumatera Utara • Layanan Administrasi Terpadu Mahasiswa & Alumni
             </p>
           </div>
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            <Link href="/surat" className="btn btn-gold btn-sm">
+          <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap' }}>
+            <Link
+              href="/surat"
+              className="usu-button usu-button--accent"
+              style={{ fontSize: '0.82rem', padding: '0.45rem 0.95rem', minBlockSize: '2.25rem' }}
+            >
               <FileText size={14} />
               <span>Surat Permohonan Mahasiswa</span>
             </Link>
-            <Link href="/beasiswa" className="btn btn-outline-white btn-sm">
+            <Link
+              href="/beasiswa"
+              className="usu-button usu-button--secondary"
+              style={{ fontSize: '0.82rem', padding: '0.45rem 0.95rem', minBlockSize: '2.25rem' }}
+            >
               <GraduationCap size={14} />
               <span>Data Penerima Beasiswa</span>
             </Link>
-            <Link href="/tracer-study" className="btn btn-outline-white btn-sm">
+            <Link
+              href="/tracer-study"
+              className="usu-button usu-button--secondary"
+              style={{ fontSize: '0.82rem', padding: '0.45rem 0.95rem', minBlockSize: '2.25rem' }}
+            >
               <Briefcase size={14} />
               <span>Rekapitulasi Tracer Study</span>
             </Link>
@@ -94,10 +106,10 @@ export default function Footer() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '1.25rem' }}>
               <div
                 style={{
-                  padding: '5px',
-                  borderRadius: '10px',
+                  padding: '4px',
+                  borderRadius: 'var(--usu-radius-control)',
                   background: '#ffffff',
-                  border: '1.5px solid #F59E0B',
+                  border: '1.5px solid var(--usu-accent)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -111,28 +123,28 @@ export default function Footer() {
                 />
               </div>
               <div>
-                <div style={{ fontSize: '0.65rem', color: '#fde047', fontWeight: 700, letterSpacing: '0.06em' }}>
+                <div style={{ fontSize: '0.65rem', color: 'var(--usu-accent)', fontWeight: 700, letterSpacing: '0.06em' }}>
                   UNIVERSITAS SUMATERA UTARA
                 </div>
-                <h4 style={{ color: '#ffffff', fontSize: '1.15rem', fontWeight: 800, margin: 0, fontFamily: 'Outfit, sans-serif' }}>
+                <h4 style={{ color: '#ffffff', fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>
                   FAKULTAS VOKASI
                 </h4>
               </div>
             </div>
 
-            <p style={{ color: 'rgba(255, 255, 255, 0.78)', fontSize: '0.85rem', lineHeight: '1.65', marginBottom: '1.5rem' }}>
+            <p style={{ color: '#e0ebe4', fontSize: '0.85rem', lineHeight: '1.65', marginBottom: '1.5rem' }}>
               Unit Layanan Pendidikan, Kemahasiswaan, dan Kealumnian (PKK) Fakultas Vokasi USU memfasilitasi kebutuhan administrasi surat-menyurat mahasiswa, publikasi beasiswa, capaian prestasi, serta rekapitulasi penelusuran lulusan.
             </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.85)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', fontSize: '0.85rem', color: '#e0ebe4' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.65rem' }}>
-                <MapPin size={17} style={{ color: 'var(--usu-gold)', flexShrink: 0, marginTop: '2px' }} />
+                <MapPin size={17} style={{ color: 'var(--usu-accent)', flexShrink: 0, marginTop: '2px' }} />
                 <span style={{ lineHeight: 1.5 }}>
                   Jalan Bioteknologi No.2, Kampus USU Medan, 20155
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                <Mail size={16} style={{ color: 'var(--usu-gold)', flexShrink: 0 }} />
+                <Mail size={16} style={{ color: 'var(--usu-accent)', flexShrink: 0 }} />
                 <span>vokasi@usu.ac.id</span>
               </div>
             </div>
@@ -254,21 +266,21 @@ export default function Footer() {
               style={{
                 backgroundColor: 'rgba(255, 255, 255, 0.03)',
                 padding: '1.5rem',
-                borderRadius: '14px',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: 'var(--usu-radius-control)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', paddingBottom: '0.65rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                <h5 style={{ color: 'var(--usu-gold)', fontSize: '0.9rem', fontWeight: 800, margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <h5 style={{ color: 'var(--usu-accent)', fontSize: '0.88rem', fontWeight: 700, margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   Program Diploma Tiga (D3)
                 </h5>
-                <span style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)' }}>14 Program Studi</span>
+                <span style={{ fontSize: '0.75rem', color: '#e0ebe4', opacity: 0.8 }}>14 Program Studi</span>
               </div>
 
-              <ul style={{ listStyle: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '0.55rem 1rem', fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.8)', padding: 0, margin: 0 }}>
+              <ul style={{ listStyle: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '0.55rem 1rem', fontSize: '0.8rem', color: '#e0ebe4', padding: 0, margin: 0 }}>
                 {d3Prodi.map((prodi, idx) => (
                   <li key={idx} style={{ lineHeight: 1.35, display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-                    <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: 'var(--usu-gold)', flexShrink: 0 }} />
+                    <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: 'var(--usu-accent)', flexShrink: 0 }} />
                     <span style={{ transition: 'color 0.2s' }}>{prodi}</span>
                   </li>
                 ))}
@@ -279,22 +291,22 @@ export default function Footer() {
             <div
               style={{
                 backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                padding: '1.5rem',
-                borderRadius: '14px',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
+                padding: '1.25rem',
+                borderRadius: 'var(--usu-radius-control)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', paddingBottom: '0.65rem', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                <h5 style={{ color: 'var(--usu-gold)', fontSize: '0.9rem', fontWeight: 800, margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <h5 style={{ color: 'var(--usu-accent)', fontSize: '0.88rem', fontWeight: 700, margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                   Program Sarjana Terapan (D4)
                 </h5>
-                <span style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)' }}>7 Program Studi</span>
+                <span style={{ fontSize: '0.75rem', color: '#e0ebe4', opacity: 0.8 }}>7 Program Studi</span>
               </div>
 
-              <ul style={{ listStyle: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '0.65rem 1rem', fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.8)', padding: 0, margin: 0 }}>
+              <ul style={{ listStyle: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '0.65rem 1rem', fontSize: '0.8rem', color: '#e0ebe4', padding: 0, margin: 0 }}>
                 {d4Prodi.map((prodi, idx) => (
                   <li key={idx} style={{ lineHeight: 1.35, display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-                    <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: 'var(--usu-gold)', flexShrink: 0 }} />
+                    <span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: 'var(--usu-accent)', flexShrink: 0 }} />
                     <span style={{ transition: 'color 0.2s' }}>{prodi}</span>
                   </li>
                 ))}
@@ -306,28 +318,28 @@ export default function Footer() {
       </div>
 
       {/* Bottom Copyright Strip by Wanda Codex */}
-      <div style={{ backgroundColor: '#022212', padding: '1.35rem 0', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontSize: '0.825rem', color: 'rgba(255, 255, 255, 0.7)' }}>
+      <div style={{ backgroundColor: '#072418', padding: '1.25rem 0', borderTop: '1px solid rgba(255, 255, 255, 0.1)', fontSize: '0.825rem', color: '#e0ebe4' }}>
         <div className="container" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
           <div>
-            © {new Date().getFullYear()} PKK Fakultas Vokasi Universitas Sumatera Utara. All Rights Reserved.
+            © {new Date().getFullYear()} PKK Fakultas Vokasi Universitas Sumatera Utara. Seluruh Hak Cipta Dilindungi.
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
-            <span>Portal Resmi Vokasi USU • Crafted & Engineered by</span>
+            <span>Portal Resmi Vokasi USU • Dikembangkan & Dikelola oleh</span>
             <span
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.35rem',
-                backgroundColor: 'rgba(245, 158, 11, 0.15)',
-                color: '#fef08a',
-                border: '1px solid rgba(245, 158, 11, 0.4)',
+                backgroundColor: 'rgba(255, 198, 0, 0.15)',
+                color: 'var(--usu-accent)',
+                border: '1px solid rgba(255, 198, 0, 0.45)',
                 padding: '0.2rem 0.65rem',
-                borderRadius: '6px',
-                fontWeight: 800,
+                borderRadius: 'var(--usu-radius-control)',
+                fontWeight: 700,
                 letterSpacing: '0.04em',
               }}
             >
-              <Sparkles size={12} style={{ color: 'var(--usu-gold)' }} />
+              <Sparkles size={12} style={{ color: 'var(--usu-accent)' }} />
               <span>Wanda Codex</span>
             </span>
           </div>
